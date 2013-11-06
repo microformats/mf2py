@@ -39,6 +39,9 @@ class Parser(object):
     def parse(self):
         def handle_microformat(microformat_name, el):
             properties = parse_props(el, {})
+            if microformat_name == "h-card" and 'name' not in properties:
+                properties["name"] = [el.firstChild.nodeValue]
+                # TODO: replace with proper name-implied
             microformat = {"type": [microformat_name],
                            "properties": properties}
             return microformat

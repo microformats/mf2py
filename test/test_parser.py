@@ -27,3 +27,8 @@ def test_simple_parse():
     p = Parser(open("test/examples/simple_person_reference.html"))
     result = p.to_dict()
     assert result["items"][0]["properties"] == {u'name': [u'Frances Berriman']}
+
+def test_simple_person_reference_implied():
+    p = Parser(open("test/examples/simple_person_reference_implied.html"))
+    result = p.to_dict()
+    assert result["items"][0]["properties"] == {u'name': [u'Frances Berriman']}
