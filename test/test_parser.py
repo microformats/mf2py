@@ -1,0 +1,19 @@
+import nose
+from mf2py.parser import Parser
+
+def test_empty():
+   p = Parser() 
+   assert type(p) is not None
+   assert type(p.to_dict()) is dict
+
+def test_open_file():
+   p = Parser(open("test/examples/empty.html"))
+   assert p.__doc__ is not None
+   assert type(p) is not None
+   assert type(p.to_dict()) is dict
+
+def test_user_agent():
+    assert Parser.useragent == 'mf2py - microformats2 parser for python'
+    Parser.useragent = 'something else'
+    assert Parser.useragent == 'something else'
+ 
