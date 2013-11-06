@@ -22,3 +22,8 @@ def test_user_agent():
 def test_base():
     p = Parser(open("test/examples/base.html"))
     assert p.__url__ == u"http://tantek.com/"
+
+def test_simple_parse():
+    p = Parser(open("test/examples/simple_person_reference.html"))
+    print p.to_dict()
+    assert type(p.to_dict()["classes"]) is list

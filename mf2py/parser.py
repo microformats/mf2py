@@ -9,6 +9,7 @@ class Parser(object):
     def __init__(self, *args, **kwargs):
         self.__url__ = None
         self.__doc__ = None
+        self.__parsed__ = {"items": [], "rels": {}}
 
         if len(args) > 0:
             if type(args[0]) is file:
@@ -31,8 +32,55 @@ class Parser(object):
                         if urlparse(poss_base.getAttribute("href")).netloc is not '':
                             self.__url__ = poss_base.getAttribute("href")
 
+        if self.__doc__ is not None:
+            # parse!
+            self.parse()
+
+    def parse(self):
+        def handle_microformat(microformat_name, el, ctx):
+            properties = parse_props(el, {})
+            microformat = {"type": [microformat_name],
+                           "properties": properties}
+            ctx.append(microformat)
+            print microformat
+
+        def parse_props(el, props = {}):
+            if el.hasAttribute("class"):
+                classes = el.getAttribute("class").split(" ")
+
+                # simple property parsing
+                potential_simple_property_signifiers = [x for x in classes if x.startswith("p-")]
+                if len(potential_simple_property_signifiers) > 0:
+                    for prop in potential_simple_property_signifiers:
+                        prop_name = prop.replace("p-", "")
+                        prop_value = props.get(prop_name, [])
+                        prop_value.append(el.firstChild.nodeValue)
+                        props[prop_name] = prop_value
+
+            for child in [x for x in el.childNodes if x.nodeType is 1]:
+                res = parse_props(child)
+                props.update(res)
+            return props
+
+        def parse_el(el, ctx):
+            potential_microformats = []
+
+            if el.hasAttribute("class"):
+                classes = el.getAttribute("class").split(" ")
+                potential_microformats = [x for x in classes if x.startswith("h-")]
+
+            if len(potential_microformats) > 0:
+                for microformat_name in potential_microformats:
+                    handle_microformat(microformat_name, el, ctx)
+
+            for child in [x for x in el.childNodes if x.nodeType is 1]:
+                parse_el(child, ctx)
+
+        ctx = []
+        parse_el(self.__doc__.documentElement, ctx)
+
     def to_dict(self):
-        return { "items": [], "rels": {} }
+        return self.__parsed__
     
     def to_json(self):
         return json.dumps(self.to_dict())
