@@ -16,4 +16,9 @@ def test_user_agent():
     assert Parser.useragent == 'mf2py - microformats2 parser for python'
     Parser.useragent = 'something else'
     assert Parser.useragent == 'something else'
+    # set back to default. damn stateful classes
+    Parser.useragent = 'mf2py - microformats2 parser for python'
  
+def test_base():
+    p = Parser(open("test/examples/base.html"))
+    assert p.__url__ == u"http://tantek.com/"
