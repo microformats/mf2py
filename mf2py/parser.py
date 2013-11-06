@@ -37,12 +37,11 @@ class Parser(object):
             self.parse()
 
     def parse(self):
-        def handle_microformat(microformat_name, el, ctx):
+        def handle_microformat(microformat_name, el):
             properties = parse_props(el, {})
             microformat = {"type": [microformat_name],
                            "properties": properties}
-            ctx.append(microformat)
-            print microformat
+            return microformat
 
         def parse_props(el, props = {}):
             if el.hasAttribute("class"):
@@ -71,13 +70,15 @@ class Parser(object):
 
             if len(potential_microformats) > 0:
                 for microformat_name in potential_microformats:
-                    handle_microformat(microformat_name, el, ctx)
+                    result = handle_microformat(microformat_name, el)
+                    ctx.append(result)
 
             for child in [x for x in el.childNodes if x.nodeType is 1]:
                 parse_el(child, ctx)
 
         ctx = []
         parse_el(self.__doc__.documentElement, ctx)
+        self.__parsed__["items"] = ctx
 
     def to_dict(self):
         return self.__parsed__

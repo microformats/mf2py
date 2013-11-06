@@ -25,5 +25,5 @@ def test_base():
 
 def test_simple_parse():
     p = Parser(open("test/examples/simple_person_reference.html"))
-    print p.to_dict()
-    assert type(p.to_dict()["classes"]) is list
+    result = p.to_dict()
+    assert result["items"][0]["properties"] == {u'name': [u'Frances Berriman']}
