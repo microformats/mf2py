@@ -43,3 +43,4 @@ def test_person_with_url():
     result = p.to_dict()
     assert result["items"][0]["properties"]["name"] == [u'Tom Morris']
     assert result["items"][0]["properties"]["url"] == [u'http://tommorris.org/']
+

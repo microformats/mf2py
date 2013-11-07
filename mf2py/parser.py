@@ -1,5 +1,6 @@
 import json
 import html5lib
+import dom_addins
 from urlparse import urlparse
 import xml.dom.minidom
 
