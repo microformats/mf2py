@@ -37,3 +37,9 @@ def test_simple_person_reference_same_element():
     p = Parser(open("test/examples/simple_person_reference_same_element.html"))
     result = p.to_dict()
     assert result["items"][0]["properties"] == {u'name': [u'Frances Berriman']}
+
+def test_person_with_url():
+    p = Parser(open("test/examples/person_with_url.html"))
+    result = p.to_dict()
+    assert result["items"][0]["properties"]["name"] == [u'Tom Morris']
+    assert result["items"][0]["properties"]["url"] == [u'http://tommorris.org/']

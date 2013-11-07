@@ -57,7 +57,22 @@ class Parser(object):
                         prop_name = prop.replace("p-", "")
                         prop_value = props.get(prop_name, [])
                         prop_value.append(el.firstChild.nodeValue)
-                        props[prop_name] = prop_value
+
+                        if prop_value is not []:
+                            props[prop_name] = prop_value
+
+                potential_url_property_signifiers = [x for x in classes if x.startswith("u-")]
+                if len(potential_url_property_signifiers) > 0:
+                    for prop in potential_url_property_signifiers:
+                        prop_name = prop.replace("u-", "")
+                        prop_value = props.get(prop_name, [])
+                        if el.nodeName == 'a' and el.hasAttribute("href"):
+                            prop_value.append(el.getAttribute("href"))
+                        elif el.nodeName == 'area' and el.hasAttribute("href"):
+                            prop_value.append(el.getAttribute("href"))
+
+                        if prop_value is not []:
+                            props[prop_name] = prop_value
 
             for child in [x for x in el.childNodes if x.nodeType is 1]:
                 res = parse_props(child)
