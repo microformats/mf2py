@@ -99,7 +99,7 @@ class Parser(object):
                             props[prop_name] = prop_value
                     else:
                         # nested microformat is a child microformat, parse and add to children
-                        pass
+                        children.append(handle_microformat(root_classnames, el))
                 else:
                     # simple property parsing
                     for prop in [c for c in classes if c.startswith("p-")]:
