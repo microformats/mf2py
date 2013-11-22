@@ -38,12 +38,26 @@ class Parser(object):
             self.parse()
 
     def parse(self):
-        def handle_microformat(microformat_name, el):
+        def handle_microformat(root_classnames, el):
+            # TODO: do depth-first parsing of child/property-nested microformats before anything else
             properties = parse_props(el, {})
-            if microformat_name == "h-card" and 'name' not in properties:
-                properties["name"] = [el.firstChild.nodeValue]
-                # TODO: replace with proper name-implied
-            microformat = {"type": [microformat_name],
+            if 'name' not in properties:
+                if el.nodeName == 'img' and el.hasAttribute("alt") and not el.getAttribute("alt") == "":
+                    properties["name"] = [el.getAttribute("alt")]
+                elif el.nodeName == 'abbr' and el.hasAttribute("title") and not el.getAttribute("title") == "":
+                    properties["name"] = [el.getAttribute("title")]
+                # TODO: implement the rest of http://microformats.org/wiki/microformats2-parsing#parsing_for_implied_properties
+                else:
+                    properties["name"] = [el.nodeValue]
+            if "photo" not in properties:
+                if el.nodeName == 'img' and el.hasAttribute("src"):
+                    properties["photo"] = [el.getAttribute("src")]
+                # TODO: implement the other implied photo finders
+            if "url" not in properties:
+                if el.nodeName == 'a' and el.hasAttribute("href"):
+                    properties["url"] = el.getAttribute("href")
+                # TODO: implement the more complex implied URL finder
+            microformat = {"type": root_classnames,
                            "properties": properties}
             return microformat
 
@@ -53,14 +67,15 @@ class Parser(object):
         def parse_props(el, props = {}):
             if el.hasAttribute("class"):
                 classes = el.getAttribute("class").split(" ")
-
+                
                 # simple property parsing
                 potential_simple_property_signifiers = [x for x in classes if x.startswith("p-")]
                 if len(potential_simple_property_signifiers) > 0:
+                    # TODO: parse for value-class here
                     for prop in potential_simple_property_signifiers:
-                        prop_name = prop.replace("p-", "")
+                        prop_name = prop[2:]
                         prop_value = props.get(prop_name, [])
-                        prop_value.append(el.firstChild.nodeValue)
+                        prop_value.append(el.nodeValue)
 
                         if prop_value is not []:
                             props[prop_name] = prop_value
@@ -69,7 +84,7 @@ class Parser(object):
                 potential_url_property_signifiers = [x for x in classes if x.startswith("u-")]
                 if len(potential_url_property_signifiers) > 0:
                     for prop in potential_url_property_signifiers:
-                        prop_name = prop.replace("u-", "")
+                        prop_name = prop[2:]
                         prop_value = props.get(prop_name, [])
 
                         # el/at matching
@@ -112,9 +127,8 @@ class Parser(object):
                 potential_microformats = [x for x in classes if x.startswith("h-")]
 
             if len(potential_microformats) > 0:
-                for microformat_name in potential_microformats:
-                    result = handle_microformat(microformat_name, el)
-                    ctx.append(result)
+                result = handle_microformat(potential_microformats, el)
+                ctx.append(result)
 
             for child in [x for x in el.childNodes if x.nodeType is 1]:
                 parse_el(child, ctx)
