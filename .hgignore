@@ -4,3 +4,4 @@ syntax: glob
 *.swp
 *.pyc
 nbproject/
+venv/

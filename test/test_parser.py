@@ -1,5 +1,6 @@
 import nose
 import os.path
+from pprint import pprint
 from mf2py.parser import Parser
 
 def parse_fixture(path):
@@ -29,8 +30,7 @@ def test_base():
     assert p.__url__ == u"http://tantek.com/"
 
 def test_simple_parse():
-    p = Parser(open("test/examples/simple_person_reference.html"))
-    result = p.to_dict()
+    result = parse_fixture("simple_person_reference.html")
     assert result["items"][0]["properties"] == {u'name': [u'Frances Berriman']}
 
 def test_simple_person_reference_implied():
@@ -39,8 +39,7 @@ def test_simple_person_reference_implied():
     assert result["items"][0]["properties"] == {u'name': [u'Frances Berriman']}
 
 def test_simple_person_reference_same_element():
-    p = Parser(open("test/examples/simple_person_reference_same_element.html"))
-    result = p.to_dict()
+    result = parse_fixture("simple_person_reference_same_element.html")
     assert result["items"][0]["properties"] == {u'name': [u'Frances Berriman']}
 
 def test_person_with_url():
@@ -82,3 +81,7 @@ def test_implied_image():
     result = parse_fixture("implied_properties.html")
     assert result["items"][4]["properties"]["photo"][0] == "http://tommorris.org/photo.png"
     assert result["items"][4]["properties"]["name"][0] == "Tom Morris"
+
+if __name__ == '__main__':
+    result = parse_fixture("nested_multiple_classnames.html")
+    pprint(result)

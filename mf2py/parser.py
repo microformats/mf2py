@@ -1,3 +1,5 @@
+# coding: utf-8
+
 import json
 import html5lib
 import dom_addins
@@ -38,9 +40,20 @@ class Parser(object):
             self.parse()
 
     def parse(self):
-        def handle_microformat(root_classnames, el):
-            # TODO: do depth-first parsing of child/property-nested microformats before anything else
-            properties = parse_props(el, {})
+        
+        parsed = set()
+        
+        def property_classnames(classes):
+            return [c for c in classes if c.startswith("p-") or c.startswith("u-") or c.startswith("e-") or c.startswith("dt-")]
+        
+        def property_names(classes):
+            return [c[2:] for c in property_classnames(classes)]
+        
+        def url_relative(value):
+            return value
+        
+        def handle_microformat(root_classnames, el, is_nested=True):
+            properties, children = parse_props(el, True)
             if 'name' not in properties:
                 if el.nodeName == 'img' and el.hasAttribute("alt") and not el.getAttribute("alt") == "":
                     properties["name"] = [el.getAttribute("alt")]
@@ -59,65 +72,90 @@ class Parser(object):
                 # TODO: implement the more complex implied URL finder
             microformat = {"type": root_classnames,
                            "properties": properties}
+            if len(children) > 0:
+                microformat["children"] = children
+            if is_nested:
+                microformat["value"] = el.firstChild.nodeValue
             return microformat
-
-        def url_relative(value):
-            return value
-
-        def parse_props(el, props = {}):
-            if el.hasAttribute("class"):
+        
+        def parse_props(el, is_root_element=False):
+            props = {}
+            children = []
+            # skip to children if this element itself is a nested microformat or it doesn’t have a class
+            if el.hasAttribute("class") and not is_root_element:
+                # TODO: make this handle multiple spaces, tabs(?) separating classnames
                 classes = el.getAttribute("class").split(" ")
                 
-                # simple property parsing
-                potential_simple_property_signifiers = [x for x in classes if x.startswith("p-")]
-                for prop in potential_simple_property_signifiers:
-                    # TODO: parse for value-class here
-                    prop_name = prop[2:]
-                    prop_value = props.get(prop_name, [])
-                    prop_value.append(el.firstChild.nodeValue)
-
-                    if prop_value is not []:
-                        props[prop_name] = prop_value
-
-                # url property parsing
-                potential_url_property_signifiers = [x for x in classes if x.startswith("u-")]
-                for prop in potential_url_property_signifiers:
-                    prop_name = prop[2:]
-                    prop_value = props.get(prop_name, [])
-
-                    # el/at matching
-                    url_matched = False
-                    if el.nodeName == 'a' and el.hasAttribute("href"):
-                        prop_value.append(url_relative(el.getAttribute("href")))
-                        url_matched = True
-                    elif el.nodeName == 'area' and el.hasAttribute("href"):
-                        prop_value.append(url_relative(el.getAttribute("href")))
-                        url_matched = True
-                    elif el.nodeName == 'img' and el.hasAttribute("src"):
-                        prop_value.append(url_relative(el.getAttribute("src")))
-                        url_matched = True
-                    elif el.nodeName == 'object' and el.hasAttribute("data"):
-                        prop_value.append(url_relative(el.getAttribute("data")))
-                        url_matched = True
-
-                    if url_matched is False:
-                        # TODO: value-class-pattern
-                        if el.nodeName == 'abbr' and el.hasAttribute("title"):
-                            prop_value.append(el.getAttribute("title"))
-                        elif el.nodeName == 'data' and el.hasAttribute("value"):
-                            prop_value.append(el.getAttribute("value"))
-                        # TODO: else, get inner text
+                # nested microformat parsing
+                root_classnames = [c for c in classes if c.startswith("h-")]
+                if len(root_classnames) > 0:
+                    # this element represents a nested microformat
+                    if len(property_classnames(classes)) > 0:
+                        # nested microformat is property-nested, parse and add to all property lists it's part of
+                        nested_microformat = handle_microformat(root_classnames, el)
+                        for prop_name in property_names(classes):
+                            prop_value = props.get(prop_name, [])
+                            prop_value.append(nested_microformat)
+                            props[prop_name] = prop_value
+                    else:
+                        # nested microformat is a child microformat, parse and add to children
                         pass
+                else:
+                    # simple property parsing
+                    for prop in [c for c in classes if c.startswith("p-")]:
+                        # TODO: parse for value-class here
+                        prop_name = prop[2:]
+                        prop_value = props.get(prop_name, [])
+                        prop_value.append(el.firstChild.nodeValue)
 
-                    if prop_value is not []:
-                        props[prop_name] = prop_value
+                        if prop_value is not []:
+                            props[prop_name] = prop_value
 
-            for child in [x for x in el.childNodes if x.nodeType is 1]:
-                res = parse_props(child)
-                props.update(res)
-            return props
+                    # url property parsing
+                    for prop in [c for c in classes if c.startswith("u-")]:
+                        prop_name = prop[2:]
+                        prop_value = props.get(prop_name, [])
 
-        def parse_el(el, ctx):
+                        # el/at matching
+                        url_matched = False
+                        if el.nodeName == 'a' and el.hasAttribute("href"):
+                            prop_value.append(url_relative(el.getAttribute("href")))
+                            url_matched = True
+                        elif el.nodeName == 'area' and el.hasAttribute("href"):
+                            prop_value.append(url_relative(el.getAttribute("href")))
+                            url_matched = True
+                        elif el.nodeName == 'img' and el.hasAttribute("src"):
+                            prop_value.append(url_relative(el.getAttribute("src")))
+                            url_matched = True
+                        elif el.nodeName == 'object' and el.hasAttribute("data"):
+                            prop_value.append(url_relative(el.getAttribute("data")))
+                            url_matched = True
+
+                        if url_matched is False:
+                            # TODO: value-class-pattern
+                            if el.nodeName == 'abbr' and el.hasAttribute("title"):
+                                prop_value.append(el.getAttribute("title"))
+                            elif el.nodeName == 'data' and el.hasAttribute("value"):
+                                prop_value.append(el.getAttribute("value"))
+                            # TODO: else, get inner text
+                            pass
+
+                        if prop_value is not []:
+                            props[prop_name] = prop_value
+            
+            parsed.add(el)
+            
+            for child in [x for x in el.childNodes if x.nodeType is 1 and x not in parsed]:
+                child_properties, child_microformats = parse_props(child)
+                for prop_name in child_properties:
+                    v = props.get(prop_name, [])
+                    v.extend(child_properties[prop_name])
+                    props[prop_name] = v
+                children.extend(child_microformats)
+            
+            return props, children
+
+        def parse_el(el, ctx, top_level=False):
             potential_microformats = []
 
             if el.hasAttribute("class"):
@@ -125,14 +163,14 @@ class Parser(object):
                 potential_microformats = [x for x in classes if x.startswith("h-")]
 
             if len(potential_microformats) > 0:
-                result = handle_microformat(potential_microformats, el)
+                result = handle_microformat(potential_microformats, el, top_level)
                 ctx.append(result)
-
-            for child in [x for x in el.childNodes if x.nodeType is 1]:
-                parse_el(child, ctx)
+            else:
+                for child in [x for x in el.childNodes if x.nodeType is 1 and x not in parsed]:
+                    parse_el(child, ctx)
 
         ctx = []
-        parse_el(self.__doc__.documentElement, ctx)
+        parse_el(self.__doc__.documentElement, ctx, True)
         self.__parsed__["items"] = ctx
 
     def to_dict(self):
