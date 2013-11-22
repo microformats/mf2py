@@ -70,49 +70,47 @@ class Parser(object):
                 
                 # simple property parsing
                 potential_simple_property_signifiers = [x for x in classes if x.startswith("p-")]
-                if len(potential_simple_property_signifiers) > 0:
+                for prop in potential_simple_property_signifiers:
                     # TODO: parse for value-class here
-                    for prop in potential_simple_property_signifiers:
-                        prop_name = prop[2:]
-                        prop_value = props.get(prop_name, [])
-                        prop_value.append(el.firstChild.nodeValue)
+                    prop_name = prop[2:]
+                    prop_value = props.get(prop_name, [])
+                    prop_value.append(el.firstChild.nodeValue)
 
-                        if prop_value is not []:
-                            props[prop_name] = prop_value
+                    if prop_value is not []:
+                        props[prop_name] = prop_value
 
                 # url property parsing
                 potential_url_property_signifiers = [x for x in classes if x.startswith("u-")]
-                if len(potential_url_property_signifiers) > 0:
-                    for prop in potential_url_property_signifiers:
-                        prop_name = prop[2:]
-                        prop_value = props.get(prop_name, [])
+                for prop in potential_url_property_signifiers:
+                    prop_name = prop[2:]
+                    prop_value = props.get(prop_name, [])
 
-                        # el/at matching
-                        url_matched = False
-                        if el.nodeName == 'a' and el.hasAttribute("href"):
-                            prop_value.append(url_relative(el.getAttribute("href")))
-                            url_matched = True
-                        elif el.nodeName == 'area' and el.hasAttribute("href"):
-                            prop_value.append(url_relative(el.getAttribute("href")))
-                            url_matched = True
-                        elif el.nodeName == 'img' and el.hasAttribute("src"):
-                            prop_value.append(url_relative(el.getAttribute("src")))
-                            url_matched = True
-                        elif el.nodeName == 'object' and el.hasAttribute("data"):
-                            prop_value.append(url_relative(el.getAttribute("data")))
-                            url_matched = True
+                    # el/at matching
+                    url_matched = False
+                    if el.nodeName == 'a' and el.hasAttribute("href"):
+                        prop_value.append(url_relative(el.getAttribute("href")))
+                        url_matched = True
+                    elif el.nodeName == 'area' and el.hasAttribute("href"):
+                        prop_value.append(url_relative(el.getAttribute("href")))
+                        url_matched = True
+                    elif el.nodeName == 'img' and el.hasAttribute("src"):
+                        prop_value.append(url_relative(el.getAttribute("src")))
+                        url_matched = True
+                    elif el.nodeName == 'object' and el.hasAttribute("data"):
+                        prop_value.append(url_relative(el.getAttribute("data")))
+                        url_matched = True
 
-                        if url_matched is False:
-                            # TODO: value-class-pattern
-                            if el.nodeName == 'abbr' and el.hasAttribute("title"):
-                                prop_value.append(el.getAttribute("title"))
-                            elif el.nodeName == 'data' and el.hasAttribute("value"):
-                                prop_value.append(el.getAttribute("value"))
-                            # TODO: else, get inner text
-                            pass
+                    if url_matched is False:
+                        # TODO: value-class-pattern
+                        if el.nodeName == 'abbr' and el.hasAttribute("title"):
+                            prop_value.append(el.getAttribute("title"))
+                        elif el.nodeName == 'data' and el.hasAttribute("value"):
+                            prop_value.append(el.getAttribute("value"))
+                        # TODO: else, get inner text
+                        pass
 
-                        if prop_value is not []:
-                            props[prop_name] = prop_value
+                    if prop_value is not []:
+                        props[prop_name] = prop_value
 
             for child in [x for x in el.childNodes if x.nodeType is 1]:
                 res = parse_props(child)
