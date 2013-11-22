@@ -8,6 +8,18 @@ def addClassName(self, classname):
     classnames.add(classname)
     self.setAttribute("class", ' '.join(list(classnames)))
 
+def hasClassName(self, classname_or_lambda):
+    classnames = set(self.getAttribute("class").split(" "))
+    if type(classname_or_lambda) == str:
+        return classname_or_lambda in classnames
+    elif hasattr(classname_or_lambda, '__call__'):
+        for classname in classnames:
+            result = classname_or_lambda(classname)
+            if result == True:
+                return True
+        return False
+
+
 Element.__dict__.update({'getElementsByClassName': getElementsByClassName})
 Element.__dict__.update({'addClassName': addClassName})
-
+Element.__dict__.update({'hasClassName': hasClassName})

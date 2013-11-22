@@ -73,17 +73,29 @@ class Parser(object):
                     properties["name"] = [el.getAttribute("alt")]
                 elif el.nodeName == 'abbr' and el.hasAttribute("title") and not el.getAttribute("title") == "":
                     properties["name"] = [el.getAttribute("title")]
+                elif len(el.getElementsByTagName("img")) == 1 and el.getElementsByTagName("img")[0].hasAttribute("alt") and \
+                        len(str(el.getElementsByTagName("img")[0].getAttribute("alt"))) > 0:
+                    properties["name"] = [el.getElementsByTagName("img")[0].getAttribute("title")]
+                elif len(el.getElementsByTagName("abbr")) == 1 and el.getElementsByTagName("abbr")[0].hasAttribute("title") and \
+                        len(str(el.getElementsByTagName("title"))) > 0:
+                    properties["name"] = [el.getElementsByTagName("abbr")[0].getAttribute("abbr")]
                 # TODO: implement the rest of http://microformats.org/wiki/microformats2-parsing#parsing_for_implied_properties
                 else:
                     properties["name"] = [el.firstChild.nodeValue]
             if "photo" not in properties:
                 if el.nodeName == 'img' and el.hasAttribute("src"):
                     properties["photo"] = [el.getAttribute("src")]
+                elif len(el.getElementsByTagName("img")) == 1:
+                    properties["photo"] = [el.getElementsByTagName("img")[0].getAttribute("src")]
                 # TODO: implement the other implied photo finders
             if "url" not in properties:
                 if el.nodeName == 'a' and el.hasAttribute("href"):
                     properties["url"] = el.getAttribute("href")
-                # TODO: implement the more complex implied URL finder
+                else:
+                    possible_links = el.getElementsByTagName("a")
+                    possible_links = [x for x in el.getElementsByTagName("a") if x.hasAttribute("href") and not x.hasClassName(lambda x: x.startswith("h-"))]
+                    if len(possible_links) == 1:
+                        properties["url"] = possible_links[0].getAttribute("href")
             microformat = {"type": root_classnames,
                            "properties": properties}
             if len(children) > 0:
