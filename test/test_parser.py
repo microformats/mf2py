@@ -96,6 +96,10 @@ def test_implied_image():
     assert result["items"][4]["properties"]["photo"][0] == "http://tommorris.org/photo.png"
     assert result["items"][4]["properties"]["name"][0] == "Tom Morris"
 
+def test_backcompat():
+    result = parse_fixture("backcompat.html")
+    assert set(result["items"][0]["type"]) == set(["h-card"])
+
 if __name__ == '__main__':
     result = parse_fixture("nested_multiple_classnames.html")
     pprint(result)

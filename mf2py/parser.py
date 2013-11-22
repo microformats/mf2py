@@ -3,7 +3,7 @@
 import json
 import html5lib
 import dom_addins
-import implied
+import backcompat
 from urlparse import urlparse
 import xml.dom.minidom
 
@@ -38,6 +38,7 @@ class Parser(object):
 
         if self.__doc__ is not None:
             # parse!
+            self.__doc__.documentElement.apply_backcompat_rules()
             self.parse()
 
     def parse(self):
