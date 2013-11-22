@@ -60,6 +60,16 @@ def test_property_nested_microformat():
     assert len(result["items"]) == 1
     assert "author" in result["items"][0]["properties"]
     assert result["items"][0]["properties"]["author"][0]["properties"]["name"][0] == "Tom Morris"
+    assert result["items"][0]["properties"]["reviewer"][0]["properties"]["name"][0] == "Tom Morris"
+    assert result["items"][0]["properties"]["author"][0]["properties"]["adr"][0]["properties"]["city"][0] == "London"
+
+def test_plain_child_microformat():
+    result = parse_fixture("nested_multiple_classnames.html")
+    
+    assert len(result["items"]) == 1
+    assert "children" in result["items"][0]
+    assert len(result["items"][0]["children"]) == 1
+    assert result["items"][0]["children"]["properties"]["name"][0] == "Some Citation"
 
 def test_implied_name():
     result = parse_fixture("implied_properties.html")
