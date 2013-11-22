@@ -48,6 +48,10 @@ def test_person_with_url():
     assert result["items"][0]["properties"]["name"] == [u'Tom Morris']
     assert result["items"][0]["properties"]["url"] == [u'http://tommorris.org/']
 
+def test_vcp():
+    result = parse_fixture("value_class_person.html")
+    assert result["items"][0]["properties"]["tel"] == [u'+44 1234 567890']
+
 def test_multiple_root_classnames():
     result = parse_fixture("nested_multiple_classnames.html")
     # order does not matter

@@ -3,6 +3,7 @@
 import json
 import html5lib
 import dom_addins
+import implied
 from urlparse import urlparse
 import xml.dom.minidom
 
@@ -40,7 +41,19 @@ class Parser(object):
             self.parse()
 
     def parse(self):
-        
+        def detect_and_handle_value_class_pattern(el):
+            """Returns value-class-pattern. This may be either a string a dict or None."""
+            return [x for x in el.getElementsByClassName("value")]
+
+        def handle_microformat(microformat_name, el):
+            properties = parse_props(el, {})
+            if microformat_name == "h-card" and 'name' not in properties:
+                properties["name"] = [el.firstChild.nodeValue]
+                # TODO: replace with proper name-implied
+            microformat = {"type": [microformat_name],
+                           "properties": properties}
+            return microformat
+
         parsed = set()
         
         def property_classnames(classes):
