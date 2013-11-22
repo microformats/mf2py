@@ -48,7 +48,7 @@ class Parser(object):
                     properties["name"] = [el.getAttribute("title")]
                 # TODO: implement the rest of http://microformats.org/wiki/microformats2-parsing#parsing_for_implied_properties
                 else:
-                    properties["name"] = [el.nodeValue]
+                    properties["name"] = [el.firstChild.nodeValue]
             if "photo" not in properties:
                 if el.nodeName == 'img' and el.hasAttribute("src"):
                     properties["photo"] = [el.getAttribute("src")]
@@ -75,7 +75,7 @@ class Parser(object):
                     for prop in potential_simple_property_signifiers:
                         prop_name = prop[2:]
                         prop_value = props.get(prop_name, [])
-                        prop_value.append(el.nodeValue)
+                        prop_value.append(el.firstChild.nodeValue)
 
                         if prop_value is not []:
                             props[prop_name] = prop_value
