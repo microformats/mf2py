@@ -19,7 +19,21 @@ def hasClassName(self, classname_or_lambda):
                 return True
         return False
 
+def getText(self):
+    out = ''
+    if self.hasChildNodes():
+        for child in self.childNodes:
+            if 'wholeText' in dir(child):
+                if child.wholeText is not None:
+                    out = out + child.wholeText
+            elif 'childNodes' in dir(child):
+                out = out + child.getText()
+    else:
+        if self.nodeValue is not None:
+            out = out + self.nodeValue
+    return out
 
 Element.__dict__.update({'getElementsByClassName': getElementsByClassName})
 Element.__dict__.update({'addClassName': addClassName})
 Element.__dict__.update({'hasClassName': hasClassName})
+Element.__dict__.update({'getText': getText})

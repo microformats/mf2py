@@ -73,7 +73,7 @@ def test_plain_child_microformat():
     assert len(result["items"]) == 1
     assert "children" in result["items"][0]
     assert len(result["items"][0]["children"]) == 1
-    assert result["items"][0]["children"]["properties"]["name"][0] == "Some Citation"
+    assert result["items"][0]["children"][0]["properties"]["name"][0] == "Some Citation"
 
 def test_implied_name():
     result = parse_fixture("implied_properties.html")

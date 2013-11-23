@@ -46,15 +46,6 @@ class Parser(object):
             """Returns value-class-pattern. This may be either a string a dict or None."""
             return [x for x in el.getElementsByClassName("value")]
 
-        def handle_microformat(microformat_name, el):
-            properties = parse_props(el, {})
-            if microformat_name == "h-card" and 'name' not in properties:
-                properties["name"] = [el.firstChild.nodeValue]
-                # TODO: replace with proper name-implied
-            microformat = {"type": [microformat_name],
-                           "properties": properties}
-            return microformat
-
         parsed = set()
         
         def property_classnames(classes):
@@ -81,7 +72,7 @@ class Parser(object):
                     properties["name"] = [el.getElementsByTagName("abbr")[0].getAttribute("abbr")]
                 # TODO: implement the rest of http://microformats.org/wiki/microformats2-parsing#parsing_for_implied_properties
                 else:
-                    properties["name"] = [el.firstChild.nodeValue]
+                    properties["name"] = [el.getText()]
             if "photo" not in properties:
                 if el.nodeName == 'img' and el.hasAttribute("src"):
                     properties["photo"] = [el.getAttribute("src")]
@@ -101,7 +92,7 @@ class Parser(object):
             if len(children) > 0:
                 microformat["children"] = children
             if is_nested:
-                microformat["value"] = el.firstChild.nodeValue
+                microformat["value"] = str(el)
             return microformat
         
         def parse_props(el, is_root_element=False):
