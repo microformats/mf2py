@@ -66,7 +66,7 @@ class Parser(object):
                     properties["name"] = [el.getAttribute("title")]
                 elif len(el.getElementsByTagName("img")) == 1 and el.getElementsByTagName("img")[0].hasAttribute("alt") and \
                         len(str(el.getElementsByTagName("img")[0].getAttribute("alt"))) > 0:
-                    properties["name"] = [el.getElementsByTagName("img")[0].getAttribute("title")]
+                    properties["name"] = [el.getElementsByTagName("img")[0].getAttribute("alt")]
                 elif len(el.getElementsByTagName("abbr")) == 1 and el.getElementsByTagName("abbr")[0].hasAttribute("title") and \
                         len(str(el.getElementsByTagName("title"))) > 0:
                     properties["name"] = [el.getElementsByTagName("abbr")[0].getAttribute("abbr")]
