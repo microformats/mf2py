@@ -59,6 +59,7 @@ class Parser(object):
         
         def handle_microformat(root_classnames, el, is_nested=True):
             properties, children = parse_props(el, True)
+            
             if 'name' not in properties:
                 if el.nodeName == 'img' and el.hasAttribute("alt") and not el.getAttribute("alt") == "":
                     properties["name"] = [el.getAttribute("alt")]
@@ -73,20 +74,22 @@ class Parser(object):
                 # TODO: implement the rest of http://microformats.org/wiki/microformats2-parsing#parsing_for_implied_properties
                 else:
                     properties["name"] = [el.getText()]
+            
             if "photo" not in properties:
                 if el.nodeName == 'img' and el.hasAttribute("src"):
                     properties["photo"] = [el.getAttribute("src")]
                 elif len(el.getElementsByTagName("img")) == 1:
                     properties["photo"] = [el.getElementsByTagName("img")[0].getAttribute("src")]
                 # TODO: implement the other implied photo finders
+            
             if "url" not in properties:
                 if el.nodeName == 'a' and el.hasAttribute("href"):
-                    properties["url"] = el.getAttribute("href")
+                    properties["url"] = [el.getAttribute("href")]
                 else:
                     possible_links = el.getElementsByTagName("a")
                     possible_links = [x for x in el.getElementsByTagName("a") if x.hasAttribute("href") and not x.hasClassName(lambda x: x.startswith("h-"))]
                     if len(possible_links) == 1:
-                        properties["url"] = possible_links[0].getAttribute("href")
+                        properties["url"] = [possible_links[0].getAttribute("href")]
             microformat = {"type": root_classnames,
                            "properties": properties}
             if len(children) > 0:
