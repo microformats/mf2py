@@ -100,7 +100,6 @@ def test_implied_image():
 
 def test_datetime_parsing():
     result = parse_fixture("datetimes.html")
-    pprint(result)
     assert result["items"][0]["properties"]["start"][0] == "2014-01-01T12:00:00+00:00"
     assert result["items"][0]["properties"]["end"][0] == "3014-01-01T18:00:00+00:00"
     assert result["items"][0]["properties"]["duration"][0] == "P1000Y"
@@ -109,7 +108,6 @@ def test_datetime_parsing():
 
 def test_embedded_parsing():
     result = parse_fixture("embedded.html")
-    pprint(result)
     assert result["items"][0]["properties"]["content"][0]["html"] == '\n   <p>Blah blah blah blah blah.</p>\n   <p>Blah.</p>\n   <p>Blah blah blah.</p>\n  '
     assert result["items"][0]["properties"]["content"][0]["value"] == '\n   Blah blah blah blah blah.\n   Blah.\n   Blah blah blah.\n  '
 
