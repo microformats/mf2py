@@ -229,6 +229,9 @@ class Parser(object):
         parse_el(self.__doc__.documentElement, ctx, True)
         self.__parsed__["items"] = ctx
 
+    def filter_by_type(self, type_name):
+        return [x for x in self.to_dict()['items'] if x['type'] == [type_name]]
+
     def to_dict(self):
         return self.__parsed__
     
