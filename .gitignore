@@ -1,5 +1,8 @@
 .DS_Store
 *.swp
 *.pyc
+build/
+dist/
+mf2py.egg-info/
 nbproject/
 venv/
