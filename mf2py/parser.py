@@ -184,7 +184,10 @@ class Parser(object):
                         prop_name = prop[2:]
                         prop_value = props.get(prop_name, [])
                         
-                        
+                        prop_value.append({
+                            'html': ''.join([e.toxml() for e in el.childNodes]),
+                            'value': el.getText()
+                        })
                         
                         props[prop_name] = prop_value
             

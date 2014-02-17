@@ -107,6 +107,12 @@ def test_datetime_parsing():
     assert result["items"][0]["properties"]["updated"][0] == "2011-08-26T00:01:21+00:00"
     assert result["items"][0]["properties"]["updated"][1] == "2011-08-26T00:01:21+00:00"
 
+def test_embedded_parsing():
+    result = parse_fixture("embedded.html")
+    pprint(result)
+    assert result["items"][0]["properties"]["content"][0]["html"] == '\n   <p>Blah blah blah blah blah.</p>\n   <p>Blah.</p>\n   <p>Blah blah blah.</p>\n  '
+    assert result["items"][0]["properties"]["content"][0]["value"] == '\n   Blah blah blah blah blah.\n   Blah.\n   Blah blah blah.\n  '
+
 def test_backcompat():
     result = parse_fixture("backcompat.html")
     assert set(result["items"][0]["type"]) == set(["h-card"])
