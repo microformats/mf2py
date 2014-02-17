@@ -106,7 +106,7 @@ class Parser(object):
                 # TODO: make this handle multiple spaces, tabs(?) separating classnames
                 classes = el.getAttribute("class").split(" ")
                 
-                # nested microformat parsing
+                # Is this element a microformat root?
                 root_classnames = [c for c in classes if c.startswith("h-")]
                 if len(root_classnames) > 0:
                     # this element represents a nested microformat
@@ -121,7 +121,7 @@ class Parser(object):
                         # nested microformat is a child microformat, parse and add to children
                         children.append(handle_microformat(root_classnames, el))
                 else:
-                    # simple property parsing
+                    # Parse plaintext p-* properties.
                     for prop in [c for c in classes if c.startswith("p-")]:
                         # TODO: parse for value-class here
                         prop_name = prop[2:]
@@ -131,23 +131,20 @@ class Parser(object):
                         if prop_value is not []:
                             props[prop_name] = prop_value
 
-                    # url property parsing
+                    # Parse URL u-* properties.
                     for prop in [c for c in classes if c.startswith("u-")]:
                         prop_name = prop[2:]
                         prop_value = props.get(prop_name, [])
 
                         # el/at matching
                         url_matched = False
-                        if el.nodeName == 'a' and el.hasAttribute("href"):
+                        if el.nodeName in ("a", "area") and el.hasAttribute("href"):
                             prop_value.append(url_relative(el.getAttribute("href")))
                             url_matched = True
-                        elif el.nodeName == 'area' and el.hasAttribute("href"):
-                            prop_value.append(url_relative(el.getAttribute("href")))
-                            url_matched = True
-                        elif el.nodeName == 'img' and el.hasAttribute("src"):
+                        elif el.nodeName == "img" and el.hasAttribute("src"):
                             prop_value.append(url_relative(el.getAttribute("src")))
                             url_matched = True
-                        elif el.nodeName == 'object' and el.hasAttribute("data"):
+                        elif el.nodeName == "object" and el.hasAttribute("data"):
                             prop_value.append(url_relative(el.getAttribute("data")))
                             url_matched = True
 
@@ -162,6 +159,34 @@ class Parser(object):
 
                         if prop_value is not []:
                             props[prop_name] = prop_value
+                    
+                    # Parse datetime dt-* properties.
+                    for prop in [c for c in classes if c.startswith("dt-")]:
+                        prop_name = prop[3:]
+                        prop_value = props.get(prop_name, [])
+                        
+                        # TODO: parse value-class pattern including datetime parsing rules.
+                        # http://microformats.org/wiki/value-class-pattern
+                        
+                        if el.nodeName in ("time", "ins", "del") and el.hasAttribute("datetime"):
+                            prop_value.append(el.getAttribute("datetime"))
+                        elif el.nodeName == "abbr" and el.hasAttribute("title"):
+                            prop_value.append(el.getAttribute("title"))
+                        elif el.nodeName in ("data", "input") and el.hasAttribute("value"):
+                            prop_value.append(el.getAttribute("value"))
+                        else:
+                            prop_value.append(el.firstChild.nodeValue)
+                        
+                        props[prop_name] = prop_value
+
+                    # Parse embedded markup e-* properties.
+                    for prop in [c for c in classes if c.startswith("e-")]:
+                        prop_name = prop[2:]
+                        prop_value = props.get(prop_name, [])
+                        
+                        
+                        
+                        props[prop_name] = prop_value
             
             parsed.add(el)
             

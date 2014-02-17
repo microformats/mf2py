@@ -98,6 +98,15 @@ def test_implied_image():
     assert result["items"][4]["properties"]["photo"][0] == "http://tommorris.org/photo.png"
     assert result["items"][4]["properties"]["name"][0] == "Tom Morris"
 
+def test_datetime_parsing():
+    result = parse_fixture("datetimes.html")
+    pprint(result)
+    assert result["items"][0]["properties"]["start"][0] == "2014-01-01T12:00:00+00:00"
+    assert result["items"][0]["properties"]["end"][0] == "3014-01-01T18:00:00+00:00"
+    assert result["items"][0]["properties"]["duration"][0] == "P1000Y"
+    assert result["items"][0]["properties"]["updated"][0] == "2011-08-26T00:01:21+00:00"
+    assert result["items"][0]["properties"]["updated"][1] == "2011-08-26T00:01:21+00:00"
+
 def test_backcompat():
     result = parse_fixture("backcompat.html")
     assert set(result["items"][0]["type"]) == set(["h-card"])
