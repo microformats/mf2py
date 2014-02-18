@@ -50,62 +50,105 @@ class Parser(object):
             self.parse()
 
     def parse(self):
+        # finds returns elements in el having class="value"
         def detect_and_handle_value_class_pattern(el):
             """Returns value-class-pattern. This may be either a string a dict or None."""
             return [x for x in el.getElementsByClassName("value")]
 
+        # set of all parsed things
         parsed = set()
-        
+
+        ##  function to get all property classnames        
         def property_classnames(classes):
             return [c for c in classes if c.startswith("p-") or c.startswith("u-") or c.startswith("e-") or c.startswith("dt-")]
-        
+   
+        ## function to get names of properties from classnames i.e. without microformat prefix     
         def property_names(classes):
             return [c[2:] for c in property_classnames(classes)]
-        
+
+        ## (what is this?)        
         def url_relative(value):
             return value
-        
+
+        ## function to find an implied name property (added by Kartik)
+        def implied_name(el):
+            # if image use alt text if not empty
+            if el.nodeName == 'img' and el.hasAttribute("alt") and not el.getAttribute("alt") == "":
+                return [el.getAttribute("alt")]
+            # if abbreviation use the title if not empty
+            elif el.nodeName == 'abbr' and el.hasAttribute("title") and not el.getAttribute("title") == "":
+                return [el.getAttribute("title")]
+            # if only one image child then use alt text if not empty
+            elif len(el.getElementsByTagName("img")) == 1 and el.getElementsByTagName("img")[0].hasAttribute("alt") and \
+                    len(str(el.getElementsByTagName("img")[0].getAttribute("alt"))) > 0:
+                return = [el.getElementsByTagName("img")[0].getAttribute("alt")]
+            # if only one abbreviation child use abbreviation if not empty
+            elif len(el.getElementsByTagName("abbr")) == 1 and el.getElementsByTagName("abbr")[0].hasAttribute("title") and \
+                    len(str(el.getElementsByTagName("title"))) > 0:
+                return = [el.getElementsByTagName("abbr")[0].getAttribute("abbr")]
+            # TODO: implement the rest of http://microformats.org/wiki/microformats2-parsing#parsing_for_implied_properties
+            # use text if all else fails
+            else:
+                return [el.getText()]
+
+        ## function to find implied photo property (added by Kartik)
+        def implied_photo(el):
+            # if element is an image use source if exists
+            if el.nodeName == 'img' and el.hasAttribute("src"):
+                return = [el.getAttribute("src")]
+            # if element has one image child use source if exists (check existence of src?)
+            elif len(el.getElementsByTagName("img")) == 1 and :
+                return = [el.getElementsByTagName("img")[0].getAttribute("src")]
+            # TODO: implement the other implied photo finders from http://microformats.org/wiki/microformats2-parsing#parsing_for_implied_properties
+            else:
+                return None
+
+        ## function to find implied url (added by Kartik)
+        def implied_url(el):
+            # if element is a link use its href if exists
+            if el.nodeName == 'a' and el.hasAttribute("href"):
+                return = el.getAttribute("href")
+            # get child link elements
+            elif:
+                possible_links = el.getElementsByTagName("a")
+                possible_links = [x for x in el.getElementsByTagName("a") if x.hasAttribute("href") and not x.hasClassName(lambda x: x.startswith("h-"))]
+                # if one link child use its href 
+                if len(possible_links) == 1:
+                    return = possible_links[0].getAttribute("href")
+            else:
+                return None
+
+
+        ## function for handling a root microformat i.e. h-*        
         def handle_microformat(root_classnames, el, is_nested=True):
             properties, children = parse_props(el, True)
-            
+           
+            # if some properties not already found find in implied ways 
             if 'name' not in properties:
-                if el.nodeName == 'img' and el.hasAttribute("alt") and not el.getAttribute("alt") == "":
-                    properties["name"] = [el.getAttribute("alt")]
-                elif el.nodeName == 'abbr' and el.hasAttribute("title") and not el.getAttribute("title") == "":
-                    properties["name"] = [el.getAttribute("title")]
-                elif len(el.getElementsByTagName("img")) == 1 and el.getElementsByTagName("img")[0].hasAttribute("alt") and \
-                        len(str(el.getElementsByTagName("img")[0].getAttribute("alt"))) > 0:
-                    properties["name"] = [el.getElementsByTagName("img")[0].getAttribute("alt")]
-                elif len(el.getElementsByTagName("abbr")) == 1 and el.getElementsByTagName("abbr")[0].hasAttribute("title") and \
-                        len(str(el.getElementsByTagName("title"))) > 0:
-                    properties["name"] = [el.getElementsByTagName("abbr")[0].getAttribute("abbr")]
-                # TODO: implement the rest of http://microformats.org/wiki/microformats2-parsing#parsing_for_implied_properties
-                else:
-                    properties["name"] = [el.getText()]
-            
+                properties["name"] = impled_name(el)
+                
             if "photo" not in properties:
-                if el.nodeName == 'img' and el.hasAttribute("src"):
-                    properties["photo"] = [el.getAttribute("src")]
-                elif len(el.getElementsByTagName("img")) == 1:
-                    properties["photo"] = [el.getElementsByTagName("img")[0].getAttribute("src")]
-                # TODO: implement the other implied photo finders
-            
+                x = implied_photo(el)
+                if x is not None:
+                    properties["photo"] = x
+
             if "url" not in properties:
-                if el.nodeName == 'a' and el.hasAttribute("href"):
-                    properties["url"] = [el.getAttribute("href")]
-                else:
-                    possible_links = el.getElementsByTagName("a")
-                    possible_links = [x for x in el.getElementsByTagName("a") if x.hasAttribute("href") and not x.hasClassName(lambda x: x.startswith("h-"))]
-                    if len(possible_links) == 1:
-                        properties["url"] = [possible_links[0].getAttribute("href")]
+                x = implied_url(el)
+                if x in not None:
+                    properties["url"] = x
+
+            # build microformat with type and properties
             microformat = {"type": root_classnames,
                            "properties": properties}
+            # insert children if any
             if len(children) > 0:
                 microformat["children"] = children
+            # insert value if it is a nested microformat (check this interpretation)
             if is_nested:
                 microformat["value"] = str(el)
             return microformat
         
+        ## function to parse properties of element
         def parse_props(el, is_root_element=False):
             props = {}
             children = []
@@ -211,29 +254,35 @@ class Parser(object):
             
             return props, children
 
+        ## function to parse an element for microformats
         def parse_el(el, ctx, top_level=False):
             potential_microformats = []
 
             if el.hasAttribute("class"):
                 classes = el.getAttribute("class").split(" ")
+                # find potential microformats in root classnames h-*
                 potential_microformats = [x for x in classes if x.startswith("h-")]
-
+            # if potential microformats found parse them
             if len(potential_microformats) > 0:
                 result = handle_microformat(potential_microformats, el, top_level)
                 ctx.append(result)
             else:
+                # parse children (add description for conditionals)
                 for child in [x for x in el.childNodes if x.nodeType is 1 and x not in parsed]:
                     parse_el(child, ctx)
 
         ctx = []
+        # start parsing at root element of the document
         parse_el(self.__doc__.documentElement, ctx, True)
         self.__parsed__["items"] = ctx
 
+    ## function to get only certain type of microformat
     def filter_by_type(self, type_name):
         return [x for x in self.to_dict()['items'] if x['type'] == [type_name]]
 
+    ## function to get a python dictionary version of parsed microformat
     def to_dict(self):
         return self.__parsed__
-    
+    ## function to get a json version of parsed microformat    
     def to_json(self):
         return json.dumps(self.to_dict())
