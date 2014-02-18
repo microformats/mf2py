@@ -4,6 +4,7 @@ import json
 import html5lib
 import dom_addins
 import backcompat
+import requests
 from urlparse import urlparse
 import xml.dom.minidom
 
@@ -15,15 +16,22 @@ class Parser(object):
         self.__doc__ = None
         self.__parsed__ = {"items": [], "rels": {}}
 
-        if len(args) > 0:
-            if type(args[0]) is file:
-                # load file
-                self.__doc__ = html5lib.parse(args[0], treebuilder="dom")
-                if len(args) > 1 and (type(args[1]) is str or type(args[1]) is unicode):
-                    self.__url__ = args[1] #TODO: parse this properly
-            elif type(args[0]) is str or type(args[0]) is unicode:
-                pass
-                # load URL
+        if 'url' in kwargs:
+            data = requests.get(kwargs['url'])
+            self.__url__ = kwargs['url']
+            self.__doc__ = html5lib.parse(data.text, treebuilder="dom")
+        else:
+            if len(args) > 0:
+                if type(args[0]) is file:
+                    # load file
+                    self.__doc__ = html5lib.parse(args[0], treebuilder="dom")
+                    if len(args) > 1 and (type(args[1]) is str or type(args[1]) is unicode):
+                        self.__url__ = args[1] #TODO: parse this properly
+                elif type(args[0]) is str or type(args[0]) is unicode:
+                    data = requests.get(args[0])
+                    self.__url__ = args[0]
+                    self.__doc__ = html5lib.parse(data.text, treebuilder="dom")
+                    # load URL
 
         # test for base
         if self.__doc__ is not None and self.__url__ is None:
@@ -220,6 +228,9 @@ class Parser(object):
         ctx = []
         parse_el(self.__doc__.documentElement, ctx, True)
         self.__parsed__["items"] = ctx
+
+    def filter_by_type(self, type_name):
+        return [x for x in self.to_dict()['items'] if x['type'] == [type_name]]
 
     def to_dict(self):
         return self.__parsed__
