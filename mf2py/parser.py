@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import backcompat
 import requests
 from urlparse import urlparse
+from dom_helpers import is_tag
 
 class Parser(object):
     useragent = 'mf2py - microformats2 parser for python'
@@ -47,6 +48,7 @@ class Parser(object):
             #self.__doc__.apply_backcompat_rules()
             self.parse()
 
+
     ## function to parse the document
     def parse(self):
         # finds returns elements in el having class="value" (why?)
@@ -78,7 +80,7 @@ class Parser(object):
 
             ## helper functions to parse microformat
         ## function to find an implied name property (added by Kartik)
-            def implied_name(el):
+            def implied_name():
                 # if image use alt text if not empty
                 if el.name == 'img' and "alt" in el.attrs and not el["alt"] == "":
                     return [el["alt"]]
@@ -86,12 +88,10 @@ class Parser(object):
                 elif el.name == 'abbr' and "title" in el.attrs and not el["title"] == "":
                     return [el["title"]]
                 # if only one image child then use alt text if not empty
-                elif len(el.find_all("img")) == 1 and "alt" in el.find_all("img")[0].attrs and \
-                        len(str(el.find_all("img")[0]["alt"])) > 0:
+                elif len(el.find_all("img")) == 1 and "alt" in el.find_all("img")[0].attrs and not el.find_all("img")[0]["alt"] == "":
                     return [el.find_all("img")[0]["alt"]]
                 # if only one abbreviation child use abbreviation if not empty
-                elif len(el.find_all("abbr")) == 1 and "title" in el.find_all("abbr")[0].attrs and \
-                        len(str(el.find_all("abbr")[0]["title"])) > 0:
+                elif len(el.find_all("abbr")) == 1 and "title" in el.find_all("abbr")[0].attrs and not el.find_all("abbr")[0]["title"] == "":
                     return [el.find_all("abbr")[0]["title"]]
                 # TODO: implement the rest of http://microformats.org/wiki/microformats2-parsing#parsing_for_implied_properties
                 # use text if all else fails
@@ -99,7 +99,7 @@ class Parser(object):
                     return [el.get_text()]
 
             ## function to find implied photo property (added by Kartik)
-            def implied_photo(el):
+            def implied_photo():
                 # if element is an image use source if exists
                 if el.name == 'img' and "src" in el.attrs:
                     return [el["src"]]
@@ -111,7 +111,7 @@ class Parser(object):
                     return None
 
             ## function to find implied url (added by Kartik)
-            def implied_url(el):
+            def implied_url():
                 # if element is a link use its href if exists
                 if el.name == 'a' and "href" in el.attrs:
                     return el["href"]
@@ -127,7 +127,7 @@ class Parser(object):
            
             # if some properties not already found find in implied ways 
             if 'name' not in properties:
-                properties["name"] = impled_name()
+                properties["name"] = implied_name()
                 
             if "photo" not in properties:
                 x = implied_photo()
@@ -246,8 +246,9 @@ class Parser(object):
                         props[prop_name] = prop_value
             
             parsed.add(el)
-            
-            for child in [x for x in el.children if x not in parsed]:
+
+            # parse children if they are tags and not already parsed
+            for child in [x for x in el.children if is_tag(x) and x not in parsed]:
                 child_properties, child_microformats = parse_props(child)
                 for prop_name in child_properties:
                     v = props.get(prop_name, [])
@@ -270,8 +271,8 @@ class Parser(object):
                 result = handle_microformat(potential_microformats, el, top_level)
                 ctx.append(result)
             else:
-                # parse children (add description for conditionals)
-                for child in [x for x in el.children if x not in parsed]:
+                # parse children if they are tags and not already parsed
+                for child in [x for x in el.children if is_tag(x) and x not in parsed]:
                     parse_el(child, ctx)
 
         ctx = []
