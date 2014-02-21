@@ -2,12 +2,32 @@
 
 import json
 from bs4 import BeautifulSoup
-import backcompat
+import backcompat, implied_properties
 import requests
 from urlparse import urlparse
 from dom_helpers import is_tag
 
 class Parser(object):
+    """Object to parse a document for microformats and return them in appropriate formats.
+
+    Args
+    ----
+    file : file handle to file containing contents (first arg)
+    url : url of the file to be processed
+            (kwarg or second arg. Can be first arg if no file given)
+
+    Attributes
+    ----------
+    useragent : returns the UA string for the Parser
+
+    Public methods
+    ---------------
+    parse : parses the file/url contents for microformats
+    filter_by_type : returns only the microformat specified by type_name argument
+    to_dict : returns python dict containing parsed microformats
+    to_json : returns json formatted version of parsed microformats
+
+    """
     useragent = 'mf2py - microformats2 parser for python'
 
     def __init__(self, *args, **kwargs):
@@ -25,7 +45,7 @@ class Parser(object):
                     # load file
                     self.__doc__ = BeautifulSoup(args[0])
                     if len(args) > 1 and (type(args[1]) is str or type(args[1]) is unicode):
-                        self.__url__ = args[1] #TODO: parse this properly
+                        self.__url__ = args[1] #TODO(tommorris): parse this properly
                 elif type(args[0]) is str or type(args[0]) is unicode:
                     # load URL
                     data = requests.get(args[0])
@@ -45,13 +65,13 @@ class Parser(object):
 
         if self.__doc__ is not None:
             # parse!
-            #self.__doc__.apply_backcompat_rules()
+            backcompat.apply_rules(self.__doc__)
             self.parse()
 
 
     ## function to parse the document
     def parse(self):
-        # finds returns elements in el having class="value" (why?)
+        # finds returns elements in el having class="value" for value-class-pattern http://microformats.org/wiki/value-class-pattern
         def detect_and_handle_value_class_pattern(el):
             """Returns value-class-pattern. This may be either a string a dict or None."""
             return el.find_all(class_="value")
@@ -78,64 +98,20 @@ class Parser(object):
         ## function for handling a root microformat i.e. h-*        
         def handle_microformat(root_class_names, el, is_nested=True):
 
-            ## helper functions to parse microformat
-        ## function to find an implied name property (added by Kartik)
-            def implied_name():
-                # if image use alt text if not empty
-                if el.name == 'img' and "alt" in el.attrs and not el["alt"] == "":
-                    return [el["alt"]]
-                # if abbreviation use the title if not empty
-                elif el.name == 'abbr' and "title" in el.attrs and not el["title"] == "":
-                    return [el["title"]]
-                # if only one image child then use alt text if not empty
-                elif len(el.find_all("img")) == 1 and "alt" in el.find_all("img")[0].attrs and not el.find_all("img")[0]["alt"] == "":
-                    return [el.find_all("img")[0]["alt"]]
-                # if only one abbreviation child use abbreviation if not empty
-                elif len(el.find_all("abbr")) == 1 and "title" in el.find_all("abbr")[0].attrs and not el.find_all("abbr")[0]["title"] == "":
-                    return [el.find_all("abbr")[0]["title"]]
-                # TODO: implement the rest of http://microformats.org/wiki/microformats2-parsing#parsing_for_implied_properties
-                # use text if all else fails
-                else:
-                    return [el.get_text()]
-
-            ## function to find implied photo property (added by Kartik)
-            def implied_photo():
-                # if element is an image use source if exists
-                if el.name == 'img' and "src" in el.attrs:
-                    return [el["src"]]
-                # if element has one image child use source if exists (check existence of src?)
-                elif len(el.find_all("img")) == 1 and "src" in el.find_all("img")[0].attrs :
-                    return [el.find_all("img")[0]["src"]]
-                # TODO: implement the other implied photo finders from http://microformats.org/wiki/microformats2-parsing#parsing_for_implied_properties
-                else:
-                    return None
-
-            ## function to find implied url (added by Kartik)
-            def implied_url():
-                # if element is a link use its href if exists
-                if el.name == 'a' and "href" in el.attrs:
-                    return el["href"]
-                # if one link child use its href 
-                elif len(el.find_all("a")) == 1 and "href" in el.find_all("a")[0].attrs and root_classnames(el.find_all("a")[0].get('class',[])) == []:
-                        return el.find_all("a")[0]["href"]
-                else:
-                    return None    
-
-            # actual parsing of microformat
             # parse for properties and children
             properties, children = parse_props(el, True)
            
             # if some properties not already found find in implied ways 
             if 'name' not in properties:
-                properties["name"] = implied_name()
+                properties["name"] = implied_properties.name(el)
                 
             if "photo" not in properties:
-                x = implied_photo()
+                x = implied_properties.photo(el)
                 if x is not None:
                     properties["photo"] = x
 
             if "url" not in properties:
-                x = implied_url()
+                x = implied_properties.url(el)
                 if x is not None:
                     properties["url"] = x
 
@@ -177,7 +153,7 @@ class Parser(object):
                 else:
                     # Parse plaintext p-* properties.
                     for prop in [c for c in classes if c.startswith("p-")]:
-                        # TODO: parse for value-class here
+                        # TODO(tommorris): parse for value-class here
                         prop_name = prop[2:]
                         prop_value = props.get(prop_name, [])
                         prop_value.append(el.get_text())
@@ -203,13 +179,13 @@ class Parser(object):
                             url_matched = True
 
                         if url_matched is False:
-                            # TODO: value-class-pattern
+                            # TODO(tommorris): value-class-pattern
                             if el.name == 'abbr' and "title" in el.attrs:
                                 prop_value.append(el["title"])
 
                             elif el.name == 'data' and "value" in el.attrs:
                                 prop_value.append(el["value"])
-                            # TODO: else, get inner text
+                            # TODO(tommorris): else, get inner text
                             pass
 
                         if prop_value is not []:
@@ -220,7 +196,7 @@ class Parser(object):
                         prop_name = prop[3:]
                         prop_value = props.get(prop_name, [])
                         
-                        # TODO: parse value-class pattern including datetime parsing rules.
+                        # TODO(barnabywalters): parse value-class pattern including datetime parsing rules.
                         # http://microformats.org/wiki/value-class-pattern
                         if el.name in ("time", "ins", "del") and "datetime" in el.attrs:
                             prop_value.append(el["datetime"])
