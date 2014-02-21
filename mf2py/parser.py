@@ -16,7 +16,12 @@ class Parser(object):
         self.__doc__ = None
         self.__parsed__ = {"items": [], "rels": {}}
 
-        if 'url' in kwargs:
+        if 'doc' in kwargs and 'url' in kwargs:
+            self.__doc__ = html5lib.parse(kwargs['doc'], treebuilder="dom")
+            self.__url__ = kwargs['url']
+        elif 'doc' in kwargs:
+            self.__doc__ = html5lib.parse(kwargs['doc'], treebuilder="dom")
+        elif 'url' in kwargs:
             data = requests.get(kwargs['url'])
             self.__url__ = kwargs['url']
             self.__doc__ = html5lib.parse(data.text, treebuilder="dom")
