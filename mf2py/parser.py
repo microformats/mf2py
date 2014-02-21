@@ -139,7 +139,10 @@ class Parser(object):
                         # TODO: parse for value-class here
                         prop_name = prop[2:]
                         prop_value = props.get(prop_name, [])
-                        prop_value.append(el.firstChild.nodeValue)
+                        # TODO: this is a goddamn horror show right here
+                        text_value = " ".join(t.nodeValue for t in el.childNodes if t.nodeType == t.TEXT_NODE)
+                        text_value = text_value.strip()
+                        prop_value.append(text_value)
 
                         if prop_value is not []:
                             props[prop_name] = prop_value
