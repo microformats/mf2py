@@ -12,7 +12,7 @@ class Parser(object):
 
     Args
     ----
-    file : file handle to file containing contents (first arg)
+    file : file handle to file containing contents (first arg or kwarg 'doc')
     url : url of the file to be processed
             (kwarg or second arg. Can be first arg if no file given)
 
@@ -35,7 +35,12 @@ class Parser(object):
         self.__doc__ = None
         self.__parsed__ = {"items": [], "rels": {}}
 
-        if 'url' in kwargs:
+        if 'doc' in kwargs and 'url' in kwargs:
+            self.__doc__ = BeautifulSoup(kwargs['doc'])
+            self.__url__ = kwargs['url']
+        elif 'doc' in kwargs:
+            self.__doc__ = BeautifulSoup(kwargs['doc'])
+        elif 'url' in kwargs:
             data = requests.get(kwargs['url'])
             self.__url__ = kwargs['url']
             self.__doc__ = BeautifulSoup(data.text)
@@ -156,7 +161,8 @@ class Parser(object):
                         # TODO(tommorris): parse for value-class here
                         prop_name = prop[2:]
                         prop_value = props.get(prop_name, [])
-                        prop_value.append(el.get_text())
+                        # added string stripping
+                        prop_value.append(el.get_text().strip())
 
                         if prop_value is not []:
                             props[prop_name] = prop_value
