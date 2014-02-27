@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import mf2_classes
 
 ## function to find an implied name property
 def name(el):
@@ -35,6 +36,6 @@ def url(el):
     if el.name == 'a' and "href" in el.attrs:
         return el["href"]
     # if one link child use its href 
-    if len(el.find_all("a")) == 1 and "href" in el.find_all("a")[0].attrs and root_classnames(el.find_all("a")[0].get('class',[])) == []:
+    if len(el.find_all("a")) == 1 and "href" in el.find_all("a")[0].attrs and mf2_classes.root(el.find_all("a")[0].get('class',[])) == []:
         return el.find_all("a")[0]["href"]
     return None 
