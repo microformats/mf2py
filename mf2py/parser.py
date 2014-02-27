@@ -6,6 +6,7 @@ import backcompat, implied_properties
 import requests
 from urlparse import urlparse
 from dom_helpers import is_tag
+import mf2_classes
 
 class Parser(object):
     """Object to parse a document for microformats and return them in appropriate formats.
@@ -84,18 +85,6 @@ class Parser(object):
         # set of all parsed things
         parsed = set()
 
-        ## function to get all root classnames
-        def root_classnames(classes):
-            return [c for c in classes if c.startswith("h-")]
-
-        ##  function to get all property classnames        
-        def property_classnames(classes):
-            return [c for c in classes if c.startswith("p-") or c.startswith("u-") or c.startswith("e-") or c.startswith("dt-")]
-   
-        ## function to get names of properties from classnames i.e. without microformat prefix     
-        def property_names(classes):
-            return [c[2:] for c in property_classnames(classes)]
-
         ## (what is this?)        
         def url_relative(value):
             return value
@@ -142,13 +131,13 @@ class Parser(object):
             if "class" in el.attrs and not is_root_element:
                 classes = el["class"]
                 # Is this element a microformat root?
-                root_class_names = root_classnames(classes)
+                root_class_names = mf2_classes.root(classes)
                 if len(root_class_names) > 0:
                     # this element represents a nested microformat
-                    if len(property_classnames(classes)) > 0:
+                    if len(mf2_classes.properties(classes)) > 0:
                         # nested microformat is property-nested, parse and add to all property lists it's part of
                         nested_microformat = handle_microformat(root_class_names, el)
-                        for prop_name in property_names(classes):
+                        for prop_name in mf2_classes.property_names(classes):
                             prop_value = props.get(prop_name, [])
                             prop_value.append(nested_microformat)
                             props[prop_name] = prop_value
@@ -157,7 +146,7 @@ class Parser(object):
                         children.append(handle_microformat(root_class_names, el))
                 else:
                     # Parse plaintext p-* properties.
-                    for prop in [c for c in classes if c.startswith("p-")]:
+                    for prop in mf2_classes.text(classes):
                         # TODO(tommorris): parse for value-class here
                         prop_name = prop[2:]
                         prop_value = props.get(prop_name, [])
@@ -168,7 +157,7 @@ class Parser(object):
                             props[prop_name] = prop_value
 
                     # Parse URL u-* properties.
-                    for prop in [c for c in classes if c.startswith("u-")]:
+                    for prop in mf2_classes.url(classes):
                         prop_name = prop[2:]
                         prop_value = props.get(prop_name, [])
 
@@ -198,7 +187,7 @@ class Parser(object):
                             props[prop_name] = prop_value
                     
                     # Parse datetime dt-* properties.
-                    for prop in [c for c in classes if c.startswith("dt-")]:
+                    for prop in mf2_classes.datetime(classes):
                         prop_name = prop[3:]
                         prop_value = props.get(prop_name, [])
                         
@@ -216,7 +205,7 @@ class Parser(object):
                         props[prop_name] = prop_value
 
                     # Parse embedded markup e-* properties.
-                    for prop in [c for c in classes if c.startswith("e-")]:
+                    for prop in mf2_classes.embedded(classes):
                         prop_name = prop[2:]
                         prop_value = props.get(prop_name, [])
                         
@@ -246,7 +235,7 @@ class Parser(object):
 
             classes = el.get("class",[])
             # find potential microformats in root classnames h-*
-            potential_microformats = root_classnames(classes)
+            potential_microformats = mf2_classes.root(classes)
 
             # if potential microformats found parse them
             if len(potential_microformats) > 0:
