@@ -17,7 +17,7 @@ def name(el):
         return [el.find_all("abbr")[0]["title"]]
     # TODO(tommorris): implement the rest of http://microformats.org/wiki/microformats2-parsing#parsing_for_implied_properties
     # use text if all else fails
-    return [el.get_text()]
+    return [el.get_text().strip()]
 
 ## function to find implied photo property
 def photo(el):
@@ -34,8 +34,8 @@ def photo(el):
 def url(el):
     # if element is a link use its href if exists
     if el.name == 'a' and "href" in el.attrs:
-        return el["href"]
+        return [el["href"]]
     # if one link child use its href 
     if len(el.find_all("a")) == 1 and "href" in el.find_all("a")[0].attrs and mf2_classes.root(el.find_all("a")[0].get('class',[])) == []:
-        return el.find_all("a")[0]["href"]
+        return [el.find_all("a")[0]["href"]]
     return None 
