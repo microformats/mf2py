@@ -2,11 +2,10 @@
 
 import json
 from bs4 import BeautifulSoup
-import backcompat, implied_properties
 import requests
 from urlparse import urlparse
 from dom_helpers import is_tag
-import mf2_classes
+import backcompat, mf2_classes, implied_properties, parse_property
 
 class Parser(object):
     """Object to parse a document for microformats and return them in appropriate formats.
@@ -123,8 +122,6 @@ class Parser(object):
         ## function to parse properties of element
         def parse_props(el, is_root_element=False):
 
-            #helper functions (?)
-
             props = {}
             children = []
             # skip to children if this element itself is a nested microformat or it doesn’t have a class
@@ -146,75 +143,64 @@ class Parser(object):
                         children.append(handle_microformat(root_class_names, el))
                 else:
                     # Parse plaintext p-* properties.
+                    value = None
                     for prop in mf2_classes.text(classes):
-                        # TODO(tommorris): parse for value-class here
                         prop_name = prop[2:]
                         prop_value = props.get(prop_name, [])
-                        # added string stripping
-                        prop_value.append(el.get_text().strip())
+
+                        # if value has not been parsed then parse it
+                        if value is None:
+                            value = parse_property.text(el)
+
+                        prop_value.append(value)
 
                         if prop_value is not []:
                             props[prop_name] = prop_value
 
                     # Parse URL u-* properties.
+                    value = None
                     for prop in mf2_classes.url(classes):
                         prop_name = prop[2:]
                         prop_value = props.get(prop_name, [])
 
-                        # el/at matching
-                        url_matched = False
-                        if el.name in ("a", "area") and "href" in el.attrs:
-                            prop_value.append(url_relative(el["href"]))
-                            url_matched = True
-                        elif el.name == "img" and "src" in el.attrs:
-                            prop_value.append(url_relative(el["src"]))
-                            url_matched = True
-                        elif el.name == "object" and "data" in el.attrs:
-                            prop_value.append(url_relative(el["data"]))
-                            url_matched = True
+                        # if value has not been parsed then parse it
+                        if value is None:
+                            value = parse_property.url(el)
 
-                        if url_matched is False:
-                            # TODO(tommorris): value-class-pattern
-                            if el.name == 'abbr' and "title" in el.attrs:
-                                prop_value.append(el["title"])
-
-                            elif el.name == 'data' and "value" in el.attrs:
-                                prop_value.append(el["value"])
-                            # TODO(tommorris): else, get inner text
-                            pass
-
+                        prop_value.append(value)
+                        
                         if prop_value is not []:
                             props[prop_name] = prop_value
                     
                     # Parse datetime dt-* properties.
+                    value = None
                     for prop in mf2_classes.datetime(classes):
                         prop_name = prop[3:]
                         prop_value = props.get(prop_name, [])
                         
-                        # TODO(barnabywalters): parse value-class pattern including datetime parsing rules.
-                        # http://microformats.org/wiki/value-class-pattern
-                        if el.name in ("time", "ins", "del") and "datetime" in el.attrs:
-                            prop_value.append(el["datetime"])
-                        elif el.name == "abbr" and "title" in el.attrs:
-                            prop_value.append(el["title"])
-                        elif el.name in ("data", "input") and "value" in el.attrs:
-                            prop_value.append(el["value"])
-                        else:
-                            prop_value.append(el.get_text())
+                        # if value has not been parsed then parse it
+                        if value is None:
+                            value = parse_property.datetime(el)
+
+                        prop_value.append(value)
                         
-                        props[prop_name] = prop_value
+                        if prop_value is not []:
+                            props[prop_name] = prop_value
 
                     # Parse embedded markup e-* properties.
+                    value = None
                     for prop in mf2_classes.embedded(classes):
                         prop_name = prop[2:]
                         prop_value = props.get(prop_name, [])
                         
-                        prop_value.append({
-                            'html': ''.join([unicode(e) for e in el.children]),
-                            'value': el.get_text()
-                        })
+                        # if value has not been parsed then parse it
+                        if value is None:
+                            value = parse_property.embedded(el)
+
+                        prop_value.append(value)
                         
-                        props[prop_name] = prop_value
+                        if prop_value is not []:
+                            props[prop_name] = prop_value
             
             parsed.add(el)
 
