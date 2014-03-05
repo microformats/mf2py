@@ -84,10 +84,6 @@ class Parser(object):
         # set of all parsed things
         parsed = set()
 
-        ## (what is this?)        
-        def url_relative(value):
-            return value
-
         ## function for handling a root microformat i.e. h-*        
         def handle_microformat(root_class_names, el, is_nested=True):
 
@@ -165,7 +161,7 @@ class Parser(object):
 
                         # if value has not been parsed then parse it
                         if value is None:
-                            value = parse_property.url(el)
+                            value = parse_property.url(el, base_url=self.__url__)
 
                         prop_value.append(value)
                         
