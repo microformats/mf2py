@@ -10,11 +10,10 @@ import backcompat, mf2_classes, implied_properties, parse_property
 class Parser(object):
     """Object to parse a document for microformats and return them in appropriate formats.
 
-    Args
+    Keyword arguments
     ----
-    file : file handle to file containing contents (first arg or kwarg 'doc')
-    url : url of the file to be processed
-            (kwarg or second arg. Can be first arg if no file given)
+    doc : file handle or text of content to parse. Optionally fetched from given 'url' kwarg
+    url : url of the file to be processed. Optionally fetched from base-element of given 'doc' kwarg
 
     Attributes
     ----------
@@ -22,7 +21,7 @@ class Parser(object):
 
     Public methods
     ---------------
-    parse : parses the file/url contents for microformats
+    parse : parses the file/url contents for microformats. done automatically on initialisation.
     filter_by_type : returns only the microformat specified by type_name argument
     to_dict : returns python dict containing parsed microformats
     to_json : returns json formatted version of parsed microformats
@@ -35,28 +34,15 @@ class Parser(object):
         self.__doc__ = None
         self.__parsed__ = {"items": [], "rels": {}}
 
-        if 'doc' in kwargs and 'url' in kwargs:
+        if 'doc' in kwargs:
             self.__doc__ = BeautifulSoup(kwargs['doc'])
-            self.__url__ = kwargs['url']
-        elif 'doc' in kwargs:
-            self.__doc__ = BeautifulSoup(kwargs['doc'])
-        elif 'url' in kwargs:
-            data = requests.get(kwargs['url'])
-            self.__url__ = kwargs['url']
-            self.__doc__ = BeautifulSoup(data.text)
-        else:
-            if len(args) > 0:
-                if type(args[0]) is file:
-                    # load file
-                    self.__doc__ = BeautifulSoup(args[0])
-                    if len(args) > 1 and (type(args[1]) is str or type(args[1]) is unicode):
-                        self.__url__ = args[1] #TODO(tommorris): parse this properly
-                elif type(args[0]) is str or type(args[0]) is unicode:
-                    # load URL
-                    data = requests.get(args[0])
-                    self.__url__ = args[0]
-                    self.__doc__ = BeautifulSoup(data.text)
 
+        if 'url' in kwargs:
+            self.__url__ = kwargs['url']
+
+            if self.__doc__ is None:
+                data = requests.get(self.__url__)
+                self.__doc__ = BeautifulSoup(data.text)
 
         # test for base
         if self.__doc__ is not None and self.__url__ is None:
