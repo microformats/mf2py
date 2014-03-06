@@ -23,6 +23,5 @@ def embedded(classes):
     return [c for c in classes if c.startswith("e-")]
 
 ## function to get names of properties from classnames i.e. without microformat prefix
-# will fail for dt- properties
 def property_names(classes):
-    return [c[2:] for c in property_classnames(classes)]
+    return [c.partition[2] for c in properties(classes)]
