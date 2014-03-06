@@ -24,4 +24,4 @@ def embedded(classes):
 
 ## function to get names of properties from classnames i.e. without microformat prefix
 def property_names(classes):
-    return [c.partition[2] for c in properties(classes)]
+    return [c.partition("-")[2] for c in properties(classes)]
