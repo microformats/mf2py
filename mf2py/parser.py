@@ -3,8 +3,8 @@
 import json
 from bs4 import BeautifulSoup
 import requests
-from urlparse import urlparse
-from dom_helpers import is_tag
+from urlparse import urlparse, urljoin
+from dom_helpers import is_tag, get_attr
 import backcompat, mf2_classes, implied_properties, parse_property
 
 class Parser(object):
@@ -211,9 +211,51 @@ class Parser(object):
             
             return props, children
 
+
+        ## function to parse an element for rel microformats
+        def parse_rels(el):
+            rel_attrs = get_attr(el, 'rel')
+            # if rel attributes exist
+            if rel_attrs is not None:
+                # find the url and normalise it
+                url = urljoin(self.__url__,el.get('href',''))
+
+                # there does not exist alternate in rel attributes then parse rels as local
+                if "alternate" not in rel_attrs:
+                    for rel_value in rel_attrs:
+                        value_list = self.__parsed__["rels"].get(rel_value,[])
+                        value_list.append(url)
+                        self.__parsed__["rels"][rel_value] = value_list
+                else:
+                    alternate_list = self.__parsed__.get("alternates",[])
+                    alternate_dict = {}
+                    alternate_dict["url"] = url
+                    x = " ".join([r for r in rel_attrs if not r == "alternate"])
+                    if x is not "":
+                        alternate_dict["rel"] = x
+
+                    x = get_attr(el, "media")
+                    if x is not None:
+                        alternate_dict["media"] = x
+
+                    x = get_attr(el, "hreflang")
+                    if x is not None:
+                        alternate_dict["hreflang"] = x
+
+                    x = get_attr(el, "type")
+                    if x is not None:
+                        alternate_dict["type"] = x
+
+                    alternate_list.append(alternate_dict)
+                    self.__parsed__["alternates"] = alternate_list
+
+
         ## function to parse an element for microformats
         def parse_el(el, ctx, top_level=False):
-            potential_microformats = []
+
+            # parse element for rel properties
+            if el.name in ("a", "link"):
+                parse_rels(el)
 
             classes = el.get("class",[])
             # find potential microformats in root classnames h-*
