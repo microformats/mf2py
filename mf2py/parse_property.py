@@ -1,6 +1,15 @@
 from bs4 import Tag
-from dom_helpers import get_attr
-from urlparse import urljoin
+from mf2py.dom_helpers import get_attr
+import sys
+if sys.version < '3':
+    from urlparse import urljoin
+    text_type = unicode
+    binary_type = str
+else:
+    from urllib.parse import urljoin
+    text_type = str
+    binary_type = bytes
+
 ## functions to parse the propertis of elements
 
 def text(el):
@@ -70,6 +79,6 @@ def datetime(el):
 def embedded(el):
 
     return {
-                'html': ''.join([unicode(e) for e in el.children]),
+                'html': ''.join([text_type(e) for e in el.children]),
                 'value': el.get_text()     # strip here?
             }

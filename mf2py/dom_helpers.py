@@ -1,5 +1,12 @@
 from bs4 import Tag as bs4Tag
 
+import sys
+if sys.version < '3':
+    text_type = unicode
+    binary_type = str
+else:
+    text_type = str
+    binary_type = bytes
 
 ## function to check if an element is a Tag or not.
 def is_tag(el):
@@ -15,7 +22,7 @@ def get_attr(el, attr, check_name=None ):
     else:
         attr_value = None
 
-    if isinstance(attr_value, str) or isinstance(attr_value, unicode):
+    if isinstance(attr_value, text_type) or isinstance(attr_value, binary_type):
         if attr_value.strip() == "":
             attr_value = None
 
