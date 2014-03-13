@@ -3,9 +3,14 @@
 import json
 from bs4 import BeautifulSoup
 import requests
-from urlparse import urlparse, urljoin
-from dom_helpers import is_tag, get_attr
-import backcompat, mf2_classes, implied_properties, parse_property
+from mf2py.dom_helpers import is_tag, get_attr
+from mf2py import backcompat, mf2_classes, implied_properties, parse_property
+import sys
+if sys.version < '3':
+    from urlparse import urlparse, urljoin
+else:
+    from urllib.parse import urlparse, urljoin
+
 
 class Parser(object):
     """Object to parse a document for microformats and return them in appropriate formats.
@@ -70,16 +75,16 @@ class Parser(object):
         # set of all parsed things
         parsed = set()
 
-        ## function for handling a root microformat i.e. h-*        
+        ## function for handling a root microformat i.e. h-*
         def handle_microformat(root_class_names, el, is_nested=True):
 
             # parse for properties and children
             properties, children = parse_props(el, True)
-           
-            # if some properties not already found find in implied ways 
+
+            # if some properties not already found find in implied ways
             if 'name' not in properties:
                 properties["name"] = implied_properties.name(el)
-                
+
             if "photo" not in properties:
                 x = implied_properties.photo(el)
                 if x is not None:
@@ -100,7 +105,7 @@ class Parser(object):
             if is_nested:
                 microformat["value"] = str(el)
             return microformat
-        
+
         ## function to parse properties of element
         def parse_props(el, is_root_element=False):
 
@@ -150,22 +155,22 @@ class Parser(object):
                             value = parse_property.url(el, base_url=self.__url__)
 
                         prop_value.append(value)
-                        
+
                         if prop_value is not []:
                             props[prop_name] = prop_value
-                    
+
                     # Parse datetime dt-* properties.
                     value = None
                     for prop in mf2_classes.datetime(classes):
                         prop_name = prop[3:]
                         prop_value = props.get(prop_name, [])
-                        
+
                         # if value has not been parsed then parse it
                         if value is None:
                             value = parse_property.datetime(el)
 
                         prop_value.append(value)
-                        
+
                         if prop_value is not []:
                             props[prop_name] = prop_value
 
@@ -174,16 +179,16 @@ class Parser(object):
                     for prop in mf2_classes.embedded(classes):
                         prop_name = prop[2:]
                         prop_value = props.get(prop_name, [])
-                        
+
                         # if value has not been parsed then parse it
                         if value is None:
                             value = parse_property.embedded(el)
 
                         prop_value.append(value)
-                        
+
                         if prop_value is not []:
                             props[prop_name] = prop_value
-            
+
             parsed.add(el)
 
             # parse children if they are tags and not already parsed
@@ -194,7 +199,7 @@ class Parser(object):
                     v.extend(child_properties[prop_name])
                     props[prop_name] = v
                 children.extend(child_microformats)
-            
+
             return props, children
 
 
@@ -268,6 +273,6 @@ class Parser(object):
     ## function to get a python dictionary version of parsed microformat
     def to_dict(self):
         return self.__parsed__
-    ## function to get a json version of parsed microformat    
+    ## function to get a json version of parsed microformat
     def to_json(self):
         return json.dumps(self.to_dict())
