@@ -13,7 +13,11 @@ else:
 ## functions to parse the propertis of elements
 
 def text(el):
-    # add value-class-pattern
+    # handle value-class-pattern
+    value_classes = el.find_all(class_='value')
+    if value_classes:
+        return ''.join(vc.get_text() for vc in value_classes)
+
     prop_value = get_attr(el, "title", check_name="abbr")
     if prop_value is not None:
         return prop_value
@@ -58,8 +62,10 @@ def url(el, base_url=''):
     return el.get_text()
 
 def datetime(el):
-
-    # add value-class-pattern
+    # handle value-class-pattern
+    value_classes = el.find_all(class_='value')
+    if value_classes:
+        return ''.join(vc.get_text() for vc in value_classes)
 
     prop_value = get_attr(el, "datetime", check_name=("time","ins","del"))
     if prop_value is not None:

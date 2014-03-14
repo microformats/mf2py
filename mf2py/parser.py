@@ -70,11 +70,6 @@ class Parser(object):
 
     ## function to parse the document
     def parse(self):
-        # finds returns elements in el having class="value" for value-class-pattern http://microformats.org/wiki/value-class-pattern
-        def detect_and_handle_value_class_pattern(el):
-            """Returns value-class-pattern. This may be either a string a dict or None."""
-            return el.find_all(class_="value")
-
         # set of all parsed things
         parsed = set()
 
@@ -111,7 +106,6 @@ class Parser(object):
 
         ## function to parse properties of element
         def parse_props(el, is_root_element=False):
-
             props = {}
             children = []
             # skip to children if this element itself is a nested microformat or it doesn’t have a class
