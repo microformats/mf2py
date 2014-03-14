@@ -1,5 +1,5 @@
-from mf2py import mf2_classes
-from mf2py.dom_helpers import get_attr 
+from . import mf2_classes
+from .dom_helpers import get_attr
 
 ## function to find an implied name property
 def name(el):

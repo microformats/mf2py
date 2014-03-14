@@ -6,7 +6,7 @@ from pprint import pprint
 from mf2py.parser import Parser
 
 def parse_fixture(path):
-    p = Parser(open(os.path.join("test/examples/", path)))
+    p = Parser(doc=open(os.path.join("test/examples/", path)))
     return p.to_dict()
 
 def test_empty():
@@ -15,7 +15,7 @@ def test_empty():
    assert type(p.to_dict()) is dict
 
 def test_open_file():
-   p = Parser(open("test/examples/empty.html"))
+   p = Parser(doc=open("test/examples/empty.html"))
    assert p.__doc__ is not None
    assert type(p) is not None
    assert type(p.to_dict()) is dict
@@ -28,7 +28,7 @@ def test_user_agent():
     Parser.useragent = 'mf2py - microformats2 parser for python'
  
 def test_base():
-    p = Parser(open("test/examples/base.html"))
+    p = Parser(doc=open("test/examples/base.html"))
     assert p.__url__ == u"http://tantek.com/"
 
 def test_simple_parse():
@@ -36,7 +36,7 @@ def test_simple_parse():
     assert result["items"][0]["properties"] == {u'name': [u'Frances Berriman']}
 
 def test_simple_person_reference_implied():
-    p = Parser(open("test/examples/simple_person_reference_implied.html"))
+    p = Parser(doc=open("test/examples/simple_person_reference_implied.html"))
     result = p.to_dict()
     assert result["items"][0]["properties"] == {u'name': [u'Frances Berriman']}
 
@@ -45,7 +45,7 @@ def test_simple_person_reference_same_element():
     assert result["items"][0]["properties"] == {u'name': [u'Frances Berriman']}
 
 def test_person_with_url():
-    p = Parser(open("test/examples/person_with_url.html"))
+    p = Parser(doc=open("test/examples/person_with_url.html"))
     result = p.to_dict()
     assert result["items"][0]["properties"]["name"] == [u'Tom Morris']
     assert result["items"][0]["properties"]["url"] == [u'http://tommorris.org/']
