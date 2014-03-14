@@ -2,9 +2,12 @@
 
 import json
 from bs4 import BeautifulSoup
+
 import requests
-from mf2py.dom_helpers import is_tag, get_attr
-from mf2py import backcompat, mf2_classes, implied_properties, parse_property
+
+from .dom_helpers import is_tag, get_attr
+from . import backcompat, mf2_classes, implied_properties, parse_property
+
 import sys
 if sys.version < '3':
     from urlparse import urlparse, urljoin

@@ -1,5 +1,5 @@
 from bs4 import Tag
-from mf2py.dom_helpers import get_attr
+from .dom_helpers import get_attr
 import sys
 if sys.version < '3':
     from urlparse import urljoin
