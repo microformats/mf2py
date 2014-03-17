@@ -118,7 +118,7 @@ class Parser(object):
                     if len(mf2_classes.properties(classes)) > 0:
                         # nested microformat is property-nested, parse and add to all property lists it's part of
                         nested_microformat = handle_microformat(root_class_names, el)
-                        for prop_name in mf2_classes.property_names(classes):
+                        for prop_name in mf2_classes.properties(classes):
                             prop_value = props.get(prop_name, [])
                             prop_value.append(nested_microformat)
                             props[prop_name] = prop_value
@@ -128,8 +128,7 @@ class Parser(object):
                 else:
                     # Parse plaintext p-* properties.
                     value = None
-                    for prop in mf2_classes.text(classes):
-                        prop_name = prop[2:]
+                    for prop_name in mf2_classes.text(classes):
                         prop_value = props.get(prop_name, [])
 
                         # if value has not been parsed then parse it
@@ -143,8 +142,7 @@ class Parser(object):
 
                     # Parse URL u-* properties.
                     value = None
-                    for prop in mf2_classes.url(classes):
-                        prop_name = prop[2:]
+                    for prop_name in mf2_classes.url(classes):
                         prop_value = props.get(prop_name, [])
 
                         # if value has not been parsed then parse it
@@ -158,8 +156,7 @@ class Parser(object):
 
                     # Parse datetime dt-* properties.
                     value = None
-                    for prop in mf2_classes.datetime(classes):
-                        prop_name = prop[3:]
+                    for prop_name in mf2_classes.datetime(classes):
                         prop_value = props.get(prop_name, [])
 
                         # if value has not been parsed then parse it
@@ -173,8 +170,7 @@ class Parser(object):
 
                     # Parse embedded markup e-* properties.
                     value = None
-                    for prop in mf2_classes.embedded(classes):
-                        prop_name = prop[2:]
+                    for prop_name in mf2_classes.embedded(classes):
                         prop_value = props.get(prop_name, [])
 
                         # if value has not been parsed then parse it
