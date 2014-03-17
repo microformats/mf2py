@@ -51,6 +51,7 @@ Get parsed microformat as JSON output
 
 	p.to_json()
 
-Filter by microformat type (python dictionary only)
+Filter by microformat type
 
-    p.filter_by_type("h-entry")
+    p.to_dict(filter_by_type="h-entry")
+    p.to_json(filter_by_type="h-entry")

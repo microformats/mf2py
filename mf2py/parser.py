@@ -263,13 +263,13 @@ class Parser(object):
         parse_el(self.__doc__, ctx, True)
         self.__parsed__["items"] = ctx
 
-    ## function to get only certain type of microformat
-    def filter_by_type(self, type_name):
-        return [x for x in self.to_dict()['items'] if x['type'] == [type_name]]
-
     ## function to get a python dictionary version of parsed microformat
-    def to_dict(self):
-        return self.__parsed__
+    def to_dict(self, filter_by_type=None):
+        if filter_by_type is None:
+            return self.__parsed__
+        else:
+            return [x for x in self.__parsed__['items'] if x['type'] == [filter_by_type]]
+
     ## function to get a json version of parsed microformat
-    def to_json(self):
-        return json.dumps(self.to_dict())
+    def to_json(self, **kwargs):
+        return json.dumps(self.to_dict(**kwargs))
