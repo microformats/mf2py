@@ -101,7 +101,7 @@ class Parser(object):
                 microformat["children"] = children
             # insert value if it is a nested microformat (check this interpretation)
             if is_nested:
-                microformat["value"] = str(el)
+                microformat["value"] = el.get_text()
             return microformat
 
         ## function to parse properties of element
