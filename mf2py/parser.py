@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 import requests
 
-from .dom_helpers import is_tag, get_attr
+from .dom_helpers import get_attr
 from . import backcompat, mf2_classes, implied_properties, parse_property
 
 import sys
@@ -189,7 +189,7 @@ class Parser(object):
             parsed.add(el)
 
             # parse children if they are tags and not already parsed
-            for child in [x for x in el.children if is_tag(x) and x not in parsed]:
+            for child in [x for x in el.find_all(True,recursive=False) if x not in parsed]:
                 child_properties, child_microformats = parse_props(child)
                 for prop_name in child_properties:
                     v = props.get(prop_name, [])
@@ -255,7 +255,7 @@ class Parser(object):
                 ctx.append(result)
             else:
                 # parse children if they are tags and not already parsed
-                for child in [x for x in el.children if is_tag(x) and x not in parsed]:
+                for child in [x for x in el.find_all(True,recursive=False) if x not in parsed]:
                     parse_el(child, ctx)
 
         ctx = []

@@ -10,11 +10,11 @@ else:
     text_type = str
     binary_type = bytes
 
-## functions to parse the propertis of elements
+## functions to parse the properties of elements
 
 def text(el):
     # handle value-class-pattern
-    value_classes = el.find_all(class_='value')
+    value_classes = el.find_all(class_='value',recursive=False)
     if value_classes:
         return ''.join(vc.get_text() for vc in value_classes)
 
@@ -63,7 +63,7 @@ def url(el, base_url=''):
 
 def datetime(el):
     # handle value-class-pattern
-    value_classes = el.find_all(class_='value')
+    value_classes = el.find_all(class_='value',recursive=False)
     if value_classes:
         return ''.join(vc.get_text() for vc in value_classes)
 
