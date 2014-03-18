@@ -54,7 +54,7 @@ def url(el, base_url=''):
     if prop_value is not None:
         return prop_value
 
-    prop_value = get_attr(el, "data", check_name="object")
+    prop_value = get_attr(el, "value", check_name=("data","input"))
     if prop_value is not None:
         return prop_value
 
