@@ -1,5 +1,12 @@
 from . import mf2_classes
 from .dom_helpers import get_attr
+import sys
+
+if sys.version < '3':
+    from urlparse import urljoin
+else:
+    from urllib.parse import urljoin
+
 
 ## function to find an implied name property
 def name(el):
@@ -43,11 +50,11 @@ def name(el):
     return [el.get_text().strip()]
 
 ## function to find implied photo property
-def photo(el):
+def photo(el, base_url=''):
     # if element is an image use source if exists
     prop_value = get_attr(el, "src", check_name="img")
     if prop_value is not None:
-        return [prop_value]
+        return [urljoin(base_url, prop_value)]
 
     # if element is an object use data if exists
     prop_value = get_attr(el, "data", check_name="object")
@@ -61,7 +68,7 @@ def photo(el):
         if mf2_classes.root(poss_img.get('class',[])) == []:
             prop_value = get_attr(poss_img, "src", check_name="img")
             if prop_value is not None:
-                return [prop_value]
+                return [urljoin(base_url, prop_value)]
 
     # if element has one object child use data if exists and object is not root class
     poss_objs = el.find_all("object", recursive=False)
@@ -82,7 +89,7 @@ def photo(el):
             if mf2_classes.root(poss_img.get('class',[])) == []:
                 prop_value = get_attr(poss_img, "src", check_name="img")
                 if prop_value is not None:
-                    return [prop_value]
+                    return [urljoin(base_url, prop_value)]
 
         # if element has one object child use data if exists and object is not root class
         poss_objs = children[0].find_all("object", recursive=False)
@@ -96,11 +103,11 @@ def photo(el):
     return None
 
 ## function to find implied url
-def url(el):
+def url(el, base_url=''):
     # if element is a link use its href if exists
     prop_value = get_attr(el, "href", check_name="a")
     if prop_value is not None:
-        return [prop_value]
+        return [urljoin(base_url, prop_value)]
 
     # if one link child use its href 
     poss_as = el.find_all("a", recursive=False)
@@ -109,6 +116,6 @@ def url(el):
         if mf2_classes.root(poss_a.get('class',[])) == []:
             prop_value = get_attr(poss_a, "href", check_name="a")
             if prop_value is not None:
-                return [prop_value]
+                return [urljoin(base_url, prop_value)]
 
     return None 
