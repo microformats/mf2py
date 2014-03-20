@@ -10,7 +10,7 @@ def parse_fixture(path):
     return p.to_dict()
 
 def test_empty():
-   p = Parser() 
+   p = Parser()
    assert type(p) is not None
    assert type(p.to_dict()) is dict
 
@@ -26,7 +26,7 @@ def test_user_agent():
     assert Parser.useragent == 'something else'
     # set back to default. damn stateful classes
     Parser.useragent = 'mf2py - microformats2 parser for python'
- 
+
 def test_base():
     p = Parser(doc=open("test/examples/base.html"))
     assert p.__url__ == u"http://tantek.com/"
@@ -62,7 +62,7 @@ def test_multiple_root_classnames():
 
 def test_property_nested_microformat():
     result = parse_fixture("nested_multiple_classnames.html")
-    
+
     assert len(result["items"]) == 1
     assert "author" in result["items"][0]["properties"]
     assert result["items"][0]["properties"]["author"][0]["properties"]["name"][0] == "Tom Morris"
@@ -71,7 +71,7 @@ def test_property_nested_microformat():
 
 def test_plain_child_microformat():
     result = parse_fixture("nested_multiple_classnames.html")
-    
+
     assert len(result["items"]) == 1
     assert "children" in result["items"][0]
     assert len(result["items"][0]["children"]) == 1
@@ -105,6 +105,13 @@ def test_datetime_parsing():
     assert result["items"][0]["properties"]["duration"][0] == "P1000Y"
     assert result["items"][0]["properties"]["updated"][0] == "2011-08-26T00:01:21+00:00"
     assert result["items"][0]["properties"]["updated"][1] == "2011-08-26T00:01:21+00:00"
+
+def test_datetime_vcp_parsing():
+    result = parse_fixture("datetimes.html")
+    assert result["items"][1]["properties"]["published"][0] == "3014-01-01T01:21+00:00"
+    assert result["items"][2]["properties"]["updated"][0] == "2014-03-11T09:55"
+    assert result["items"][3]["properties"]["published"][0] == "2014-01-30T15:28"
+    assert result["items"][4]["properties"]["published"][0] == "9999-01-14T11:52+08:00"
 
 def test_embedded_parsing():
     result = parse_fixture("embedded.html")

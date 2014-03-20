@@ -52,15 +52,18 @@ class Parser(object):
                 data = requests.get(self.__url__)
                 self.__doc__ = BeautifulSoup(data.text)
 
-        # test for base
-        if self.__doc__ is not None and self.__url__ is None:
-            poss_bases = self.__doc__.find_all("base")
-            actual_base = None
-            if len(poss_bases) is not 0:
-                for poss_base in poss_bases:
-                    # try to get href
-                    if 'href' in poss_base.attrs and urlparse(poss_base['href']).netloc is not '':
-                        self.__url__ = poss_base['href']
+        # check for <base> tag
+        if self.__doc__:
+            poss_base = self.__doc__.find("base")
+            if poss_base:
+                poss_base_url = poss_base.get('href')  # try to get href
+                if poss_base_url:
+                    if urlparse(poss_base_url).netloc:
+                        # base specifies an absolute path
+                        self.__url__ = poss_base_url
+                    elif self.__url__:
+                        # base specifies a relative path
+                        self.__url__ = urljoin(self.__url__, poss_base_url)
 
         if self.__doc__ is not None:
             # parse!
@@ -84,12 +87,12 @@ class Parser(object):
                 properties["name"] = implied_properties.name(el)
 
             if "photo" not in properties:
-                x = implied_properties.photo(el)
+                x = implied_properties.photo(el, base_url=self.__url__)
                 if x is not None:
                     properties["photo"] = x
 
             if "url" not in properties:
-                x = implied_properties.url(el)
+                x = implied_properties.url(el, base_url=self.__url__)
                 if x is not None:
                     properties["url"] = x
 
