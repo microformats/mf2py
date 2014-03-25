@@ -240,10 +240,6 @@ class Parser(object):
         ## function to parse an element for microformats
         def parse_el(el, ctx, top_level=False):
 
-            # parse element for rel properties
-            if el.name in ("a", "link"):
-                parse_rels(el)
-
             classes = el.get("class",[])
             # find potential microformats in root classnames h-*
             potential_microformats = mf2_classes.root(classes)
@@ -261,6 +257,9 @@ class Parser(object):
         # start parsing at root element of the document
         parse_el(self.__doc__, ctx, True)
         self.__parsed__["items"] = ctx
+
+        # parse for rel values
+        [parse_rels(el) for el in self.__doc__.find_all(["a","link"],attrs={'rel':True})]
 
     ## function to get a python dictionary version of parsed microformat
     def to_dict(self, filter_by_type=None):
