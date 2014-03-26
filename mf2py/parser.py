@@ -74,10 +74,12 @@ class Parser(object):
     ## function to parse the document
     def parse(self):
         # set of all parsed things
-        parsed = set()
+        #parsed = set()
 
         ## function for handling a root microformat i.e. h-*
         def handle_microformat(root_class_names, el, is_nested=True):
+
+            print "enter handle_mf with "+el.name
 
             # parse for properties and children
             properties, children = parse_props(el, True)
@@ -109,6 +111,7 @@ class Parser(object):
 
         ## function to parse properties of element
         def parse_props(el, is_root_element=False):
+            print "enter parse_props with "+el.name
             props = {}
             children = []
             # skip to children if this element itself is a nested microformat or it doesn’t have a class
@@ -185,10 +188,11 @@ class Parser(object):
                         if prop_value is not []:
                             props[prop_name] = prop_value
 
-            parsed.add(el)
+            #parsed.add(el)
 
-            # parse children if they are tags and not already parsed
-            for child in [x for x in el.find_all(True,recursive=False) if x not in parsed]:
+            # parse child tags
+            for child in [x for x in el.find_all(True,recursive=False)]:
+                print el.name+" > "+child.name+":"+child.get_text()
                 child_properties, child_microformats = parse_props(child)
                 for prop_name in child_properties:
                     v = props.get(prop_name, [])
@@ -249,8 +253,8 @@ class Parser(object):
                 result = handle_microformat(potential_microformats, el, top_level)
                 ctx.append(result)
             else:
-                # parse children if they are tags and not already parsed
-                for child in [x for x in el.find_all(True,recursive=False) if x not in parsed]:
+                # parse child tags
+                for child in [x for x in el.find_all(True,recursive=False)]:
                     parse_el(child, ctx)
 
         ctx = []
