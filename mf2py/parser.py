@@ -263,7 +263,7 @@ class Parser(object):
         self.__parsed__["items"] = ctx
 
         # parse for rel values
-        for el in self.__doc__.find_all(["a","link"],attrs={'rel':True})
+        for el in self.__doc__.find_all(["a","link"],attrs={'rel':True}):
             parse_rels(el)
 
     ## function to get a python dictionary version of parsed microformat
