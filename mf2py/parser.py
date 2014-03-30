@@ -78,11 +78,17 @@ class Parser(object):
 
         ## function for handling a root microformat i.e. h-*
         def handle_microformat(root_class_names, el, is_nested=True):
-
-            print "enter handle_mf with "+el.name
+            properties = {}
+            children = []
 
             # parse for properties and children
-            properties, children = parse_props(el, True)
+            for child in el.find_all(True, recursive=False):
+                child_props, child_children = parse_props(child)
+                for key, new_value in child_props.items():
+                    prop_value = properties.get(key, [])
+                    prop_value.extend(new_value)
+                    properties[key] = prop_value
+                children.extend(child_children)
 
             # if some properties not already found find in implied ways
             if 'name' not in properties:
@@ -110,98 +116,92 @@ class Parser(object):
             return microformat
 
         ## function to parse properties of element
-        def parse_props(el, is_root_element=False):
-            print "enter parse_props with "+el.name
+        def parse_props(el):
             props = {}
             children = []
-            # skip to children if this element itself is a nested microformat or it doesn’t have a class
-            if "class" in el.attrs and not is_root_element:
-                classes = el["class"]
-                # Is this element a microformat root?
-                root_class_names = mf2_classes.root(classes)
-                if len(root_class_names) > 0:
-                    # this element represents a nested microformat
-                    if len(mf2_classes.properties(classes)) > 0:
-                        # nested microformat is property-nested, parse and add to all property lists it's part of
-                        nested_microformat = handle_microformat(root_class_names, el)
-                        for prop_name in mf2_classes.properties(classes):
-                            prop_value = props.get(prop_name, [])
-                            prop_value.append(nested_microformat)
-                            props[prop_name] = prop_value
-                    else:
-                        # nested microformat is a child microformat, parse and add to children
-                        children.append(handle_microformat(root_class_names, el))
+
+            classes = el.get("class", [])
+            # Is this element a microformat root?
+            root_class_names = mf2_classes.root(classes)
+            if len(root_class_names) > 0:
+                # this element represents a nested microformat
+                if len(mf2_classes.properties(classes)) > 0:
+                    # nested microformat is property-nested, parse and add to all property lists it's part of
+                    nested_microformat = handle_microformat(root_class_names, el)
+                    for prop_name in mf2_classes.properties(classes):
+                        prop_value = props.get(prop_name, [])
+                        prop_value.append(nested_microformat)
+                        props[prop_name] = prop_value
                 else:
-                    # Parse plaintext p-* properties.
-                    value = None
-                    for prop_name in mf2_classes.text(classes):
-                        prop_value = props.get(prop_name, [])
+                    # nested microformat is a child microformat, parse and add to children
+                    children.append(handle_microformat(root_class_names, el))
+            else:
+                # Parse plaintext p-* properties.
+                value = None
+                for prop_name in mf2_classes.text(classes):
+                    prop_value = props.get(prop_name, [])
 
-                        # if value has not been parsed then parse it
-                        if value is None:
-                            value = parse_property.text(el)
+                    # if value has not been parsed then parse it
+                    if value is None:
+                        value = parse_property.text(el)
 
-                        prop_value.append(value)
+                    prop_value.append(value)
 
-                        if prop_value is not []:
-                            props[prop_name] = prop_value
+                    if prop_value is not []:
+                        props[prop_name] = prop_value
 
-                    # Parse URL u-* properties.
-                    value = None
-                    for prop_name in mf2_classes.url(classes):
-                        prop_value = props.get(prop_name, [])
+                # Parse URL u-* properties.
+                value = None
+                for prop_name in mf2_classes.url(classes):
+                    prop_value = props.get(prop_name, [])
 
-                        # if value has not been parsed then parse it
-                        if value is None:
-                            value = parse_property.url(el, base_url=self.__url__)
+                    # if value has not been parsed then parse it
+                    if value is None:
+                        value = parse_property.url(el, base_url=self.__url__)
 
-                        prop_value.append(value)
+                    prop_value.append(value)
 
-                        if prop_value is not []:
-                            props[prop_name] = prop_value
+                    if prop_value is not []:
+                        props[prop_name] = prop_value
 
-                    # Parse datetime dt-* properties.
-                    value = None
-                    for prop_name in mf2_classes.datetime(classes):
-                        prop_value = props.get(prop_name, [])
+                # Parse datetime dt-* properties.
+                value = None
+                for prop_name in mf2_classes.datetime(classes):
+                    prop_value = props.get(prop_name, [])
 
-                        # if value has not been parsed then parse it
-                        if value is None:
-                            value = parse_property.datetime(el)
+                    # if value has not been parsed then parse it
+                    if value is None:
+                        value = parse_property.datetime(el)
 
-                        prop_value.append(value)
+                    prop_value.append(value)
 
-                        if prop_value is not []:
-                            props[prop_name] = prop_value
+                    if prop_value is not []:
+                        props[prop_name] = prop_value
 
-                    # Parse embedded markup e-* properties.
-                    value = None
-                    for prop_name in mf2_classes.embedded(classes):
-                        prop_value = props.get(prop_name, [])
+                # Parse embedded markup e-* properties.
+                value = None
+                for prop_name in mf2_classes.embedded(classes):
+                    prop_value = props.get(prop_name, [])
 
-                        # if value has not been parsed then parse it
-                        if value is None:
-                            value = parse_property.embedded(el)
+                    # if value has not been parsed then parse it
+                    if value is None:
+                        value = parse_property.embedded(el)
 
-                        prop_value.append(value)
+                    prop_value.append(value)
 
-                        if prop_value is not []:
-                            props[prop_name] = prop_value
+                    if prop_value is not []:
+                        props[prop_name] = prop_value
 
-            #parsed.add(el)
-
-            # parse child tags
-            for child in [x for x in el.find_all(True,recursive=False)]:
-                print el.name+" > "+child.name+":"+child.get_text()
-                child_properties, child_microformats = parse_props(child)
-                for prop_name in child_properties:
-                    v = props.get(prop_name, [])
-                    v.extend(child_properties[prop_name])
-                    props[prop_name] = v
-                children.extend(child_microformats)
+                # parse child tags, provided this isn't a microformat
+                for child in el.find_all(True, recursive=False):
+                    child_properties, child_microformats = parse_props(child)
+                    for prop_name in child_properties:
+                        v = props.get(prop_name, [])
+                        v.extend(child_properties[prop_name])
+                        props[prop_name] = v
+                    children.extend(child_microformats)
 
             return props, children
-
 
         ## function to parse an element for rel microformats
         def parse_rels(el):
@@ -209,7 +209,7 @@ class Parser(object):
             # if rel attributes exist
             if rel_attrs is not None:
                 # find the url and normalise it
-                url = urljoin(self.__url__,el.get('href',''))
+                url = urljoin(self.__url__, el.get('href', ''))
 
                 # there does not exist alternate in rel attributes then parse rels as local
                 if "alternate" not in rel_attrs:
@@ -254,7 +254,7 @@ class Parser(object):
                 ctx.append(result)
             else:
                 # parse child tags
-                for child in [x for x in el.find_all(True,recursive=False)]:
+                for child in el.find_all(True, recursive=False):
                     parse_el(child, ctx)
 
         ctx = []
