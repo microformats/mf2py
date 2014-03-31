@@ -275,4 +275,8 @@ class Parser(object):
 
     ## function to get a json version of parsed microformat
     def to_json(self, **kwargs):
-        return json.dumps(self.to_dict(**kwargs))
+
+        if kwargs.pop('pretty_print', False):
+            return json.dumps(self.to_dict(**kwargs), indent=4, separators=(', ', ': '))
+        else:
+            return json.dumps(self.to_dict(**kwargs))
