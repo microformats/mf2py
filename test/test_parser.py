@@ -207,6 +207,16 @@ def test_hoisting_nested_hcard():
     assert_equal([u'KP\n    KP1'], result['items'][0]['properties']['name'])
     assert_equal(expected, result)
 
+
+def test_html_tag_class():
+    result = parse_fixture("hfeed_on_html_tag.html")
+    assert_equal([u'h-feed'], result['items'][0]['type'])
+
+    assert_equal([u'entry1'], result['items'][0]['children'][0]['properties']['name'])
+    assert_equal([u'entry2'], result['items'][0]['children'][1]['properties']['name'])
+
+
+
 if __name__ == '__main__':
     result = parse_fixture("nested_multiple_classnames.html")
     pprint(result)
