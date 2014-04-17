@@ -244,7 +244,15 @@ class Parser(object):
         ## function to parse an element for microformats
         def parse_el(el, ctx, top_level=False):
 
-            classes = el.get("class",[])
+            classes = el.get("class", [])
+
+            # Workaround for bs4+html5lib bug that
+            # prevents it from recognizing multi-valued
+            # attrs on the <html> element
+            # https://bugs.launchpad.net/beautifulsoup/+bug/1296481
+            if el.name == 'html' and not isinstance(classes, list):
+                classes = classes.split()
+
             # find potential microformats in root classnames h-*
             potential_microformats = mf2_classes.root(classes)
 
