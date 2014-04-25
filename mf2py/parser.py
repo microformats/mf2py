@@ -50,7 +50,12 @@ class Parser(object):
 
             if self.__doc__ is None:
                 data = requests.get(self.__url__)
-                self.__doc__ = BeautifulSoup(data.text)
+                
+                ## check for charater encodings and use 'correct' data
+                if 'charset' in data.headers.get('content-type',''):
+                    self.__doc__ = BeautifulSoup(data.text)
+                else:
+                    self.__doc__ = BeautifulSoup(data.content)
 
         # check for <base> tag
         if self.__doc__:
