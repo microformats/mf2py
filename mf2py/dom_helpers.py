@@ -12,6 +12,8 @@ def get_attr(el, attr, check_name=None ):
     """
     if check_name is None:
         attr_value = el.get(attr, None)
+    elif isinstance(check_name, basestring) and el.name == check_name:
+        attr_value = el.get(attr, None)
     elif el.name in check_name:
         attr_value = el.get(attr, None)
     else:
