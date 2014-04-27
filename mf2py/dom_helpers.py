@@ -5,6 +5,7 @@ if sys.version < '3':
 else:
     text_type = str
     binary_type = bytes
+    basestring = str
 
 
 def get_attr(el, attr, check_name=None ):
