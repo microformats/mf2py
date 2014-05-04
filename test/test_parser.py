@@ -193,7 +193,13 @@ def test_embedded_parsing():
 
 def test_backcompat():
     result = parse_fixture("backcompat.html")
-    assert_equal(set(result["items"][0]["type"]), set(["h-card"]))
+    assert_true('h-entry' in result['items'][0]['type'])
+    assert_equal('Tom Morris',
+                 result['items'][0]['properties']['author'][0]['properties']['name'][0])
+    assert_equal('A Title',
+                 result['items'][0]['properties']['name'][0])
+    assert_equal('Some Content',
+                 result['items'][0]['properties']['content'][0]['value'])
 
 
 def test_hoisting_nested_hcard():
