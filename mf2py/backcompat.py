@@ -1,3 +1,5 @@
+# coding: utf-8
+
 """Looks for classic microformats class names and augments them with
 microformats2 names. Ported and adapted from php-mf2.
 """
@@ -93,7 +95,7 @@ CLASSIC_PROPERTY_MAP = {
     },
     'hreview': {
         'summary': ['p-name'],
-        'fn': ['p-item', 'h-item', 'p-name'],  # doesn’t work properly, see spec
+        'fn': ['p-item', 'h-item', 'p-name'],  # doesn't work properly, see spec
         'photo': ['u-photo'],  # of the item being reviewed (p-item h-item u-photo)
         'url': ['u-url'],  # of the item being reviewed (p-item h-item u-url)
         'reviewer': ['p-reviewer', 'p-author', 'h-card'],
