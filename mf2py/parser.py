@@ -16,12 +16,15 @@ else:
 
 
 class Parser(object):
-    """Object to parse a document for microformats and return them in appropriate formats.
+    """Object to parse a document for microformats and return them in
+    appropriate formats.
 
     Keyword arguments
     ----
-    doc : file handle or text of content to parse. Optionally fetched from given 'url' kwarg
-    url : url of the file to be processed. Optionally fetched from base-element of given 'doc' kwarg
+    doc : file handle, text of content to parse, or BeautifulSoup document.
+          Optionally fetched from given 'url' kwarg
+    url : url of the file to be processed. Optionally fetched from
+          base-element of given 'doc' kwarg
 
     Attributes
     ----------
@@ -29,8 +32,10 @@ class Parser(object):
 
     Public methods
     ---------------
-    parse : parses the file/url contents for microformats. done automatically on initialisation.
-    filter_by_type : returns only the microformat specified by type_name argument
+    parse : parses the file/url contents for microformats. done automatically
+            on initialisation.
+    filter_by_type : returns only the microformat specified by type_name
+                     argument
     to_dict : returns python dict containing parsed microformats
     to_json : returns json formatted version of parsed microformats
 
@@ -43,14 +48,16 @@ class Parser(object):
         self.__parsed__ = {"items": [], "rels": {}}
 
         if 'doc' in kwargs:
-            self.__doc__ = BeautifulSoup(kwargs['doc'])
+            self.__doc__ = kwargs['doc']
+            if not isinstance(self.__doc__, BeautifulSoup):
+                self.__doc__ = BeautifulSoup(self.__doc__)
 
         if 'url' in kwargs:
             self.__url__ = kwargs['url']
 
             if self.__doc__ is None:
                 data = requests.get(self.__url__)
-                
+
                 ## check for charater encodings and use 'correct' data
                 if 'charset' in data.headers.get('content-type',''):
                     self.__doc__ = BeautifulSoup(data.text)
