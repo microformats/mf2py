@@ -19,8 +19,6 @@ Install
 
 `pip install mf2py`
 
-Kartik Prabhu: 'this version not on pip'
-
 Usage
 -----
 
