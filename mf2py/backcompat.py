@@ -1,8 +1,6 @@
-from xml.dom.minidom import Element
-import dom_addins
+from bs4 import BeautifulSoup
 
-def apply_backcompat_rules(self):
-    for el in self.getElementsByClassName("hcard"):
-        el.addClassName("h-card")
-
-Element.__dict__.update({'apply_backcompat_rules': apply_backcompat_rules})
+## add modern classnames for older mf classnames
+def apply_rules(doc):
+    for el in doc.find_all(class_="hcard"):
+        el["class"].append("h-card")

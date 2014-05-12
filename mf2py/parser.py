@@ -1,14 +1,45 @@
 # coding: utf-8
 
 import json
-import html5lib
-import dom_addins
-import backcompat
+from bs4 import BeautifulSoup
+
 import requests
-from urlparse import urlparse
-import xml.dom.minidom
+
+from .dom_helpers import get_attr
+from . import backcompat, mf2_classes, implied_properties, parse_property
+
+import sys
+if sys.version < '3':
+    from urlparse import urlparse, urljoin
+else:
+    from urllib.parse import urlparse, urljoin
+
 
 class Parser(object):
+    """Object to parse a document for microformats and return them in
+    appropriate formats.
+
+    Keyword arguments
+    ----
+    doc : file handle, text of content to parse, or BeautifulSoup document.
+          Optionally fetched from given 'url' kwarg
+    url : url of the file to be processed. Optionally fetched from
+          base-element of given 'doc' kwarg
+
+    Attributes
+    ----------
+    useragent : returns the User-Agent string for the Parser
+
+    Public methods
+    ---------------
+    parse : parses the file/url contents for microformats. done automatically
+            on initialisation.
+    filter_by_type : returns only the microformat specified by type_name
+                     argument
+    to_dict : returns python dict containing parsed microformats
+    to_json : returns json formatted version of parsed microformats
+
+    """
     useragent = 'mf2py - microformats2 parser for python'
 
     def __init__(self, *args, **kwargs):
@@ -16,232 +47,256 @@ class Parser(object):
         self.__doc__ = None
         self.__parsed__ = {"items": [], "rels": {}}
 
-        if 'doc' in kwargs and 'url' in kwargs:
-            self.__doc__ = html5lib.parse(kwargs['doc'], treebuilder="dom")
-            self.__url__ = kwargs['url']
-        elif 'doc' in kwargs:
-            self.__doc__ = html5lib.parse(kwargs['doc'], treebuilder="dom")
-        elif 'url' in kwargs:
-            data = requests.get(kwargs['url'])
-            self.__url__ = kwargs['url']
-            self.__doc__ = html5lib.parse(data.text, treebuilder="dom")
-        else:
-            if len(args) > 0:
-                if type(args[0]) is file:
-                    # load file
-                    self.__doc__ = html5lib.parse(args[0], treebuilder="dom")
-                    if len(args) > 1 and (type(args[1]) is str or type(args[1]) is unicode):
-                        self.__url__ = args[1] #TODO: parse this properly
-                elif type(args[0]) is str or type(args[0]) is unicode:
-                    data = requests.get(args[0])
-                    self.__url__ = args[0]
-                    self.__doc__ = html5lib.parse(data.text, treebuilder="dom")
-                    # load URL
+        if 'doc' in kwargs:
+            self.__doc__ = kwargs['doc']
+            if not isinstance(self.__doc__, BeautifulSoup):
+                self.__doc__ = BeautifulSoup(self.__doc__)
 
-        # test for base
-        if self.__doc__ is not None and self.__url__ is None:
-            poss_bases = self.__doc__.getElementsByTagName("base")
-            actual_base = None
-            if len(poss_bases) is not 0:
-                for poss_base in poss_bases:
-                    if poss_base.hasAttribute("href"):
-                        # check to see if absolute
-                        if urlparse(poss_base.getAttribute("href")).netloc is not '':
-                            self.__url__ = poss_base.getAttribute("href")
+        if 'url' in kwargs:
+            self.__url__ = kwargs['url']
+
+            if self.__doc__ is None:
+                data = requests.get(self.__url__)
+
+                ## check for charater encodings and use 'correct' data
+                if 'charset' in data.headers.get('content-type',''):
+                    self.__doc__ = BeautifulSoup(data.text)
+                else:
+                    self.__doc__ = BeautifulSoup(data.content)
+
+        # check for <base> tag
+        if self.__doc__:
+            poss_base = self.__doc__.find("base")
+            if poss_base:
+                poss_base_url = poss_base.get('href')  # try to get href
+                if poss_base_url:
+                    if urlparse(poss_base_url).netloc:
+                        # base specifies an absolute path
+                        self.__url__ = poss_base_url
+                    elif self.__url__:
+                        # base specifies a relative path
+                        self.__url__ = urljoin(self.__url__, poss_base_url)
 
         if self.__doc__ is not None:
             # parse!
-            self.__doc__.documentElement.apply_backcompat_rules()
+            backcompat.apply_rules(self.__doc__)
             self.parse()
 
-    def parse(self):
-        def detect_and_handle_value_class_pattern(el):
-            """Returns value-class-pattern. This may be either a string a dict or None."""
-            return [x for x in el.getElementsByClassName("value")]
 
-        parsed = set()
-        
-        def property_classnames(classes):
-            return [c for c in classes if c.startswith("p-") or c.startswith("u-") or c.startswith("e-") or c.startswith("dt-")]
-        
-        def property_names(classes):
-            return [c[2:] for c in property_classnames(classes)]
-        
-        def url_relative(value):
-            return value
-        
-        def handle_microformat(root_classnames, el, is_nested=True):
-            properties, children = parse_props(el, True)
-            
+    ## function to parse the document
+    def parse(self):
+        # set of all parsed things
+        #parsed = set()
+
+        ## function for handling a root microformat i.e. h-*
+        def handle_microformat(root_class_names, el, is_nested=True):
+            properties = {}
+            children = []
+
+            # parse for properties and children
+            for child in el.find_all(True, recursive=False):
+                child_props, child_children = parse_props(child)
+                for key, new_value in child_props.items():
+                    prop_value = properties.get(key, [])
+                    prop_value.extend(new_value)
+                    properties[key] = prop_value
+                children.extend(child_children)
+
+            # if some properties not already found find in implied ways
             if 'name' not in properties:
-                if el.nodeName == 'img' and el.hasAttribute("alt") and not el.getAttribute("alt") == "":
-                    properties["name"] = [el.getAttribute("alt")]
-                elif el.nodeName == 'abbr' and el.hasAttribute("title") and not el.getAttribute("title") == "":
-                    properties["name"] = [el.getAttribute("title")]
-                elif len(el.getElementsByTagName("img")) == 1 and el.getElementsByTagName("img")[0].hasAttribute("alt") and \
-                        len(str(el.getElementsByTagName("img")[0].getAttribute("alt"))) > 0:
-                    properties["name"] = [el.getElementsByTagName("img")[0].getAttribute("alt")]
-                elif len(el.getElementsByTagName("abbr")) == 1 and el.getElementsByTagName("abbr")[0].hasAttribute("title") and \
-                        len(str(el.getElementsByTagName("title"))) > 0:
-                    properties["name"] = [el.getElementsByTagName("abbr")[0].getAttribute("abbr")]
-                # TODO: implement the rest of http://microformats.org/wiki/microformats2-parsing#parsing_for_implied_properties
-                else:
-                    properties["name"] = [el.getText()]
-            
+                properties["name"] = implied_properties.name(el)
+
             if "photo" not in properties:
-                if el.nodeName == 'img' and el.hasAttribute("src"):
-                    properties["photo"] = [el.getAttribute("src")]
-                elif len(el.getElementsByTagName("img")) == 1:
-                    properties["photo"] = [el.getElementsByTagName("img")[0].getAttribute("src")]
-                # TODO: implement the other implied photo finders
-            
+                x = implied_properties.photo(el, base_url=self.__url__)
+                if x is not None:
+                    properties["photo"] = x
+
             if "url" not in properties:
-                if el.nodeName == 'a' and el.hasAttribute("href"):
-                    properties["url"] = [el.getAttribute("href")]
-                else:
-                    possible_links = el.getElementsByTagName("a")
-                    possible_links = [x for x in el.getElementsByTagName("a") if x.hasAttribute("href") and not x.hasClassName(lambda x: x.startswith("h-"))]
-                    if len(possible_links) == 1:
-                        properties["url"] = [possible_links[0].getAttribute("href")]
-            microformat = {"type": root_classnames,
+                x = implied_properties.url(el, base_url=self.__url__)
+                if x is not None:
+                    properties["url"] = x
+
+            # build microformat with type and properties
+            microformat = {"type": root_class_names,
                            "properties": properties}
+            # insert children if any
             if len(children) > 0:
                 microformat["children"] = children
+            # insert value if it is a nested microformat (check this interpretation)
             if is_nested:
-                microformat["value"] = str(el)
+                microformat["value"] = el.get_text()
             return microformat
-        
-        def parse_props(el, is_root_element=False):
+
+        ## function to parse properties of element
+        def parse_props(el):
             props = {}
             children = []
-            # skip to children if this element itself is a nested microformat or it doesn’t have a class
-            if el.hasAttribute("class") and not is_root_element:
-                # TODO: make this handle multiple spaces, tabs(?) separating classnames
-                classes = el.getAttribute("class").split(" ")
-                
-                # Is this element a microformat root?
-                root_classnames = [c for c in classes if c.startswith("h-")]
-                if len(root_classnames) > 0:
-                    # this element represents a nested microformat
-                    if len(property_classnames(classes)) > 0:
-                        # nested microformat is property-nested, parse and add to all property lists it's part of
-                        nested_microformat = handle_microformat(root_classnames, el)
-                        for prop_name in property_names(classes):
-                            prop_value = props.get(prop_name, [])
-                            prop_value.append(nested_microformat)
-                            props[prop_name] = prop_value
-                    else:
-                        # nested microformat is a child microformat, parse and add to children
-                        children.append(handle_microformat(root_classnames, el))
+
+            classes = el.get("class", [])
+            # Is this element a microformat root?
+            root_class_names = mf2_classes.root(classes)
+            if len(root_class_names) > 0:
+                # this element represents a nested microformat
+                if len(mf2_classes.properties(classes)) > 0:
+                    # nested microformat is property-nested, parse and add to all property lists it's part of
+                    nested_microformat = handle_microformat(root_class_names, el)
+                    for prop_name in mf2_classes.properties(classes):
+                        prop_value = props.get(prop_name, [])
+                        prop_value.append(nested_microformat)
+                        props[prop_name] = prop_value
                 else:
-                    # Parse plaintext p-* properties.
-                    for prop in [c for c in classes if c.startswith("p-")]:
-                        # TODO: parse for value-class here
-                        prop_name = prop[2:]
-                        prop_value = props.get(prop_name, [])
-                        # TODO: this is a goddamn horror show right here
-                        text_value = " ".join(t.nodeValue for t in el.childNodes if t.nodeType == t.TEXT_NODE)
-                        text_value = text_value.strip()
-                        prop_value.append(text_value)
+                    # nested microformat is a child microformat, parse and add to children
+                    children.append(handle_microformat(root_class_names, el))
+            else:
+                # Parse plaintext p-* properties.
+                value = None
+                for prop_name in mf2_classes.text(classes):
+                    prop_value = props.get(prop_name, [])
 
-                        if prop_value is not []:
-                            props[prop_name] = prop_value
+                    # if value has not been parsed then parse it
+                    if value is None:
+                        value = parse_property.text(el).strip()
 
-                    # Parse URL u-* properties.
-                    for prop in [c for c in classes if c.startswith("u-")]:
-                        prop_name = prop[2:]
-                        prop_value = props.get(prop_name, [])
+                    prop_value.append(value)
 
-                        # el/at matching
-                        url_matched = False
-                        if el.nodeName in ("a", "area") and el.hasAttribute("href"):
-                            prop_value.append(url_relative(el.getAttribute("href")))
-                            url_matched = True
-                        elif el.nodeName == "img" and el.hasAttribute("src"):
-                            prop_value.append(url_relative(el.getAttribute("src")))
-                            url_matched = True
-                        elif el.nodeName == "object" and el.hasAttribute("data"):
-                            prop_value.append(url_relative(el.getAttribute("data")))
-                            url_matched = True
-
-                        if url_matched is False:
-                            # TODO: value-class-pattern
-                            if el.nodeName == 'abbr' and el.hasAttribute("title"):
-                                prop_value.append(el.getAttribute("title"))
-                            elif el.nodeName == 'data' and el.hasAttribute("value"):
-                                prop_value.append(el.getAttribute("value"))
-                            # TODO: else, get inner text
-                            pass
-
-                        if prop_value is not []:
-                            props[prop_name] = prop_value
-                    
-                    # Parse datetime dt-* properties.
-                    for prop in [c for c in classes if c.startswith("dt-")]:
-                        prop_name = prop[3:]
-                        prop_value = props.get(prop_name, [])
-                        
-                        # TODO: parse value-class pattern including datetime parsing rules.
-                        # http://microformats.org/wiki/value-class-pattern
-                        
-                        if el.nodeName in ("time", "ins", "del") and el.hasAttribute("datetime"):
-                            prop_value.append(el.getAttribute("datetime"))
-                        elif el.nodeName == "abbr" and el.hasAttribute("title"):
-                            prop_value.append(el.getAttribute("title"))
-                        elif el.nodeName in ("data", "input") and el.hasAttribute("value"):
-                            prop_value.append(el.getAttribute("value"))
-                        else:
-                            prop_value.append(el.firstChild.nodeValue)
-                        
+                    if prop_value is not []:
                         props[prop_name] = prop_value
 
-                    # Parse embedded markup e-* properties.
-                    for prop in [c for c in classes if c.startswith("e-")]:
-                        prop_name = prop[2:]
-                        prop_value = props.get(prop_name, [])
-                        
-                        prop_value.append({
-                            'html': ''.join([e.toxml() for e in el.childNodes]),
-                            'value': el.getText()
-                        })
-                        
+                # Parse URL u-* properties.
+                value = None
+                for prop_name in mf2_classes.url(classes):
+                    prop_value = props.get(prop_name, [])
+
+                    # if value has not been parsed then parse it
+                    if value is None:
+                        value = parse_property.url(el, base_url=self.__url__)
+
+                    prop_value.append(value)
+
+                    if prop_value is not []:
                         props[prop_name] = prop_value
-            
-            parsed.add(el)
-            
-            for child in [x for x in el.childNodes if x.nodeType is 1 and x not in parsed]:
-                child_properties, child_microformats = parse_props(child)
-                for prop_name in child_properties:
-                    v = props.get(prop_name, [])
-                    v.extend(child_properties[prop_name])
-                    props[prop_name] = v
-                children.extend(child_microformats)
-            
+
+                # Parse datetime dt-* properties.
+                value = None
+                for prop_name in mf2_classes.datetime(classes):
+                    prop_value = props.get(prop_name, [])
+
+                    # if value has not been parsed then parse it
+                    if value is None:
+                        value = parse_property.datetime(el)
+
+                    prop_value.append(value)
+
+                    if prop_value is not []:
+                        props[prop_name] = prop_value
+
+                # Parse embedded markup e-* properties.
+                value = None
+                for prop_name in mf2_classes.embedded(classes):
+                    prop_value = props.get(prop_name, [])
+
+                    # if value has not been parsed then parse it
+                    if value is None:
+                        value = parse_property.embedded(el)
+
+                    prop_value.append(value)
+
+                    if prop_value is not []:
+                        props[prop_name] = prop_value
+
+                # parse child tags, provided this isn't a microformat
+                for child in el.find_all(True, recursive=False):
+                    child_properties, child_microformats = parse_props(child)
+                    for prop_name in child_properties:
+                        v = props.get(prop_name, [])
+                        v.extend(child_properties[prop_name])
+                        props[prop_name] = v
+                    children.extend(child_microformats)
+
             return props, children
 
+        ## function to parse an element for rel microformats
+        def parse_rels(el):
+            rel_attrs = get_attr(el, 'rel')
+            # if rel attributes exist
+            if rel_attrs is not None:
+                # find the url and normalise it
+                url = urljoin(self.__url__, el.get('href', ''))
+
+                # there does not exist alternate in rel attributes then parse rels as local
+                if "alternate" not in rel_attrs:
+                    for rel_value in rel_attrs:
+                        value_list = self.__parsed__["rels"].get(rel_value,[])
+                        value_list.append(url)
+                        self.__parsed__["rels"][rel_value] = value_list
+                else:
+                    alternate_list = self.__parsed__.get("alternates",[])
+                    alternate_dict = {}
+                    alternate_dict["url"] = url
+                    x = " ".join([r for r in rel_attrs if not r == "alternate"])
+                    if x is not "":
+                        alternate_dict["rel"] = x
+
+                    x = get_attr(el, "media")
+                    if x is not None:
+                        alternate_dict["media"] = x
+
+                    x = get_attr(el, "hreflang")
+                    if x is not None:
+                        alternate_dict["hreflang"] = x
+
+                    x = get_attr(el, "type")
+                    if x is not None:
+                        alternate_dict["type"] = x
+
+                    alternate_list.append(alternate_dict)
+                    self.__parsed__["alternates"] = alternate_list
+
+
+        ## function to parse an element for microformats
         def parse_el(el, ctx, top_level=False):
-            potential_microformats = []
 
-            if el.hasAttribute("class"):
-                classes = el.getAttribute("class").split(" ")
-                potential_microformats = [x for x in classes if x.startswith("h-")]
+            classes = el.get("class", [])
 
+            # Workaround for bs4+html5lib bug that
+            # prevents it from recognizing multi-valued
+            # attrs on the <html> element
+            # https://bugs.launchpad.net/beautifulsoup/+bug/1296481
+            if el.name == 'html' and not isinstance(classes, list):
+                classes = classes.split()
+
+            # find potential microformats in root classnames h-*
+            potential_microformats = mf2_classes.root(classes)
+
+            # if potential microformats found parse them
             if len(potential_microformats) > 0:
                 result = handle_microformat(potential_microformats, el, top_level)
                 ctx.append(result)
             else:
-                for child in [x for x in el.childNodes if x.nodeType is 1 and x not in parsed]:
+                # parse child tags
+                for child in el.find_all(True, recursive=False):
                     parse_el(child, ctx)
 
         ctx = []
-        parse_el(self.__doc__.documentElement, ctx, True)
+        # start parsing at root element of the document
+        parse_el(self.__doc__, ctx, True)
         self.__parsed__["items"] = ctx
 
-    def filter_by_type(self, type_name):
-        return [x for x in self.to_dict()['items'] if x['type'] == [type_name]]
+        # parse for rel values
+        for el in self.__doc__.find_all(["a","link"],attrs={'rel':True}):
+            parse_rels(el)
 
-    def to_dict(self):
-        return self.__parsed__
-    
-    def to_json(self):
-        return json.dumps(self.to_dict())
+    ## function to get a python dictionary version of parsed microformat
+    def to_dict(self, filter_by_type=None):
+        if filter_by_type is None:
+            return self.__parsed__
+        else:
+            return [x for x in self.__parsed__['items'] if x['type'] == [filter_by_type]]
+
+    ## function to get a json version of parsed microformat
+    def to_json(self, **kwargs):
+
+        if kwargs.pop('pretty_print', False):
+            return json.dumps(self.to_dict(**kwargs), indent=4, separators=(', ', ': '))
+        else:
+            return json.dumps(self.to_dict(**kwargs))
