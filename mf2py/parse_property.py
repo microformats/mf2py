@@ -75,25 +75,25 @@ def datetime(el):
         date_parts = []
         for value_el in value_els:
             if value_el.name in ('img', 'area'):
-                alt = value_el.get('alt') or (value_el.string and value_el.string.strip())
+                alt = value_el.get('alt') or value_el.get_text()
                 if alt:
-                    date_parts.append(alt)
+                    date_parts.append(alt.strip())
             elif value_el.name == 'data':
-                val = value_el.get('value') or (value_el.string and value_el.string.strip())
+                val = value_el.get('value') or value_el.get_text()
                 if val:
-                    date_parts.append(val)
+                    date_parts.append(val.strip())
             elif value_el.name == 'abbr':
-                title = value_el.get('title') or (value_el.string and value_el.string.strip())
+                title = value_el.get('title') or value_el.get_text()
                 if title:
-                    date_parts.append(title)
+                    date_parts.append(title.strip())
             elif value_el.name in ('del', 'ins', 'time'):
-                dt = value_el.get('datetime') or (value_el.string and value_el.string.strip())
+                dt = value_el.get('datetime') or value_el.get_text()
                 if dt:
-                    date_parts.append(dt)
+                    date_parts.append(dt.strip())
             else:
-                val = value_el.string and value_el.string.strip()
+                val = value_el.get_text()
                 if val:
-                    date_parts.append(val)
+                    date_parts.append(val.strip())
 
         date_part = ''
         time_part = ''
