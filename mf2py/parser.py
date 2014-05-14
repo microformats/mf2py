@@ -85,13 +85,14 @@ class Parser(object):
 
     ## function to parse the document
     def parse(self):
-        # set of all parsed things
-        #parsed = set()
+        self._default_date = None
+
 
         ## function for handling a root microformat i.e. h-*
         def handle_microformat(root_class_names, el, is_nested=True):
             properties = {}
             children = []
+            self._default_date = None
 
             # parse for properties and children
             for child in el.find_all(True, recursive=False):
@@ -183,7 +184,11 @@ class Parser(object):
 
                     # if value has not been parsed then parse it
                     if value is None:
-                        value = parse_property.datetime(el)
+                        value, new_date = parse_property.datetime(
+                            el, self._default_date)
+                        # update the default date
+                        if new_date:
+                            self._default_date = new_date
 
                     prop_value.append(value)
 
@@ -204,7 +209,7 @@ class Parser(object):
                     if prop_value is not []:
                         props[prop_name] = prop_value
 
-                # parse child tags, provided this isn't a microformat
+                # parse child tags, provided this isn't a microformat root-class
                 for child in el.find_all(True, recursive=False):
                     child_properties, child_microformats = parse_props(child)
                     for prop_name in child_properties:
