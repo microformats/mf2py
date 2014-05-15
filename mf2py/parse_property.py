@@ -15,8 +15,8 @@ else:
 ## functions to parse the properties of elements
 
 DATE_RE = r'(\d{4})-(\d{2})-(\d{2})'
-TIME_RE = r'(\d{2}):(\d{2})(?::(\d{2}))?(?:(Z)|([+-]\d{2}:?\d{2}))?'
-DATETIME_RE = DATE_RE + 'T' + TIME_RE
+TIME_RE = r'(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d+))?)?(?:(Z)|([+-]\d{2}:?\d{2}))?'
+DATETIME_RE = r'(?P<date>%s)T(?P<time>%s)' % (DATE_RE, TIME_RE)
 
 
 def text(el):
@@ -68,64 +68,73 @@ def url(el, base_url=''):
     # strip here?
     return el.get_text()
 
-def datetime(el):
+def datetime(el, default_date=None):
+    """
+    :param el: Tag containing the dt-value
+    :return: a tuple of two strings, (datetime, date)
+    """
     # handle value-class-pattern
     value_els = el.find_all(class_='value')
     if value_els:
         date_parts = []
         for value_el in value_els:
             if value_el.name in ('img', 'area'):
-                alt = value_el.get('alt') or (value_el.string and value_el.string.strip())
+                alt = value_el.get('alt') or value_el.get_text()
                 if alt:
-                    date_parts.append(alt)
+                    date_parts.append(alt.strip())
             elif value_el.name == 'data':
-                val = value_el.get('value') or (value_el.string and value_el.string.strip())
+                val = value_el.get('value') or value_el.get_text()
                 if val:
-                    date_parts.append(val)
+                    date_parts.append(val.strip())
             elif value_el.name == 'abbr':
-                title = value_el.get('title') or (value_el.string and value_el.string.strip())
+                title = value_el.get('title') or value_el.get_text()
                 if title:
-                    date_parts.append(title)
+                    date_parts.append(title.strip())
             elif value_el.name in ('del', 'ins', 'time'):
-                dt = value_el.get('datetime') or (value_el.string and value_el.string.strip())
+                dt = value_el.get('datetime') or value_el.get_text()
                 if dt:
-                    date_parts.append(dt)
+                    date_parts.append(dt.strip())
             else:
-                val = value_el.string and value_el.string.strip()
+                val = value_el.get_text()
                 if val:
-                    date_parts.append(val)
+                    date_parts.append(val.strip())
 
-        date_part = ''
-        time_part = ''
-        date_time_value = ''
+        date_part = default_date
+        time_part = None
         for part in date_parts:
-            if re.match(DATETIME_RE, part):
+            match = re.match(DATETIME_RE + '$', part)
+            if match:
                 # if it's a full datetime, then we're done
-                date_time_value = part
+                date_part = match.group('date')
+                time_part = match.group('time')
                 break
-            else:
-                if re.match(TIME_RE, part):
-                    time_part = part
-                elif re.match(DATE_RE, part):
-                    date_part = part
-                date_time_value = (date_part.strip().rstrip('T')
-                                   + 'T' + time_part.strip())
-        return date_time_value
+            elif re.match(TIME_RE + '$', part):
+                time_part = part
+            elif re.match(DATE_RE + '$', part):
+                date_part = part
 
-    prop_value = get_attr(el, "datetime", check_name=("time","ins","del"))
-    if prop_value is not None:
-        return prop_value
+        if date_part and time_part:
+            date_time_value = '%sT%s' % (date_part,
+                                         time_part)
+        else:
+            date_time_value = date_part or time_part
 
-    prop_value = get_attr(el, "title", check_name="abbr")
-    if prop_value is not None:
-        return prop_value
+        return date_time_value, date_part
 
-    prop_value = get_attr(el, "value", check_name=("data","input"))
-    if prop_value is not None:
-        return prop_value
+    prop_value = get_attr(el, "datetime", check_name=("time", "ins", "del"))\
+        or get_attr(el, "title", check_name="abbr")\
+        or get_attr(el, "value", check_name=("data", "input"))\
+        or el.get_text()  # strip here?
 
-    # strip here?
-    return el.get_text()
+    # if this is just a time, augment with default date
+    match = re.match(TIME_RE + '$', prop_value)
+    if match and default_date:
+        prop_value = '%sT%s' % (default_date, prop_value)
+        return prop_value, default_date
+
+    # otherwise, treat it as a full date
+    match = re.match(DATETIME_RE + '$', prop_value)
+    return prop_value, match and match.group('date'),
 
 def embedded(el):
 
