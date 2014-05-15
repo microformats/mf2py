@@ -28,7 +28,7 @@ class Parser(object):
 
     Attributes
     ----------
-    useragent : returns the UA string for the Parser
+    useragent : returns the User-Agent string for the Parser
 
     Public methods
     ---------------
@@ -155,7 +155,7 @@ class Parser(object):
 
                     # if value has not been parsed then parse it
                     if value is None:
-                        value = parse_property.text(el)
+                        value = parse_property.text(el).strip()
 
                     prop_value.append(value)
 
