@@ -238,7 +238,6 @@ def test_html_tag_class():
 
 def test_string_strip():
     result = parse_fixture("string_stripping.html")
-    print result 
     assert result["items"][0]["properties"]["name"][0] == "Tom Morris"
 
 if __name__ == '__main__':
