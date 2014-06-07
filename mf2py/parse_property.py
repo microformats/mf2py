@@ -15,9 +15,10 @@ else:
 
 
 DATE_RE = r'\d{4}-\d{2}-\d{2}'
-RAWTIME_RE = r'(?P<rawtime>(?P<hour>\d{1,2}):(?P<minsec>\d{2}(:\d{2}(\.\d+)?)?)(?P<ampm>am|pm|a\.m\.|p\.m\.)?)'
-TIMEZONE_RE = r'(?P<tz>Z|[+-]\d{2}:?\d{2})?'
-TIME_RE = r'%s ?%s' % (RAWTIME_RE, TIMEZONE_RE)
+RAWTIME_RE = r'(?P<hour>\d{1,2})(:(?P<minute>\d{2})(:(?P<second>\d{2})(\.\d+)?)?)?'
+AMPM_RE = 'am|pm|a\.m\.|p\.m\.'
+TIMEZONE_RE = r'Z|[+-]\d{2}:?\d{2}?'
+TIME_RE = r'(?P<rawtime>%s)( ?(?P<ampm>%s))?( ?(?P<tz>%s))?' % (RAWTIME_RE, AMPM_RE, TIMEZONE_RE)
 DATETIME_RE = r'(?P<date>%s)[T ](?P<time>%s)' % (DATE_RE, TIME_RE)
 
 
@@ -89,15 +90,15 @@ def datetime(el, default_date=None):
         match = match or re.match(DATETIME_RE + '$', dtstr)
         if match:
             datestr = match.group('date')
-            timestr = match.group('rawtime')
+            hourstr = match.group('hour')
+            minutestr = match.group('minute') or '00'
+            secondstr = match.group('second') or '00'
             ampmstr = match.group('ampm')
             if ampmstr:
                 hourstr = match.group('hour')
-                minsecstr = match.group('minsec')
                 if ampmstr.startswith('p'):
-                    hourstr = '%02d' % (int(hourstr) + 12)
-                timestr = '%s:%s' % (hourstr, minsecstr)
-            dtstr = '%sT%s' % (datestr, timestr)
+                    hourstr = str(int(hourstr) + 12)
+            dtstr = '%sT%s:%s:%s' % (datestr, hourstr, minutestr, secondstr)
             tzstr = match.group('tz')
             if tzstr:
                 if tzstr == 'Z':
