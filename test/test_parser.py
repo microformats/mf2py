@@ -139,29 +139,29 @@ def test_implied_image():
 def test_datetime_parsing():
     result = parse_fixture("datetimes.html")
     assert_equal(result["items"][0]["properties"]["start"][0],
-                 "2014-01-01T12:00:00+00:00")
+                 "2014-01-01T12:00:00+0000")
     assert_equal(result["items"][0]["properties"]["end"][0],
-                 "3014-01-01T18:00:00+00:00")
+                 "3014-01-01T18:00:00+0000")
     assert_equal(result["items"][0]["properties"]["duration"][0],
                  "P1000Y")
     assert_equal(result["items"][0]["properties"]["updated"][0],
-                 "2011-08-26T00:01:21+00:00")
+                 "2011-08-26T00:01:21+0000")
     assert_equal(result["items"][0]["properties"]["updated"][1],
-                 "2011-08-26T00:01:21+00:00")
+                 "2011-08-26T00:01:21+0000")
 
 
 def test_datetime_vcp_parsing():
     result = parse_fixture("datetimes.html")
     assert_equal(result["items"][1]["properties"]["published"][0],
-                 "3014-01-01T01:21+00:00")
+                 "3014-01-01T01:21+0000")
     assert_equal(result["items"][2]["properties"]["updated"][0],
                  "2014-03-11T09:55")
     assert_equal(result["items"][3]["properties"]["published"][0],
                  "2014-01-30T15:28")
     assert_equal(result["items"][4]["properties"]["published"][0],
-                 "9999-01-14T11:52+08:00")
+                 "9999-01-14T11:52+0800")
     assert_equal(result["items"][5]["properties"]["published"][0],
-                 "2014-06-01T12:30-06:00")
+                 "2014-06-01T12:30-0600")
 
 def test_dt_end_implied_date():
     """Test that events with dt-start and dt-end use the implied date
@@ -177,9 +177,9 @@ def test_dt_end_implied_date():
 
     event_w_tz = result["items"][7]
     assert_equal(event_w_tz["properties"]["start"][0],
-                 "2014-06-01T12:30-06:00")
+                 "2014-06-01T12:30-0600")
     assert_equal(event_w_tz["properties"]["end"][0],
-                 "2014-06-01T19:30-06:00")
+                 "2014-06-01T19:30-0600")
 
 def test_embedded_parsing():
     result = parse_fixture("embedded.html")
