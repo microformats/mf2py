@@ -222,6 +222,10 @@ def test_string_strip():
     print result 
     assert result["items"][0]["properties"]["name"][0] == "Tom Morris"
 
+def test_template_parse():
+    result = parse_fixture("template_tag.html")
+    assert len(result["items"]) == 0
+
 if __name__ == '__main__':
     result = parse_fixture("nested_multiple_classnames.html")
     pprint(result)
