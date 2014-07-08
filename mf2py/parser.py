@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import requests
 
 from .dom_helpers import get_attr
-from . import backcompat, mf2_classes, implied_properties, parse_property
+from . import backcompat, mf2_classes, implied_properties, parse_property, temp_fixes
 
 import sys
 if sys.version < '3':
@@ -79,6 +79,7 @@ class Parser(object):
 
         if self.__doc__ is not None:
             # parse!
+            temp_fixes.apply_rules(self.__doc__)
             backcompat.apply_rules(self.__doc__)
             self.parse()
 
