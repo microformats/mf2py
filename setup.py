@@ -8,7 +8,7 @@ setup(name='mf2py',
       author='Tom Morris',
       author_email='tom@tommorris.org',
       url='http://microformats.org/wiki/mf2py',
-      install_requires=['html5lib', 'requests', 'BeautifulSoup'],
+      install_requires=['html5lib', 'requests', 'BeautifulSoup4'],
       packages=['mf2py'],
       classifiers=[
           'Development Status :: 3 - Alpha',

@@ -139,28 +139,47 @@ def test_implied_image():
 def test_datetime_parsing():
     result = parse_fixture("datetimes.html")
     assert_equal(result["items"][0]["properties"]["start"][0],
-                 "2014-01-01T12:00:00+00:00")
+                 "2014-01-01T12:00:00+0000")
     assert_equal(result["items"][0]["properties"]["end"][0],
-                 "3014-01-01T18:00:00+00:00")
+                 "3014-01-01T18:00:00+0000")
     assert_equal(result["items"][0]["properties"]["duration"][0],
                  "P1000Y")
     assert_equal(result["items"][0]["properties"]["updated"][0],
-                 "2011-08-26T00:01:21+00:00")
+                 "2011-08-26T00:01:21+0000")
     assert_equal(result["items"][0]["properties"]["updated"][1],
-                 "2011-08-26T00:01:21+00:00")
+                 "2011-08-26T00:01:21+0000")
 
 
 def test_datetime_vcp_parsing():
     result = parse_fixture("datetimes.html")
     assert_equal(result["items"][1]["properties"]["published"][0],
-                 "3014-01-01T01:21+00:00")
+                 "3014-01-01T01:21:00+0000")
     assert_equal(result["items"][2]["properties"]["updated"][0],
-                 "2014-03-11T09:55")
+                 "2014-03-11T09:55:00")
     assert_equal(result["items"][3]["properties"]["published"][0],
-                 "2014-01-30T15:28")
+                 "2014-01-30T15:28:00")
     assert_equal(result["items"][4]["properties"]["published"][0],
-                 "9999-01-14T11:52+08:00")
+                 "9999-01-14T11:52:00+0800")
+    assert_equal(result["items"][5]["properties"]["published"][0],
+                 "2014-06-01T12:30:00-0600")
 
+def test_dt_end_implied_date():
+    """Test that events with dt-start and dt-end use the implied date
+    rules http://microformats.org/wiki/value-class-pattern#microformats2_parsers
+    for times without dates"""
+    result = parse_fixture("datetimes.html")
+
+    event_wo_tz = result["items"][6]
+    assert_equal(event_wo_tz["properties"]["start"][0],
+                 "2014-05-21T18:30:00")
+    assert_equal(event_wo_tz["properties"]["end"][0],
+                 "2014-05-21T19:30:00")
+
+    event_w_tz = result["items"][7]
+    assert_equal(event_w_tz["properties"]["start"][0],
+                 "2014-06-01T12:30:00-0600")
+    assert_equal(event_w_tz["properties"]["end"][0],
+                 "2014-06-01T19:30:00-0600")
 
 def test_embedded_parsing():
     result = parse_fixture("embedded.html")
@@ -174,7 +193,13 @@ def test_embedded_parsing():
 
 def test_backcompat():
     result = parse_fixture("backcompat.html")
-    assert_equal(set(result["items"][0]["type"]), set(["h-card"]))
+    assert_true('h-entry' in result['items'][0]['type'])
+    assert_equal('Tom Morris',
+                 result['items'][0]['properties']['author'][0]['properties']['name'][0])
+    assert_equal('A Title',
+                 result['items'][0]['properties']['name'][0])
+    assert_equal('Some Content',
+                 result['items'][0]['properties']['content'][0]['value'])
 
 
 def test_hoisting_nested_hcard():
@@ -219,7 +244,6 @@ def test_html_tag_class():
 
 def test_string_strip():
     result = parse_fixture("string_stripping.html")
-    print result 
     assert result["items"][0]["properties"]["name"][0] == "Tom Morris"
 
 def test_template_parse():

@@ -15,20 +15,20 @@
 
  <div class="h-entry">
    <span class="dt-published">
-     <img class="value" alt="3014-01-01" src="onethousandyears.png"/> at precisely <data class="value" value="01:21+00:00">1:21 am</data>
+     <img class="value" alt="3014-01-01" src="onethousandyears.png"/> at precisely <data class="value" value="01:21Z">1:21 am</data>
    </span>
  </div>
 
  <div class="h-entry">
    <span class="dt-updated">
-     <abbr class="value" title="2014-03-11T09:55">3/11 9:55</abbr>
+     <abbr class="value" title="2014-03-11 09:55">3/11 9:55</abbr>
    </span>
  </div>
 
  <div class="h-entry">
    <!-- a la Tantek -->
    <span class="dt-published published dt-updated updated">
-     <time class="value">15:28</time> on <time class="value">2014-01-30</time>
+     <time class="value">3:28pm</time> on <time class="value">2014-01-30</time>
    </span>
  </div>
 
@@ -38,6 +38,43 @@
    </span>
  </div>
 
+ <div class="h-entry">
+   <!-- wiki event with UTC offset -->
+   <span class="dt-published">
+     <span class="value" title="June 1, 2014">2014-06-01</span>
+     <span class="value" title="12:30">12:30<span style="display: none;">-06:00</span></span>
+   </span>
+ </div>
+
+ <div class="h-event">
+   <h1 class="p-name">Implied Date wo Timezone</h1>
+
+   This test case and the next are courtesy of event templates on
+   http://indiewebcamp.com/User:Gregorlove.com/sandbox
+
+   <p> When:
+     <span class="dt-start">
+       <span class="value" title="May 21, 2014">2014-05-21</span>
+       <span class="value" title="18:30">18:30</span>
+       –
+       <span class="dt-end">19:30</span>
+     </span> (local time)
+   </p>
+ </div>
+
+ <div class="h-event">
+   <h1 class="p-name">Implied Date w/ Timezone</h1>
+
+   <p> When:
+     <span class="dt-start">
+       <span class="value" title="June 1, 2014">2014-06-01</span>
+       <span class="value" title="12:30">12:30<span style="display: none;">-06:00</span></span>
+       –
+       <span class="dt-end">19:30<span style="display: none;">-06:00</span></span>
+     </span> (-06:00 <abbr>UTC</abbr>)
+   </p>
+
+ </div>
 
 </body>
 </html>
