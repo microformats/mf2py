@@ -250,6 +250,21 @@ def test_template_parse():
     result = parse_fixture("template_tag.html")
     assert len(result["items"]) == 0
 
+def test_backcompat_hproduct():
+    result = parse_fixture("backcompat_hproduct.html")
+    assert len(result["items"]) == 1
+    assert result["items"][0]["type"] == ["h-product"]
+    assert result["items"][0]["properties"]["category"] == [u'bullshit']
+    assert result["items"][0]["properties"]["brand"] == [u'Quacktastic Products']
+    assert result["items"][0]["properties"]["identifier"] == [u'#BULLSHIT-001']
+    assert result["items"][0]["properties"]['description'][0] ==  u"Magical tasty sugar pills that don't do anything."
+    assert result["items"][0]["properties"]["name"] == [u"Tom's Magical Quack Tincture"]
+
+def test_backcompat_hproduct_nested_hreview():
+    result = parse_fixture("backcompat_hproduct_hreview_nested.html")
+    assert result["items"][0]["children"][0]['type'] == ['h-review']
+    assert type(result["items"][0]["children"][0]['properties']['name'][0]) == unicode
+
 if __name__ == '__main__':
     result = parse_fixture("nested_multiple_classnames.html")
     pprint(result)

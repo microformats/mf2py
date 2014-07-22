@@ -12,7 +12,8 @@ CLASSIC_ROOT_MAP = {
     'hrecipe': 'h-recipe',
     'hresume': 'h-resume',
     'hevent': 'h-event',
-    'hreview': 'h-review'
+    'hreview': 'h-review',
+    'hproduct': 'h-product'
 }
 
 CLASSIC_PROPERTY_MAP = {
@@ -104,6 +105,17 @@ CLASSIC_PROPERTY_MAP = {
         'best': ['p-best'],
         'worst': ['p-worst'],
         'description': ['p-description'],
+    },
+    'hproduct': {
+        'fn': ['p-name'],
+        'photo': ['u-photo'],
+        'brand': ['p-brand'],
+        'category': ['p-category'],
+        'description': ['p-description'],
+        'identifier': ['u-identifier'],
+        'url': ['u-url'],
+        'review': ['p-review', 'h-review', 'e-description'],
+        'price': ['p-price'],
     }
 }
 
