@@ -14,8 +14,11 @@ def index():
 
 @app.route("/parse", methods=["GET", "POST"])
 def parse():
-    print request
-    u = request.form['url']
+    if request.method == 'GET':
+        u = request.args['url']
+    else:
+        u = request.form['url']
+    print u
     p = Parser(url=unicode(u))
     return Response(p.to_json(pretty_print=True), status=200, mimetype='application/json')
 
