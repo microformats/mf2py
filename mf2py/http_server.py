@@ -1,3 +1,4 @@
+import os
 from mf2py import Parser
 from flask import Flask, Response, request
 app = Flask(__name__)
@@ -19,4 +20,4 @@ def parse():
     return Response(p.to_json(), status=200, mimetype='application/json')
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=33507)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 33507))
