@@ -19,4 +19,4 @@ def parse():
     return Response(p.to_json(), status=200, mimetype='application/json')
 
 if __name__ == "__main__":
-    app.run()
+    app.run(port=33507)
