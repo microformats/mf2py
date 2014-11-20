@@ -11,7 +11,7 @@ else:
 ## function to find an implied name property
 def name(el):
     # if image use alt text if not empty
-    prop_value = get_attr(el, "alt", check_name="img")
+    prop_value = get_attr(el, "alt", check_name=("img", "area"))
     if prop_value is not None:
         return [prop_value]
 
@@ -105,7 +105,7 @@ def photo(el, base_url=''):
 ## function to find implied url
 def url(el, base_url=''):
     # if element is a link use its href if exists
-    prop_value = get_attr(el, "href", check_name="a")
+    prop_value = get_attr(el, "href", check_name=("a", "area"))
     if prop_value is not None:
         return [urljoin(base_url, prop_value)]
 

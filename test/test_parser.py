@@ -265,6 +265,10 @@ def test_backcompat_hproduct_nested_hreview():
     assert result["items"][0]["children"][0]['type'] == ['h-review']
     assert type(result["items"][0]["children"][0]['properties']['name'][0]) == unicode
 
+def test_area_uparsing():
+    result = parse_fixture("area.html")
+    assert result["items"][0]["properties"] == {u'url': [u'http://suda.co.uk'], u'name': [u'Brian Suda']}
+
 if __name__ == '__main__':
     result = parse_fixture("nested_multiple_classnames.html")
     pprint(result)
