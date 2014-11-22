@@ -268,6 +268,8 @@ def test_backcompat_hproduct_nested_hreview():
 def test_area_uparsing():
     result = parse_fixture("area.html")
     assert result["items"][0]["properties"] == {u'url': [u'http://suda.co.uk'], u'name': [u'Brian Suda']}
+    assert 'shape' in result["items"][0].keys()
+    assert 'coords' in result["items"][0].keys()
 
 if __name__ == '__main__':
     result = parse_fixture("nested_multiple_classnames.html")

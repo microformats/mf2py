@@ -121,6 +121,15 @@ class Parser(object):
             # build microformat with type and properties
             microformat = {"type": root_class_names,
                            "properties": properties}
+            if str(el.name) == "area":
+                shape = get_attr(el, 'shape')
+                if shape is not None:
+                    microformat['shape'] = shape
+
+                coords = get_attr(el, 'coords')
+                if coords is not None:
+                    microformat['coords'] = coords
+
             # insert children if any
             if len(children) > 0:
                 microformat["children"] = children
