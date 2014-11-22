@@ -271,6 +271,12 @@ def test_area_uparsing():
     assert 'shape' in result["items"][0].keys()
     assert 'coords' in result["items"][0].keys()
 
+def test_src_equiv():
+    result = parse_fixture("test_src_equiv.html")
+    for item in result["items"]:
+        assert 'x-example' in item['properties'].keys()
+        assert u'http://example.org/' == item['properties']['x-example'][0]
+
 if __name__ == '__main__':
     result = parse_fixture("nested_multiple_classnames.html")
     pprint(result)
