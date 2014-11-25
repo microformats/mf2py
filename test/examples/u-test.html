@@ -1,0 +1,21 @@
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Hello World</title>
+  <base href="http://example.com/" />
+</head>
+<body>
+<article class="h-entry">
+    <h1><a  class="p-name">Expanding URLs within HTML content</a></h1>
+    <div class="e-content">
+        <ul>
+            <li><a class="u-url" href="http://www.w3.org/">Should not change: http://www.w3.org/</a></li>
+            <li><a class="u-url" href="http://example.com/">Should not change: http://example.com/</a></li>
+            <li><a class="u-url" href="test.html">File relative: test.html = http://example.com/test.html</a></li>
+            <li><a class="u-url" href="/test/test.html">Directory relative: /test/test.html = http://example.com/test/test.html</a></li>
+            <li><a class="u-url" href="/test.html">Relative to root: /test.html = http://example.com/test.html</a></li>
+        </ul>
+        <img src="http://www.w3.org/2008/site/images/logo-w3c-mobile-lg" /><img src="/images/test.gif" />
+    </div>  
+</article>
+</body>
