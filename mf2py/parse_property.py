@@ -52,7 +52,7 @@ def url(el, base_url=''):
     if prop_value is not None:
         return urljoin(base_url, prop_value)
 
-    prop_value = get_attr(el, "src", check_name="img")
+    prop_value = get_attr(el, "src", check_name=("img", "audio", "video", "source"))
     if prop_value is not None:
         return urljoin(base_url, prop_value)
 
