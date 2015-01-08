@@ -1,9 +1,17 @@
 # coding: utf-8
 
+from mf2py import Parser
 from nose.tools import assert_equal, assert_true
-import os.path
 from pprint import pprint
-from mf2py.parser import Parser
+import os.path
+import sys
+
+if sys.version < '3':
+    text_type = unicode
+    binary_type = str
+else:
+    text_type = str
+    binary_type = bytes
 
 
 def parse_fixture(path):
@@ -241,14 +249,15 @@ def test_html_tag_class():
     assert_equal([u'entry2'], result['items'][0]['children'][1]['properties']['name'])
 
 
-
 def test_string_strip():
     result = parse_fixture("string_stripping.html")
     assert result["items"][0]["properties"]["name"][0] == "Tom Morris"
 
+
 def test_template_parse():
     result = parse_fixture("template_tag.html")
     assert len(result["items"]) == 0
+
 
 def test_backcompat_hproduct():
     result = parse_fixture("backcompat_hproduct.html")
@@ -260,16 +269,34 @@ def test_backcompat_hproduct():
     assert result["items"][0]["properties"]['description'][0] ==  u"Magical tasty sugar pills that don't do anything."
     assert result["items"][0]["properties"]["name"] == [u"Tom's Magical Quack Tincture"]
 
+
 def test_backcompat_hproduct_nested_hreview():
     result = parse_fixture("backcompat_hproduct_hreview_nested.html")
     assert result["items"][0]["children"][0]['type'] == ['h-review']
-    assert type(result["items"][0]["children"][0]['properties']['name'][0]) == unicode
+    assert type(result["items"][0]["children"][0]['properties']['name'][0]) == text_type
+
+
+def test_backcompat_rel_bookmark():
+    """Confirm that rel=bookmark inside of an h-entry is converted
+    to u-url.
+    """
+    result = parse_fixture('backcompat_feed_with_rel_bookmark.html')
+    for ii, url in enumerate((
+            '/2014/11/24/jump-rope',
+            '/2014/11/23/graffiti',
+            '/2014/11/21/earth',
+            '/2014/11/19/labor',
+    )):
+        assert result['items'][ii]['type'] == ['h-entry']
+        assert result['items'][ii]['properties']['url'] == [url]
+
 
 def test_area_uparsing():
     result = parse_fixture("area.html")
     assert result["items"][0]["properties"] == {u'url': [u'http://suda.co.uk'], u'name': [u'Brian Suda']}
     assert 'shape' in result["items"][0].keys()
     assert 'coords' in result["items"][0].keys()
+
 
 def test_src_equiv():
     result = parse_fixture("test_src_equiv.html")

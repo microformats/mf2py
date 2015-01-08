@@ -18,104 +18,126 @@ CLASSIC_ROOT_MAP = {
 
 CLASSIC_PROPERTY_MAP = {
     'vcard': {
-        'fn': ['p-name'],
-        'url': ['u-url'],
-        'honorific-prefix': ['p-honorific-prefix'],
-        'given-name': ['p-given-name'],
-        'additional-name': ['p-additional-name'],
-        'family-name': ['p-family-name'],
-        'honorific-suffix': ['p-honorific-suffix'],
-        'nickname': ['p-nickname'],
-        'email': ['u-email'],
-        'logo': ['u-logo'],
-        'photo': ['u-photo'],
-        'url': ['u-url'],
-        'uid': ['u-uid'],
-        'category': ['p-category'],
-        'adr': ['p-adr', 'h-adr'],
-        'extended-address': ['p-extended-address'],
-        'street-address': ['p-street-address'],
-        'locality': ['p-locality'],
-        'region': ['p-region'],
-        'postal-code': ['p-postal-code'],
-        'country-name': ['p-country-name'],
-        'label': ['p-label'],
-        'geo': ['p-geo', 'h-geo'],
-        'latitude': ['p-latitude'],
-        'longitude': ['p-longitude'],
-        'tel': ['p-tel'],
-        'note': ['p-note'],
-        'bday': ['dt-bday'],
-        'key': ['u-key'],
-        'org': ['p-org'],
-        'organization-name': ['p-organization-name'],
-        'organization-unit': ['p-organization-unit'],
+        'classes': {
+            'fn': ['p-name'],
+            'url': ['u-url'],
+            'honorific-prefix': ['p-honorific-prefix'],
+            'given-name': ['p-given-name'],
+            'additional-name': ['p-additional-name'],
+            'family-name': ['p-family-name'],
+            'honorific-suffix': ['p-honorific-suffix'],
+            'nickname': ['p-nickname'],
+            'email': ['u-email'],
+            'logo': ['u-logo'],
+            'photo': ['u-photo'],
+            'url': ['u-url'],
+            'uid': ['u-uid'],
+            'category': ['p-category'],
+            'adr': ['p-adr', 'h-adr'],
+            'extended-address': ['p-extended-address'],
+            'street-address': ['p-street-address'],
+            'locality': ['p-locality'],
+            'region': ['p-region'],
+            'postal-code': ['p-postal-code'],
+            'country-name': ['p-country-name'],
+            'label': ['p-label'],
+            'geo': ['p-geo', 'h-geo'],
+            'latitude': ['p-latitude'],
+            'longitude': ['p-longitude'],
+            'tel': ['p-tel'],
+            'note': ['p-note'],
+            'bday': ['dt-bday'],
+            'key': ['u-key'],
+            'org': ['p-org'],
+            'organization-name': ['p-organization-name'],
+            'organization-unit': ['p-organization-unit'],
+        },
     },
     'hentry': {
-        'entry-title': ['p-name'],
-        'entry-summary': ['p-summary'],
-        'entry-content': ['e-content'],
-        'published': ['dt-published'],
-        'updated': ['dt-updated'],
-        'author': ['p-author', 'h-card'],
-        'category': ['p-category'],
-        'geo': ['p-geo', 'h-geo'],
-        'latitude': ['p-latitude'],
-        'longitude': ['p-longitude'],
+        'classes': {
+            'entry-title': ['p-name'],
+            'entry-summary': ['p-summary'],
+            'entry-content': ['e-content'],
+            'published': ['dt-published'],
+            'updated': ['dt-updated'],
+            'author': ['p-author', 'h-card'],
+            'category': ['p-category'],
+            'geo': ['p-geo', 'h-geo'],
+            'latitude': ['p-latitude'],
+            'longitude': ['p-longitude'],
+        },
+        'rels': {
+            # Unlike most rel values, bookmark is scoped to its
+            # parent, not to the document.
+            'bookmark': ['u-url'],
+        },
     },
     'hrecipe': {
-        'fn': ['p-name'],
-        'ingredient': ['p-ingredient'],
-        'yield': ['p-yield'],
-        'instructions': ['e-instructions'],
-        'duration': ['dt-duration'],
-        'nutrition': ['p-nutrition'],
-        'photo': ['u-photo'],
-        'summary': ['p-summary'],
-        'author': ['p-author', 'h-card'],
+        'classes': {
+            'fn': ['p-name'],
+            'ingredient': ['p-ingredient'],
+            'yield': ['p-yield'],
+            'instructions': ['e-instructions'],
+            'duration': ['dt-duration'],
+            'nutrition': ['p-nutrition'],
+            'photo': ['u-photo'],
+            'summary': ['p-summary'],
+            'author': ['p-author', 'h-card'],
+        },
     },
     'hresume': {
-        'summary': ['p-summary'],
-        'contact': ['h-card', 'p-contact'],
-        'education': ['h-event', 'p-education'],
-        'experience': ['h-event', 'p-experience'],
-        'skill': ['p-skill'],
-        'affiliation': ['p-affiliation', 'h-card'],
+        'classes': {
+            'summary': ['p-summary'],
+            'contact': ['h-card', 'p-contact'],
+            'education': ['h-event', 'p-education'],
+            'experience': ['h-event', 'p-experience'],
+            'skill': ['p-skill'],
+            'affiliation': ['p-affiliation', 'h-card'],
+        },
     },
     'hevent': {
-        'dtstart': ['dt-start'],
-        'dtend': ['dt-end'],
-        'duration': ['dt-duration'],
-        'description': ['p-description'],
-        'summary': ['p-summary'],
-        'description': ['p-description'],
-        'url': ['u-url'],
-        'category': ['p-category'],
-        'location': ['h-card'],
-        'geo': ['p-location h-geo'],
+        'classes': {
+            'dtstart': ['dt-start'],
+            'dtend': ['dt-end'],
+            'duration': ['dt-duration'],
+            'description': ['p-description'],
+            'summary': ['p-summary'],
+            'description': ['p-description'],
+            'url': ['u-url'],
+            'category': ['p-category'],
+            'location': ['h-card'],
+            'geo': ['p-location h-geo'],
+        },
     },
     'hreview': {
-        'summary': ['p-name'],
-        'fn': ['p-item', 'h-item', 'p-name'],  # doesn't work properly, see spec
-        'photo': ['u-photo'],  # of the item being reviewed (p-item h-item u-photo)
-        'url': ['u-url'],  # of the item being reviewed (p-item h-item u-url)
-        'reviewer': ['p-reviewer', 'p-author', 'h-card'],
-        'dtreviewed': ['dt-reviewed'],
-        'rating': ['p-rating'],
-        'best': ['p-best'],
-        'worst': ['p-worst'],
-        'description': ['p-description'],
+        'classes': {
+            'summary': ['p-name'],
+            # doesn't work properly, see spec
+            'fn': ['p-item', 'h-item', 'p-name'],
+            # of the item being reviewed (p-item h-item u-photo)
+            'photo': ['u-photo'],
+            # of the item being reviewed (p-item h-item u-url)
+            'url': ['u-url'],
+            'reviewer': ['p-reviewer', 'p-author', 'h-card'],
+            'dtreviewed': ['dt-reviewed'],
+            'rating': ['p-rating'],
+            'best': ['p-best'],
+            'worst': ['p-worst'],
+            'description': ['p-description'],
+        },
     },
     'hproduct': {
-        'fn': ['p-name'],
-        'photo': ['u-photo'],
-        'brand': ['p-brand'],
-        'category': ['p-category'],
-        'description': ['p-description'],
-        'identifier': ['u-identifier'],
-        'url': ['u-url'],
-        'review': ['p-review', 'h-review', 'e-description'],
-        'price': ['p-price'],
+        'classes': {
+            'fn': ['p-name'],
+            'photo': ['u-photo'],
+            'brand': ['p-brand'],
+            'category': ['p-category'],
+            'description': ['p-description'],
+            'identifier': ['u-identifier'],
+            'url': ['u-url'],
+            'review': ['p-review', 'h-review', 'e-description'],
+            'price': ['p-price'],
+        },
     }
 }
 
@@ -128,13 +150,21 @@ def apply_rules(doc):
 
     def update_child_properties(parent, properties):
         for child in parent.find_all(recursive=False):
-            child_class = child.get('class')
-            for old_prop, new_props in properties.items():
-                if child_class and old_prop in child_class:
-                    for new_prop in new_props:
-                        if new_prop not in child_class:
-                            child_class.append(new_prop)
-
+            child_class = child.get('class', [])
+            # augment legacy class names with their associated mf2 classes
+            for old_prop, new_props in properties.get('classes', {}).items():
+                if old_prop in child_class:
+                    child_class += [p for p in new_props
+                                    if p not in child_class]
+            # check for legacy rel properties (e.g. rel=bookmark that translate
+            # to mf2 classes
+            child_rel = child.get('rel', [])
+            for old_prop, new_props in properties.get('rels', {}).items():
+                if child_rel and old_prop in child_rel:
+                    child_class += [p for p in new_props
+                                    if p not in child_class]
+            if child_class:
+                child['class'] = child_class
             # recurse if it's not a nested root
             if not any(cls in CLASSIC_ROOT_MAP
                        for cls in child.get('class', [])):
