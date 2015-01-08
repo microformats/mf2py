@@ -306,7 +306,7 @@ class Parser(object):
         if filter_by_type is None:
             return self.__parsed__
         else:
-            return [x for x in self.__parsed__['items'] if x['type'] == [filter_by_type]]
+            return [x for x in self.__parsed__['items'] if filter_by_type in x['type']]
 
     ## function to get a json version of parsed microformat
     def to_json(self, **kwargs):
