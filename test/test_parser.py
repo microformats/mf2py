@@ -2,7 +2,6 @@
 
 from nose.tools import assert_equal, assert_true
 import os.path
-from pprint import pprint
 from mf2py.parser import Parser
 
 
@@ -185,10 +184,10 @@ def test_embedded_parsing():
     result = parse_fixture("embedded.html")
     assert_equal(
         result["items"][0]["properties"]["content"][0]["html"],
-        '\n   <p>Blah blah blah blah blah.</p>\n   <p>Blah.</p>\n   <p>Blah blah blah.</p>\n  ')
+        '\n<p>Blah blah blah blah blah.</p>\n<p>Blah.</p>\n<p>Blah blah blah.</p>\n')
     assert_equal(
         result["items"][0]["properties"]["content"][0]["value"],
-        '\n   Blah blah blah blah blah.\n   Blah.\n   Blah blah blah.\n  ')
+        '\nBlah blah blah blah blah.\nBlah.\nBlah blah blah.\n')
 
 
 def test_backcompat():
@@ -222,14 +221,14 @@ def test_hoisting_nested_hcard():
                             'value': u'KP'
                         }
                     ],
-                    'name': [u'KP\n    KP1']
+                    'name': [u'KP\nKP1']
                 },
                 'type': ['h-entry']
             }
         ],
         'rels': {}
     }
-    assert_equal([u'KP\n    KP1'], result['items'][0]['properties']['name'])
+    assert_equal([u'KP\nKP1'], result['items'][0]['properties']['name'])
     assert_equal(expected, result)
 
 
@@ -277,6 +276,35 @@ def test_src_equiv():
         assert 'x-example' in item['properties'].keys()
         assert u'http://example.org/' == item['properties']['x-example'][0]
 
-if __name__ == '__main__':
-    result = parse_fixture("nested_multiple_classnames.html")
-    pprint(result)
+
+def test_nested_values():
+    """When parsing nested microformats, check that value is the value of
+    the simple property element"""
+    result = parse_fixture("nested_values.html")
+    entry = result["items"][0]
+
+    assert_equal({
+        'properties': {
+            'name': ['Kyle'],
+            'url': ['http://about.me/kyle'],
+        },
+        'value': 'Kyle',
+        'type': ['h-card'],
+    }, entry["properties"]["author"][0])
+
+    assert_equal({
+        'properties': {
+            'name': ['foobar'],
+            'url': ['http://example.com/foobar'],
+        },
+        'value': 'http://example.com/foobar',
+        'type': ['h-cite'],
+    }, entry["properties"]["like-of"][0])
+
+    assert_equal({
+        'properties': {
+            'name': ['George'],
+            'url': ['http://people.com/george'],
+        },
+        'type': ['h-card'],
+    }, entry["children"][0])
