@@ -277,6 +277,10 @@ def test_src_equiv():
         assert 'x-example' in item['properties'].keys()
         assert u'http://example.org/' == item['properties']['x-example'][0]
 
+def test_rels():
+    result = parse_fixture("rel.html")
+    assert result['rels'] == {u'in-reply-to': [u'http://example.com/1', u'http://example.com/2'], u'author': [u'http://example.com/a', u'http://example.com/b']}
+
 if __name__ == '__main__':
     result = parse_fixture("nested_multiple_classnames.html")
     pprint(result)
