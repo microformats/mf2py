@@ -171,6 +171,7 @@ def test_datetime_vcp_parsing():
     assert_equal(result["items"][5]["properties"]["published"][0],
                  "2014-06-01T12:30:00-0600")
 
+
 def test_dt_end_implied_date():
     """Test that events with dt-start and dt-end use the implied date
     rules http://microformats.org/wiki/value-class-pattern#microformats2_parsers
@@ -189,14 +190,15 @@ def test_dt_end_implied_date():
     assert_equal(event_w_tz["properties"]["end"][0],
                  "2014-06-01T19:30:00-0600")
 
+
 def test_embedded_parsing():
     result = parse_fixture("embedded.html")
     assert_equal(
         result["items"][0]["properties"]["content"][0]["html"],
-        '\n   <p>Blah blah blah blah blah.</p>\n   <p>Blah.</p>\n   <p>Blah blah blah.</p>\n  ')
+        '\n<p>Blah blah blah blah blah.</p>\n<p>Blah.</p>\n<p>Blah blah blah.</p>\n')
     assert_equal(
         result["items"][0]["properties"]["content"][0]["value"],
-        '\n   Blah blah blah blah blah.\n   Blah.\n   Blah blah blah.\n  ')
+        '\nBlah blah blah blah blah.\nBlah.\nBlah blah blah.\n')
 
 
 def test_backcompat():
@@ -230,14 +232,14 @@ def test_hoisting_nested_hcard():
                             'value': u'KP'
                         }
                     ],
-                    'name': [u'KP\n    KP1']
+                    'name': [u'KP\nKP1']
                 },
                 'type': ['h-entry']
             }
         ],
         'rels': {}
     }
-    assert_equal([u'KP\n    KP1'], result['items'][0]['properties']['name'])
+    assert_equal([u'KP\nKP1'], result['items'][0]['properties']['name'])
     assert_equal(expected, result)
 
 
