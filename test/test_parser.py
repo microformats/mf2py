@@ -1,9 +1,17 @@
 # coding: utf-8
 
-from nose.tools import assert_equal, assert_true
-import os.path
-from pprint import pprint
 from mf2py.parser import Parser
+from nose.tools import assert_equal, assert_true
+from pprint import pprint
+import os.path
+import sys
+
+if sys.version < '3':
+    text_type = unicode
+    binary_type = str
+else:
+    text_type = str
+    binary_type = bytes
 
 
 def parse_fixture(path):
@@ -267,7 +275,7 @@ def test_backcompat_hproduct():
 def test_backcompat_hproduct_nested_hreview():
     result = parse_fixture("backcompat_hproduct_hreview_nested.html")
     assert result["items"][0]["children"][0]['type'] == ['h-review']
-    assert type(result["items"][0]["children"][0]['properties']['name'][0]) == unicode
+    assert type(result["items"][0]["children"][0]['properties']['name'][0]) == text_type
 
 
 def test_area_uparsing():
