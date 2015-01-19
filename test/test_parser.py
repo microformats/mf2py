@@ -163,6 +163,7 @@ def test_datetime_vcp_parsing():
     assert_equal(result["items"][5]["properties"]["published"][0],
                  "2014-06-01T12:30:00-0600")
 
+
 def test_dt_end_implied_date():
     """Test that events with dt-start and dt-end use the implied date
     rules http://microformats.org/wiki/value-class-pattern#microformats2_parsers
@@ -181,14 +182,15 @@ def test_dt_end_implied_date():
     assert_equal(event_w_tz["properties"]["end"][0],
                  "2014-06-01T19:30:00-0600")
 
+
 def test_embedded_parsing():
     result = parse_fixture("embedded.html")
     assert_equal(
         result["items"][0]["properties"]["content"][0]["html"],
-        '\n   <p>Blah blah blah blah blah.</p>\n   <p>Blah.</p>\n   <p>Blah blah blah.</p>\n  ')
+        '\n<p>Blah blah blah blah blah.</p>\n<p>Blah.</p>\n<p>Blah blah blah.</p>\n')
     assert_equal(
         result["items"][0]["properties"]["content"][0]["value"],
-        '\n   Blah blah blah blah blah.\n   Blah.\n   Blah blah blah.\n  ')
+        '\nBlah blah blah blah blah.\nBlah.\nBlah blah blah.\n')
 
 
 def test_backcompat():
@@ -222,14 +224,14 @@ def test_hoisting_nested_hcard():
                             'value': u'KP'
                         }
                     ],
-                    'name': [u'KP\n    KP1']
+                    'name': [u'KP\nKP1']
                 },
                 'type': ['h-entry']
             }
         ],
         'rels': {}
     }
-    assert_equal([u'KP\n    KP1'], result['items'][0]['properties']['name'])
+    assert_equal([u'KP\nKP1'], result['items'][0]['properties']['name'])
     assert_equal(expected, result)
 
 
@@ -241,14 +243,15 @@ def test_html_tag_class():
     assert_equal([u'entry2'], result['items'][0]['children'][1]['properties']['name'])
 
 
-
 def test_string_strip():
     result = parse_fixture("string_stripping.html")
     assert result["items"][0]["properties"]["name"][0] == "Tom Morris"
 
+
 def test_template_parse():
     result = parse_fixture("template_tag.html")
     assert len(result["items"]) == 0
+
 
 def test_backcompat_hproduct():
     result = parse_fixture("backcompat_hproduct.html")
@@ -260,16 +263,19 @@ def test_backcompat_hproduct():
     assert result["items"][0]["properties"]['description'][0] ==  u"Magical tasty sugar pills that don't do anything."
     assert result["items"][0]["properties"]["name"] == [u"Tom's Magical Quack Tincture"]
 
+
 def test_backcompat_hproduct_nested_hreview():
     result = parse_fixture("backcompat_hproduct_hreview_nested.html")
     assert result["items"][0]["children"][0]['type'] == ['h-review']
     assert type(result["items"][0]["children"][0]['properties']['name'][0]) == unicode
+
 
 def test_area_uparsing():
     result = parse_fixture("area.html")
     assert result["items"][0]["properties"] == {u'url': [u'http://suda.co.uk'], u'name': [u'Brian Suda']}
     assert 'shape' in result["items"][0].keys()
     assert 'coords' in result["items"][0].keys()
+
 
 def test_src_equiv():
     result = parse_fixture("test_src_equiv.html")

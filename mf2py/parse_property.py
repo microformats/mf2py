@@ -41,14 +41,15 @@ def text(el):
     if prop_value is not None:
         return prop_value
 
-    ## see if get_text() replaces img with alts
+    # see if get_text() replaces img with alts
     # strip here?
     return el.get_text()
 
+
 def url(el, base_url=''):
     """Process p-* properties"""
-    ## do the normalise absolute url thing
-    prop_value = get_attr(el, "href", check_name=("a","area"))
+    # do the normalise absolute url thing
+    prop_value = get_attr(el, "href", check_name=("a", "area"))
     if prop_value is not None:
         return urljoin(base_url, prop_value)
 
@@ -76,8 +77,12 @@ def url(el, base_url=''):
 
 def datetime(el, default_date=None):
     """Process dt-* properties
-    :param el: Tag containing the dt-value
-    :return: a tuple of two strings, (datetime, date)
+
+    Args:
+      el (bs4.element.Tag): Tag containing the dt-value
+
+    Returns:
+      a tuple (string string): a tuple of two strings, (datetime, date)
     """
     def try_normalize(dtstr, match=None):
         """Try to normalize a datetime string.
