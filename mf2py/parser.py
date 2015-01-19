@@ -318,7 +318,7 @@ class Parser(object):
         if filter_by_type is None:
             return self.__parsed__
         else:
-            return [x for x in self.__parsed__['items'] if x['type'] == [filter_by_type]]
+            return [x for x in self.__parsed__['items'] if filter_by_type in x['type']]
 
     def to_json(self, pretty_print=False, filter_by_type=None):
         """Get a json-encoding string version of the parsed microformats document
