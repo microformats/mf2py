@@ -195,10 +195,10 @@ def test_embedded_parsing():
     result = parse_fixture("embedded.html")
     assert_equal(
         result["items"][0]["properties"]["content"][0]["html"],
-        '\n<p>Blah blah blah blah blah.</p>\n<p>Blah.</p>\n<p>Blah blah blah.</p>\n')
+        '\n   <p>Blah blah blah blah blah.</p>\n   <p>Blah.</p>\n   <p>Blah blah blah.</p>\n  ')
     assert_equal(
         result["items"][0]["properties"]["content"][0]["value"],
-        '\nBlah blah blah blah blah.\nBlah.\nBlah blah blah.\n')
+        '\n   Blah blah blah blah blah.\n   Blah.\n   Blah blah blah.\n  ')
 
 
 def test_backcompat():
@@ -232,14 +232,14 @@ def test_hoisting_nested_hcard():
                             'value': u'KP'
                         }
                     ],
-                    'name': [u'KP\nKP1']
+                    'name': [u'KP\n    KP1']
                 },
                 'type': ['h-entry']
             }
         ],
         'rels': {}
     }
-    assert_equal([u'KP\nKP1'], result['items'][0]['properties']['name'])
+    assert_equal([u'KP\n    KP1'], result['items'][0]['properties']['name'])
     assert_equal(expected, result)
 
 
