@@ -1,9 +1,10 @@
 mf2py
 =====
 
-A new Python parser for [microformats 2](http://microformats.org/wiki/Microformats2).
+Python parser for [microformats 2](http://microformats.org/wiki/Microformats2).
 
-Current status: early alpha - mostly usable. Implements property parsing (except value-class-pattern rules), implied and rels/alternate parsing.
+Current status: Full-featured and mostly stable. Implements the full
+mf2 spec, including backward compatibility with microformats1.
 
 Tom Morris: Please do help work on it. Currently I'm just writing test cases as we
 implement stuff and TDDing to completion. Once the parser is stable, I intend
@@ -34,7 +35,7 @@ Parse a file containing the content
 
 Parse string containing content
 
-	content = '<article class="h-entry"><h1 class="p-name">Hellow</h1></article>'
+	content = '<article class="h-entry"><h1 class="p-name">Hello</h1></article>'
 	p = Parser(doc=content)
 
 Parse content from a URL

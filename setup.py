@@ -3,15 +3,16 @@
 from setuptools import setup
 
 setup(name='mf2py',
-      version='0.2.1',
+      version='0.2.2',
       description='Python Microformats2 parser',
       author='Tom Morris',
       author_email='tom@tommorris.org',
       url='http://microformats.org/wiki/mf2py',
       install_requires=['html5lib', 'requests', 'BeautifulSoup4'],
+      test_requires=['nose'],
       packages=['mf2py'],
       classifiers=[
-          'Development Status :: 3 - Alpha',
+          'Development Status :: 4 - Beta',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: MIT License',
           'Natural Language :: English',
