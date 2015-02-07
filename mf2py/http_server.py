@@ -1,6 +1,8 @@
+from __future__ import print_function
 import os
 from mf2py import Parser
 from flask import Flask, Response, request
+
 app = Flask(__name__)
 
 
@@ -21,7 +23,7 @@ def parse():
         u = request.args['url']
     else:
         u = request.form['url']
-    print u
+    print(u)
     p = Parser(url=unicode(u))
     return Response(p.to_json(pretty_print=True), status=200,
                     mimetype='application/json')
