@@ -38,18 +38,18 @@ class Parser(object):
 
     useragent = 'mf2py - microformats2 parser for python'
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, doc=None, url=None):
         self.__url__ = None
         self.__doc__ = None
         self.__parsed__ = {"items": [], "rels": {}}
 
-        if 'doc' in kwargs:
-            self.__doc__ = kwargs['doc']
+        if doc:
+            self.__doc__ = doc
             if not isinstance(self.__doc__, BeautifulSoup):
                 self.__doc__ = BeautifulSoup(self.__doc__)
 
-        if 'url' in kwargs:
-            self.__url__ = kwargs['url']
+        if url:
+            self.__url__ = url
 
             if self.__doc__ is None:
                 data = requests.get(self.__url__)
