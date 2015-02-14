@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from mf2py.parser import Parser
+from mf2py import Parser
 from nose.tools import assert_equal, assert_true
 from pprint import pprint
 import os.path
@@ -275,7 +275,22 @@ def test_backcompat_hproduct():
 def test_backcompat_hproduct_nested_hreview():
     result = parse_fixture("backcompat_hproduct_hreview_nested.html")
     assert result["items"][0]["children"][0]['type'] == ['h-review']
-    assert type(result["items"][0]["children"][0]['properties']['name'][0]) == text_type
+    assert type(result["items"][0]["children"][0]['properties']['name'][0]) == unicode
+
+
+def test_backcompat_rel_bookmark():
+    """Confirm that rel=bookmark inside of an h-entry is converted
+    to u-url.
+    """
+    result = parse_fixture('backcompat_feed_with_rel_bookmark.html')
+    for ii, url in enumerate((
+            '/2014/11/24/jump-rope',
+            '/2014/11/23/graffiti',
+            '/2014/11/21/earth',
+            '/2014/11/19/labor',
+    )):
+        assert result['items'][ii]['type'] == ['h-entry']
+        assert result['items'][ii]['properties']['url'] == [url]
 
 
 def test_area_uparsing():
