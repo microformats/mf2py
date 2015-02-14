@@ -14,9 +14,10 @@ else:
     binary_type = bytes
 
 
-def parse_fixture(path):
-    p = Parser(doc=open(os.path.join("test/examples/", path)))
-    return p.to_dict()
+def parse_fixture(path, url=None):
+    with open(os.path.join("test/examples/", path)) as f:
+        p = Parser(doc=f, url=url)
+        return p.to_dict()
 
 
 def test_empty():
@@ -275,7 +276,7 @@ def test_backcompat_hproduct():
 def test_backcompat_hproduct_nested_hreview():
     result = parse_fixture("backcompat_hproduct_hreview_nested.html")
     assert result["items"][0]["children"][0]['type'] == ['h-review']
-    assert type(result["items"][0]["children"][0]['properties']['name'][0]) == unicode
+    assert type(result["items"][0]["children"][0]['properties']['name'][0]) == text_type
 
 
 def test_backcompat_rel_bookmark():
@@ -306,10 +307,21 @@ def test_src_equiv():
         assert 'x-example' in item['properties'].keys()
         assert u'http://example.org/' == item['properties']['x-example'][0]
 
+
 def test_rels():
     result = parse_fixture("rel.html")
-    assert result['rels'] == {u'in-reply-to': [u'http://example.com/1', u'http://example.com/2'], u'author': [u'http://example.com/a', u'http://example.com/b']}
+    assert result['rels'] == {
+        u'in-reply-to': [u'http://example.com/1', u'http://example.com/2'],
+        u'author': [u'http://example.com/a', u'http://example.com/b'],
+    }
+
+
+def test_empty_href():
+    result = parse_fixture("hcard_with_empty_url.html", "http://foo.com")
+
+    for hcard in result['items']:
+        assert hcard['properties'].get('url') == ['http://foo.com']
 
 if __name__ == '__main__':
-    result = parse_fixture("nested_multiple_classnames.html")
+    result = parse_fixture("hcard_with_empty_url.html", 'http://foo.com')
     pprint(result)
