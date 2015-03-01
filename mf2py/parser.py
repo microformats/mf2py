@@ -85,7 +85,8 @@ class Parser(object):
         """
         self._default_date = None
 
-        def handle_microformat(root_class_names, el, is_nested=True):
+
+        def handle_microformat(root_class_names, el, simple_value=None):
             """Handles a (possibly nested) microformat, i.e. h-*
             """
             properties = {}
@@ -128,12 +129,12 @@ class Parser(object):
                     microformat['coords'] = coords
 
             # insert children if any
-            if len(children) > 0:
+            if children:
                 microformat["children"] = children
-            # insert value if it is a nested microformat (check this
-            # interpretation)
-            if is_nested:
-                microformat["value"] = el.get_text()
+            # simple value is the parsed property value if it were not
+            # an h-* class
+            if simple_value is not None:
+                microformat["value"] = simple_value
             return microformat
 
         def parse_props(el):
@@ -145,82 +146,84 @@ class Parser(object):
             classes = el.get("class", [])
             # Is this element a microformat root?
             root_class_names = mf2_classes.root(classes)
-            if root_class_names:
-                # this element represents a nested microformat
-                if mf2_classes.properties(classes):
-                    # nested microformat is property-nested, parse and
-                    # add to all property lists it's part of
-                    nested_microformat = handle_microformat(root_class_names, el)
-                    for prop_name in mf2_classes.properties(classes):
-                        prop_value = props.get(prop_name, [])
-                        prop_value.append(nested_microformat)
-                        props[prop_name] = prop_value
+            # Is this a property element (p-*, u-*, etc.)
+            is_property_el = False
+
+            # Parse plaintext p-* properties.
+            p_value = None
+            for prop_name in mf2_classes.text(classes):
+                is_property_el = True
+                prop_value = props.setdefault(prop_name, [])
+
+                # if value has not been parsed then parse it
+                if p_value is None:
+                    p_value = parse_property.text(el).strip()
+
+                if root_class_names:
+                    prop_value.append(
+                        handle_microformat(root_class_names, el, p_value))
                 else:
-                    # nested microformat is a child microformat, parse
-                    # and add to children
-                    children.append(handle_microformat(root_class_names, el))
-            else:
-                # Parse plaintext p-* properties.
-                value = None
-                for prop_name in mf2_classes.text(classes):
-                    prop_value = props.get(prop_name, [])
+                    prop_value.append(p_value)
 
-                    # if value has not been parsed then parse it
-                    if value is None:
-                        value = parse_property.text(el).strip()
+            # Parse URL u-* properties.
+            u_value = None
+            for prop_name in mf2_classes.url(classes):
+                is_property_el = True
+                prop_value = props.setdefault(prop_name, [])
 
-                    prop_value.append(value)
+                # if value has not been parsed then parse it
+                if u_value is None:
+                    u_value = parse_property.url(el, base_url=self.__url__)
 
-                    if prop_value is not []:
-                        props[prop_name] = prop_value
+                if root_class_names:
+                    prop_value.append(
+                        handle_microformat(root_class_names, el, u_value))
+                else:
+                    prop_value.append(u_value)
 
-                # Parse URL u-* properties.
-                value = None
-                for prop_name in mf2_classes.url(classes):
-                    prop_value = props.get(prop_name, [])
+            # Parse datetime dt-* properties.
+            dt_value = None
+            for prop_name in mf2_classes.datetime(classes):
+                is_property_el = True
+                prop_value = props.setdefault(prop_name, [])
 
-                    # if value has not been parsed then parse it
-                    if value is None:
-                        value = parse_property.url(el, base_url=self.__url__)
+                # if value has not been parsed then parse it
+                if dt_value is None:
+                    dt_value, new_date = parse_property.datetime(
+                        el, self._default_date)
+                    # update the default date
+                    if new_date:
+                        self._default_date = new_date
 
-                    prop_value.append(value)
+                if root_class_names:
+                    prop_value.append(
+                        handle_microformat(root_class_names, el, dt_value))
+                else:
+                    prop_value.append(dt_value)
 
-                    if prop_value is not []:
-                        props[prop_name] = prop_value
+            # Parse embedded markup e-* properties.
+            e_value = None
+            for prop_name in mf2_classes.embedded(classes):
+                is_property_el = True
+                prop_value = props.setdefault(prop_name, [])
 
-                # Parse datetime dt-* properties.
-                value = None
-                for prop_name in mf2_classes.datetime(classes):
-                    prop_value = props.get(prop_name, [])
+                # if value has not been parsed then parse it
+                if e_value is None:
+                    e_value = parse_property.embedded(el)
 
-                    # if value has not been parsed then parse it
-                    if value is None:
-                        value, new_date = parse_property.datetime(
-                            el, self._default_date)
-                        # update the default date
-                        if new_date:
-                            self._default_date = new_date
+                if root_class_names:
+                    prop_value.append(
+                        handle_microformat(root_class_names, el, e_value))
+                else:
+                    prop_value.append(e_value)
 
-                    prop_value.append(value)
+            # if this is not a property element, but it is a h-* microformat,
+            # add it to our list of children
+            if not is_property_el and root_class_names:
+                children.append(handle_microformat(root_class_names, el))
 
-                    if prop_value is not []:
-                        props[prop_name] = prop_value
-
-                # Parse embedded markup e-* properties.
-                value = None
-                for prop_name in mf2_classes.embedded(classes):
-                    prop_value = props.get(prop_name, [])
-
-                    # if value has not been parsed then parse it
-                    if value is None:
-                        value = parse_property.embedded(el)
-
-                    prop_value.append(value)
-
-                    if prop_value is not []:
-                        props[prop_name] = prop_value
-
-                # parse child tags, provided this isn't a microformat root-class
+            # parse child tags, provided this isn't a microformat root-class
+            if not root_class_names:
                 for child in el.find_all(True, recursive=False):
                     child_properties, child_microformats = parse_props(child)
                     for prop_name in child_properties:
@@ -288,8 +291,7 @@ class Parser(object):
 
             # if potential microformats found parse them
             if potential_microformats:
-                result = handle_microformat(potential_microformats, el,
-                                            top_level)
+                result = handle_microformat(potential_microformats, el)
                 ctx.append(result)
             else:
                 # parse child tags

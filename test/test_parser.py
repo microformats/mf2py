@@ -325,3 +325,35 @@ def test_empty_href():
 if __name__ == '__main__':
     result = parse_fixture("hcard_with_empty_url.html", 'http://foo.com')
     pprint(result)
+
+def test_nested_values():
+    """When parsing nested microformats, check that value is the value of
+    the simple property element"""
+    result = parse_fixture("nested_values.html")
+    entry = result["items"][0]
+
+    assert_equal({
+        'properties': {
+            'name': ['Kyle'],
+            'url': ['http://about.me/kyle'],
+        },
+        'value': 'Kyle',
+        'type': ['h-card'],
+    }, entry["properties"]["author"][0])
+
+    assert_equal({
+        'properties': {
+            'name': ['foobar'],
+            'url': ['http://example.com/foobar'],
+        },
+        'value': 'http://example.com/foobar',
+        'type': ['h-cite'],
+    }, entry["properties"]["like-of"][0])
+
+    assert_equal({
+        'properties': {
+            'name': ['George'],
+            'url': ['http://people.com/george'],
+        },
+        'type': ['h-card'],
+    }, entry["children"][0])

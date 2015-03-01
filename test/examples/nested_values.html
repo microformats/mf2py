@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Nested h-* value parsing test</title>
+  </head>
+  <body>
+    <div class="h-entry">
+      <p>
+        <!-- value should be parsed as p-* -->
+        <a class="p-author h-card" href="http://about.me/kyle">Kyle</a>
+      </p>
+      <p>
+        <!-- value should be parsed as u-* -->
+        Liked <a class="u-like-of h-cite" href="http://example.com/foobar">foobar</a>.
+      </p>
+
+      Oh by the way I should mention
+      <a class="h-card" href="http://people.com/george">George</a>
+      who will not have a nested value.
+    </div>
+  </body>
+</html>
