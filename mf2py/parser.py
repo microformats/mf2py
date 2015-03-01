@@ -21,6 +21,22 @@ else:
     from urllib.parse import urlparse, urljoin
 
 
+def parse(doc=None, url=None):
+    """
+    Parse a microformats2 document or url and return a json dictionary.
+
+    Args:
+      doc (file or string or BeautifulSoup doc): file handle, text of content
+        to parse, or BeautifulSoup document. If None, it will be fetched from
+        given url
+      url (string): url of the file to be processed. Optionally extracted from
+        base-element of given doc
+
+    Return: a json dict represented the structured data in this document.
+    """
+    return Parser(doc=doc, url=url).to_dict()
+
+
 class Parser(object):
     """Object to parse a document for microformats and return them in
     appropriate formats.

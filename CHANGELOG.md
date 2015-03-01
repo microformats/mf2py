@@ -1,6 +1,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 0.2.5 - 2015-03-01
+## Added
+- convenience method `mf2py.parse` that takes the same arguments as Parser
+  and returns a dict.
+## Changed
+- nested h-* classes now parse their "value" based on the property
+  they represent (p-*, u-*, dt-*), so for example "p-in-reply-to
+  h-cite" would have a name as its value and "u-in-reply-to h-cite"
+  will have a URL.
+
 ## 0.2.4 - 2015-02-13
 ### Added
 - Add rel=bookmark to backward compat parsing rules based (translated
