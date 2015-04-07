@@ -1,6 +1,8 @@
 mf2py
 =====
 
+[![Build Status](https://travis-ci.org/tommorris/mf2py.svg?branch=master)](https://travis-ci.org/tommorris/mf2py)
+
 [![Can I Use Python 3?](https://caniusepython3.com/project/mf2py.svg)](https://caniusepython3.com/project/mf2py)
 
 Python parser for [microformats 2](http://microformats.org/wiki/Microformats2).
