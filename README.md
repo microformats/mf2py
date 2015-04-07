@@ -1,6 +1,8 @@
 mf2py
 =====
 
+[![Can I Use Python 3?](https://caniusepython3.com/project/mf2py.svg)](https://caniusepython3.com/project/mf2py)
+
 Python parser for [microformats 2](http://microformats.org/wiki/Microformats2).
 
 Current status: Full-featured and mostly stable. Implements the full
