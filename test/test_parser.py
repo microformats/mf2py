@@ -19,11 +19,6 @@ def parse_fixture(path, url=None):
         p = Parser(doc=f, url=url)
         return p.to_dict()
 
-def parse_fixture_richrels(path, url=None,richrels=True):
-    with open(os.path.join("test/examples/", path)) as f:
-        p = Parser(doc=f, url=url, richrels=richrels)
-        return p.to_dict()
-
 
 def test_empty():
     p = Parser()
@@ -320,7 +315,6 @@ def test_rels():
         u'in-reply-to': [u'http://example.com/1', u'http://example.com/2'],
         u'author': [u'http://example.com/a', u'http://example.com/b'],
         }
-    result = parse_fixture_richrels("rel.html")
     assert result['urls'] == {
         u'http://example.com/1': {"name":[u"post 1"],"rels":[u'in-reply-to']},
         u'http://example.com/2': {"name":[u"post 2"],"rels":[u'in-reply-to']},

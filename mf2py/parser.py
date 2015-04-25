@@ -54,7 +54,7 @@ class Parser(object):
 
     useragent = 'mf2py - microformats2 parser for python'
 
-    def __init__(self, doc=None, url=None, richrels=False):
+    def __init__(self, doc=None, url=None):
         self.__url__ = None
         self.__doc__ = None
         self.__parsed__ = {"items": [], "rels": {}, "urls": {}}
