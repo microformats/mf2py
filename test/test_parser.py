@@ -239,7 +239,7 @@ def test_hoisting_nested_hcard():
             }
         ],
         'rels': {},
-        'urls': {}
+        'rel-urls': {}
     }
     assert_equal([u'KP\n    KP1'], result['items'][0]['properties']['name'])
     assert_equal(expected, result)
@@ -315,18 +315,18 @@ def test_rels():
         u'in-reply-to': [u'http://example.com/1', u'http://example.com/2'],
         u'author': [u'http://example.com/a', u'http://example.com/b'],
         }
-    assert result['urls'] == {
-        u'http://example.com/1': {"name":[u"post 1"],"rels":[u'in-reply-to']},
-        u'http://example.com/2': {"name":[u"post 2"],"rels":[u'in-reply-to']},
-        u'http://example.com/a': {"name":[u"author a"],"rels":[u'author']},
-        u'http://example.com/b': {"name":[u"author b"],"rels":[u'author']},
+    assert result['rel-urls'] == {
+        u'http://example.com/1': {'text': u"post 1","rels":[u'in-reply-to']},
+        u'http://example.com/2': {'text': u"post 2","rels":[u'in-reply-to']},
+        u'http://example.com/a': {'text': u"author a","rels":[u'author']},
+        u'http://example.com/b': {'text': u"author b","rels":[u'author']},
         }
 
 def test_alternates():
     result = parse_fixture("rel.html")
     assert result['alternates'] == [
         {'url': u'http://example.com/fr', 'media': u'handheld',
-        'name': [u'French mobile homepage'],
+        'text': u'French mobile homepage',
         'rel': u'home', 'hreflang': u'fr'}
         ]
 
@@ -334,9 +334,9 @@ def test_enclosures():
     result = parse_fixture("rel_enclosure.html")
     print result
     assert result['rels'] == {u'enclosure': [u'http://example.com/movie.mp4']}
-    assert result['urls'] == {u'http://example.com/movie.mp4': {
+    assert result['rel-urls'] == {u'http://example.com/movie.mp4': {
             'rels': [u'enclosure'], 
-            'name': [u'my movie'],
+            'text': u'my movie',
             'type': u'video/mpeg'}
             }
 
