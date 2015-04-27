@@ -332,7 +332,6 @@ def test_alternates():
 
 def test_enclosures():
     result = parse_fixture("rel_enclosure.html")
-    print result
     assert result['rels'] == {u'enclosure': [u'http://example.com/movie.mp4']}
     assert result['rel-urls'] == {u'http://example.com/movie.mp4': {
             'rels': [u'enclosure'], 
