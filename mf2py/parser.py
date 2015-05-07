@@ -57,7 +57,7 @@ class Parser(object):
     def __init__(self, doc=None, url=None):
         self.__url__ = None
         self.__doc__ = None
-        self.__parsed__ = {"items": [], "rels": {}}
+        self.__parsed__ = {"items": [], "rels": {}, "rel-urls": {}}
 
         if doc:
             self.__doc__ = doc
@@ -258,13 +258,22 @@ class Parser(object):
             if rel_attrs is not None:
                 # find the url and normalise it
                 url = urljoin(self.__url__, el.get('href', ''))
-
                 # there does not exist alternate in rel attributes
                 # then parse rels as local
                 if "alternate" not in rel_attrs:
+                    value_dict = self.__parsed__["rel-urls"].get(url, {})
+                    value_dict["text"] = el.get_text().strip()
+                    url_rels = value_dict.get("rels",[])
+                    value_dict["rels"] = url_rels
+                    for knownattr in ("media","hreflang","type","title"):
+                        x = get_attr(el, knownattr)
+                        if x is not None:
+                            value_dict[knownattr] = x
+                    self.__parsed__["rel-urls"][url] = value_dict
                     for rel_value in rel_attrs:
                         value_list = self.__parsed__["rels"].get(rel_value, [])
                         value_list.append(url)
+                        url_rels.append(rel_value)
                         self.__parsed__["rels"][rel_value] = value_list
                 else:
                     alternate_list = self.__parsed__.get("alternates", [])
@@ -274,19 +283,11 @@ class Parser(object):
                         [r for r in rel_attrs if not r == "alternate"])
                     if x is not "":
                         alternate_dict["rel"] = x
-
-                    x = get_attr(el, "media")
-                    if x is not None:
-                        alternate_dict["media"] = x
-
-                    x = get_attr(el, "hreflang")
-                    if x is not None:
-                        alternate_dict["hreflang"] = x
-
-                    x = get_attr(el, "type")
-                    if x is not None:
-                        alternate_dict["type"] = x
-
+                    alternate_dict["text"] = el.get_text().strip()
+                    for knownattr in ("media","hreflang","type","title"):
+                        x = get_attr(el, knownattr)
+                        if x is not None:
+                            alternate_dict[knownattr] = x
                     alternate_list.append(alternate_dict)
                     self.__parsed__["alternates"] = alternate_list
 
