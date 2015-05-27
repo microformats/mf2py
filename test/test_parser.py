@@ -5,6 +5,8 @@ from nose.tools import assert_equal, assert_true
 from pprint import pprint
 import os.path
 import sys
+import glob
+import json
 
 if sys.version < '3':
     text_type = unicode
@@ -380,3 +382,18 @@ def test_nested_values():
         },
         'type': ['h-card'],
     }, entry["children"][0])
+
+def test_mf2tests():
+    allfiles = glob.glob(os.path.join('.', 'tests','tests', '**', '**', '*.json'))
+    for jsonfile in allfiles:
+        htmlfile = jsonfile[:-4]+'html'
+        with open(htmlfile) as f:
+            p = Parser(doc=f).to_dict()
+        with open(jsonfile) as g:
+            s = json.load(g)
+        p.pop('rel-urls',None)
+        yield check_mf2, htmlfile, p,s
+
+def check_mf2(htmlfile, p,s):
+    assert_equal(p,s)
+
