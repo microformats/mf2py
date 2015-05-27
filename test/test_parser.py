@@ -388,7 +388,7 @@ def test_mf2tests():
     for jsonfile in allfiles:
         htmlfile = jsonfile[:-4]+'html'
         with open(htmlfile) as f:
-            p = Parser(doc=f).to_dict()
+            p = json.loads(Parser(doc=f).to_json())
         with open(jsonfile) as g:
             s = json.load(g)
         p.pop('rel-urls',None)
