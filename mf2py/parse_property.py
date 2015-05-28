@@ -106,10 +106,7 @@ def datetime(el, default_date=None):
             dtstr = '%sT%s:%s:%s' % (datestr, hourstr, minutestr, secondstr)
             tzstr = match.group('tz')
             if tzstr:
-                if tzstr == 'Z':
-                    dtstr += '+0000'
-                else:
-                    dtstr += tzstr.replace(':', '')
+                dtstr += tzstr
         return dtstr
 
     # handle value-class-pattern
