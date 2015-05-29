@@ -297,7 +297,8 @@ def test_backcompat_rel_bookmark():
 
 def test_area_uparsing():
     result = parse_fixture("area.html")
-    assert result["items"][0]["properties"] == {u'url': [u'http://suda.co.uk'], u'name': [u'Brian Suda']}
+    assert result["items"][0]["properties"] == {
+        u'url': [u'http://suda.co.uk'], u'name': [u'Brian Suda']}
     assert 'shape' in result["items"][0].keys()
     assert 'coords' in result["items"][0].keys()
 
@@ -314,30 +315,33 @@ def test_rels():
     assert result['rels'] == {
         u'in-reply-to': [u'http://example.com/1', u'http://example.com/2'],
         u'author': [u'http://example.com/a', u'http://example.com/b'],
-        }
+    }
     assert result['rel-urls'] == {
-        u'http://example.com/1': {'text': u"post 1","rels":[u'in-reply-to']},
-        u'http://example.com/2': {'text': u"post 2","rels":[u'in-reply-to']},
-        u'http://example.com/a': {'text': u"author a","rels":[u'author']},
-        u'http://example.com/b': {'text': u"author b","rels":[u'author']},
-        }
+        u'http://example.com/1': {'text': u"post 1", "rels": [u'in-reply-to']},
+        u'http://example.com/2': {'text': u"post 2", "rels": [u'in-reply-to']},
+        u'http://example.com/a': {'text': u"author a", "rels": [u'author']},
+        u'http://example.com/b': {'text': u"author b", "rels": [u'author']},
+    }
+
 
 def test_alternates():
     result = parse_fixture("rel.html")
-    assert result['alternates'] == [
-        {'url': u'http://example.com/fr', 'media': u'handheld',
+    assert result['alternates'] == [{
+        'url': u'http://example.com/fr', 'media': u'handheld',
         'text': u'French mobile homepage',
-        'rel': u'home', 'hreflang': u'fr'}
-        ]
+        'rel': u'home', 'hreflang': u'fr'
+    }]
+
 
 def test_enclosures():
     result = parse_fixture("rel_enclosure.html")
     assert result['rels'] == {u'enclosure': [u'http://example.com/movie.mp4']}
     assert result['rel-urls'] == {u'http://example.com/movie.mp4': {
-            'rels': [u'enclosure'],
-            'text': u'my movie',
-            'type': u'video/mpeg'}
-            }
+        'rels': [u'enclosure'],
+        'text': u'my movie',
+        'type': u'video/mpeg'}
+    }
+
 
 def test_empty_href():
     result = parse_fixture("hcard_with_empty_url.html", "http://foo.com")
@@ -345,13 +349,13 @@ def test_empty_href():
     for hcard in result['items']:
         assert hcard['properties'].get('url') == ['http://foo.com']
 
-if __name__ == '__main__':
-    result = parse_fixture("hcard_with_empty_url.html", 'http://foo.com')
-    pprint(result)
 
-
-def test_nested_e_content():
-    result = Parser("""<!DOCTYPE html><div class="h-entry">
+def test_complex_e_content():
+    """When parsing h-* e-* properties, we should fold {"value":..., "html":...}
+    into the parsed microformat object, instead of nesting it under an
+    unnecessary second layer of "value":
+    """
+    result = Parser(doc="""<!DOCTYPE html><div class="h-entry">
 <div class="h-card e-content"><p>Hello</p></div></div>""").to_dict()
 
     assert_equal({
