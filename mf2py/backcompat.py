@@ -11,7 +11,7 @@ CLASSIC_ROOT_MAP = {
     'hentry': 'h-entry',
     'hrecipe': 'h-recipe',
     'hresume': 'h-resume',
-    'hevent': 'h-event',
+    'vevent': 'h-event',
     'hreview': 'h-review',
     'hproduct': 'h-product'
 }
@@ -95,14 +95,13 @@ CLASSIC_PROPERTY_MAP = {
             'affiliation': ['p-affiliation', 'h-card'],
         },
     },
-    'hevent': {
+    'vevent': {
         'classes': {
             'dtstart': ['dt-start'],
             'dtend': ['dt-end'],
             'duration': ['dt-duration'],
             'description': ['p-description'],
             'summary': ['p-summary'],
-            'description': ['p-description'],
             'url': ['u-url'],
             'category': ['p-category'],
             'location': ['h-card'],
