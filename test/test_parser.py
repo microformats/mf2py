@@ -334,7 +334,7 @@ def test_enclosures():
     result = parse_fixture("rel_enclosure.html")
     assert result['rels'] == {u'enclosure': [u'http://example.com/movie.mp4']}
     assert result['rel-urls'] == {u'http://example.com/movie.mp4': {
-            'rels': [u'enclosure'], 
+            'rels': [u'enclosure'],
             'text': u'my movie',
             'type': u'video/mpeg'}
             }
@@ -348,6 +348,29 @@ def test_empty_href():
 if __name__ == '__main__':
     result = parse_fixture("hcard_with_empty_url.html", 'http://foo.com')
     pprint(result)
+
+
+def test_nested_e_content():
+    result = Parser("""<!DOCTYPE html><div class="h-entry">
+<div class="h-card e-content"><p>Hello</p></div></div>""").to_dict()
+
+    assert_equal({
+        "type": [u"h-entry"],
+        "properties": {
+            u"content": [{
+                "type": [
+                    u"h-card"
+                ],
+                "properties": {
+                    "name": [u"Hello"]
+                },
+                "html": u"<p>Hello</p>",
+                "value": u"Hello"
+            }],
+            "name": [u"Hello"]
+        }
+    }, result["items"][0])
+
 
 def test_nested_values():
     """When parsing nested microformats, check that value is the value of
