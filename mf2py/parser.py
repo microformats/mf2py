@@ -150,7 +150,15 @@ class Parser(object):
             # simple value is the parsed property value if it were not
             # an h-* class
             if simple_value is not None:
-                microformat["value"] = simple_value
+                if isinstance(simple_value, dict):
+                    # for e-* properties, the simple value will be
+                    # {"html":..., "value":...}  which we should fold
+                    # into the microformat object
+                    # details: https://github.com/tommorris/mf2py/issues/35
+                    microformat.update(simple_value)
+                else:
+                    microformat["value"] = simple_value
+
             return microformat
 
         def parse_props(el):
