@@ -1,10 +1,11 @@
 # coding: utf-8
 
 from mf2py import Parser
-from nose.tools import assert_equal, assert_true
+from nose.tools import assert_equal, assert_true, assert_false
 from pprint import pprint
 import os.path
 import sys
+import json
 
 if sys.version < '3':
     text_type = unicode
@@ -407,3 +408,24 @@ def test_nested_values():
         },
         'type': ['h-card'],
     }, entry["children"][0])
+
+
+def assert_unicode_everywhere(obj):
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            assert_false(isinstance(k, binary_type),
+                         'key=%r; type=%r' % (k, type(k)))
+            assert_unicode_everywhere(v)
+
+    elif isinstance(obj, list):
+        for v in obj:
+            assert_unicode_everywhere(v)
+
+    assert_false(isinstance(obj, binary_type),
+                 'value=%r; type=%r' % (obj, type(obj)))
+
+
+def test_unicode_everywhere():
+    for h in os.listdir("test/examples"):
+        result = parse_fixture(h)
+        assert_unicode_everywhere(result)

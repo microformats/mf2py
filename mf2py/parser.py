@@ -57,7 +57,7 @@ class Parser(object):
     def __init__(self, doc=None, url=None):
         self.__url__ = None
         self.__doc__ = None
-        self.__parsed__ = {"items": [], "rels": {}, "rel-urls": {}}
+        self.__parsed__ = {u"items": [], u"rels": {}, u"rel-urls": {}}
 
         if doc:
             self.__doc__ = doc
@@ -120,33 +120,33 @@ class Parser(object):
 
             # if some properties not already found find in implied ways
             if 'name' not in properties:
-                properties["name"] = implied_properties.name(el)
+                properties[u"name"] = implied_properties.name(el)
 
             if "photo" not in properties:
                 x = implied_properties.photo(el, base_url=self.__url__)
                 if x is not None:
-                    properties["photo"] = x
+                    properties[u"photo"] = x
 
             if "url" not in properties:
                 x = implied_properties.url(el, base_url=self.__url__)
                 if x is not None:
-                    properties["url"] = x
+                    properties[u"url"] = x
 
             # build microformat with type and properties
-            microformat = {"type": root_class_names,
-                           "properties": properties}
+            microformat = {u"type": root_class_names,
+                           u"properties": properties}
             if str(el.name) == "area":
                 shape = get_attr(el, 'shape')
                 if shape is not None:
-                    microformat['shape'] = shape
+                    microformat[u'shape'] = shape
 
                 coords = get_attr(el, 'coords')
                 if coords is not None:
-                    microformat['coords'] = coords
+                    microformat[u'coords'] = coords
 
             # insert children if any
             if children:
-                microformat["children"] = children
+                microformat[u"children"] = children
             # simple value is the parsed property value if it were not
             # an h-* class
             if simple_value is not None:
@@ -157,7 +157,7 @@ class Parser(object):
                     # details: https://github.com/tommorris/mf2py/issues/35
                     microformat.update(simple_value)
                 else:
-                    microformat["value"] = simple_value
+                    microformat[u"value"] = simple_value
 
             return microformat
 
@@ -269,35 +269,35 @@ class Parser(object):
                 # there does not exist alternate in rel attributes
                 # then parse rels as local
                 if "alternate" not in rel_attrs:
-                    value_dict = self.__parsed__["rel-urls"].get(url, {})
-                    value_dict["text"] = el.get_text().strip()
-                    url_rels = value_dict.get("rels",[])
-                    value_dict["rels"] = url_rels
-                    for knownattr in ("media","hreflang","type","title"):
+                    value_dict = self.__parsed__[u"rel-urls"].get(url, {})
+                    value_dict[u"text"] = el.get_text().strip()
+                    url_rels = value_dict.get(u"rels", [])
+                    value_dict[u"rels"] = url_rels
+                    for knownattr in (u"media", u"hreflang", u"type", u"title"):
                         x = get_attr(el, knownattr)
                         if x is not None:
                             value_dict[knownattr] = x
-                    self.__parsed__["rel-urls"][url] = value_dict
+                    self.__parsed__[u"rel-urls"][url] = value_dict
                     for rel_value in rel_attrs:
-                        value_list = self.__parsed__["rels"].get(rel_value, [])
+                        value_list = self.__parsed__[u"rels"].get(rel_value, [])
                         value_list.append(url)
                         url_rels.append(rel_value)
-                        self.__parsed__["rels"][rel_value] = value_list
+                        self.__parsed__[u"rels"][rel_value] = value_list
                 else:
-                    alternate_list = self.__parsed__.get("alternates", [])
+                    alternate_list = self.__parsed__.get(u"alternates", [])
                     alternate_dict = {}
-                    alternate_dict["url"] = url
+                    alternate_dict[u"url"] = url
                     x = " ".join(
                         [r for r in rel_attrs if not r == "alternate"])
                     if x is not "":
-                        alternate_dict["rel"] = x
-                    alternate_dict["text"] = el.get_text().strip()
-                    for knownattr in ("media","hreflang","type","title"):
+                        alternate_dict[u"rel"] = x
+                    alternate_dict[u"text"] = el.get_text().strip()
+                    for knownattr in (u"media", u"hreflang", u"type", u"title"):
                         x = get_attr(el, knownattr)
                         if x is not None:
                             alternate_dict[knownattr] = x
                     alternate_list.append(alternate_dict)
-                    self.__parsed__["alternates"] = alternate_list
+                    self.__parsed__[u"alternates"] = alternate_list
 
         def parse_el(el, ctx, top_level=False):
             """Parse an element for microformats
