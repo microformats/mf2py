@@ -1,4 +1,5 @@
 """functions to parse the properties of elements"""
+from __future__ import unicode_literals, print_function
 
 from .dom_helpers import get_attr
 import sys
@@ -191,6 +192,6 @@ def datetime(el, default_date=None):
 def embedded(el):
     """Process e-* properties"""
     return {
-        u'html': el.decode_contents(),    # secret bs4 method to get innerHTML
-        u'value': el.get_text()     # strip here?
+        'html': el.decode_contents(),    # secret bs4 method to get innerHTML
+        'value': el.get_text()     # strip here?
     }
