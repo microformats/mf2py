@@ -22,12 +22,22 @@ TIME_RE = r'(?P<rawtime>%s)( ?(?P<ampm>%s))?( ?(?P<tz>%s))?' % (RAWTIME_RE, AMPM
 DATETIME_RE = r'(?P<date>%s)[T ](?P<time>%s)' % (DATE_RE, TIME_RE)
 
 
+def is_vcp_class(c):
+    return c == 'value' or c == 'value-title'
+
+
+def get_vcp_value(el):
+    if 'value-title' in el.get('class', []):
+        return el.get('title')
+    return el.get_text()
+
+
 def text(el):
     """Process p-* properties"""
     # handle value-class-pattern
-    value_classes = el.find_all(class_='value',recursive=False)
-    if value_classes:
-        return ''.join(vc.get_text() for vc in value_classes)
+    value_els = el.find_all(class_=is_vcp_class, recursive=False)
+    if value_els:
+        return ''.join(get_vcp_value(el) for el in value_els)
 
     prop_value = get_attr(el, "title", check_name="abbr")
     if prop_value is not None:
@@ -47,11 +57,10 @@ def text(el):
 
 
 def url(el, base_url=''):
-    """Process p-* properties"""
-    # do the normalise absolute url thing
+    """Process u-* properties"""
     prop_value = get_attr(el, "href", check_name=("a", "area"))
     if prop_value is not None:
-        return urljoin(base_url, prop_value)
+        return urljoin(base_url, prop_value)  # make urls absolute
 
     prop_value = get_attr(el, "src", check_name=("img", "audio", "video", "source"))
     if prop_value is not None:
@@ -61,13 +70,15 @@ def url(el, base_url=''):
     if prop_value is not None:
         return urljoin(base_url, prop_value)
 
-    # add value-class-pattern
+    value_els = el.find_all(class_=is_vcp_class, recursive=False)
+    if value_els:
+        return urljoin(base_url, ''.join(get_vcp_value(el) for el in value_els))
 
     prop_value = get_attr(el, "title", check_name="abbr")
     if prop_value is not None:
         return prop_value
 
-    prop_value = get_attr(el, "value", check_name=("data","input"))
+    prop_value = get_attr(el, "value", check_name=("data", "input"))
     if prop_value is not None:
         return prop_value
 
@@ -87,12 +98,11 @@ def datetime(el, default_date=None):
     def try_normalize(dtstr, match=None):
         """Try to normalize a datetime string.
         1. Use 'T' as the date/time separator.
-        2. No : in timezones, and Z replaced by +0000.
-        3. Convert 12-hour time to 24-hour time
+        2. Convert 12-hour time to 24-hour time
 
         pass match in if we have already calculated it to avoid rework
         """
-        match = match or re.match(DATETIME_RE + '$', dtstr)
+        match = match or (dtstr and re.match(DATETIME_RE + '$', dtstr))
         if match:
             datestr = match.group('date')
             hourstr = match.group('hour')
@@ -106,18 +116,19 @@ def datetime(el, default_date=None):
             dtstr = '%sT%s:%s:%s' % (datestr, hourstr, minutestr, secondstr)
             tzstr = match.group('tz')
             if tzstr:
-                if tzstr == 'Z':
-                    dtstr += '+0000'
-                else:
-                    dtstr += tzstr.replace(':', '')
+                dtstr += tzstr
         return dtstr
 
     # handle value-class-pattern
-    value_els = el.find_all(class_='value')
+    value_els = el.find_all(class_=is_vcp_class)
     if value_els:
         date_parts = []
         for value_el in value_els:
-            if value_el.name in ('img', 'area'):
+            if 'value-title' in value_el.get('class', []):
+                title = el.get('title')
+                if title:
+                    date_parts.append(title.strip())
+            elif value_el.name in ('img', 'area'):
                 alt = value_el.get('alt') or value_el.get_text()
                 if alt:
                     date_parts.append(alt.strip())

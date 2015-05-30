@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 0.2.6 - 2015-05-06
+## Added
+- New top-level "rel-urls" entry, contains rich data parsed from rel
+  links, organized by URL.
+
 ## 0.2.5 - 2015-03-01
 ## Added
 - convenience method `mf2py.parse` that takes the same arguments as Parser
