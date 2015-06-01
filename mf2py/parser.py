@@ -101,8 +101,8 @@ class Parser(object):
         """
         self._default_date = None
 
-
-        def handle_microformat(root_class_names, el, simple_value=None):
+        def handle_microformat(root_class_names, el, value_property=None,
+                               simple_value=None):
             """Handles a (possibly nested) microformat, i.e. h-*
             """
             properties = {}
@@ -118,8 +118,13 @@ class Parser(object):
                     properties[key] = prop_value
                 children.extend(child_children)
 
+            # complex h-* objects can take their "value" from the
+            # first explicit property ("name" for p-* or "url" for u-*)
+            if value_property and value_property in properties:
+                simple_value = properties[value_property][0]
+
             # if some properties not already found find in implied ways
-            if 'name' not in properties:
+            if "name" not in properties:
                 properties["name"] = implied_properties.name(el)
 
             if "photo" not in properties:
@@ -184,8 +189,9 @@ class Parser(object):
                     p_value = parse_property.text(el).strip()
 
                 if root_class_names:
-                    prop_value.append(
-                        handle_microformat(root_class_names, el, p_value))
+                    prop_value.append(handle_microformat(
+                        root_class_names, el, value_property="name",
+                        simple_value=p_value))
                 else:
                     prop_value.append(p_value)
 
@@ -200,8 +206,9 @@ class Parser(object):
                     u_value = parse_property.url(el, base_url=self.__url__)
 
                 if root_class_names:
-                    prop_value.append(
-                        handle_microformat(root_class_names, el, u_value))
+                    prop_value.append(handle_microformat(
+                        root_class_names, el, value_property="url",
+                        simple_value=u_value))
                 else:
                     prop_value.append(u_value)
 
@@ -220,8 +227,8 @@ class Parser(object):
                         self._default_date = new_date
 
                 if root_class_names:
-                    prop_value.append(
-                        handle_microformat(root_class_names, el, dt_value))
+                    prop_value.append(handle_microformat(
+                        root_class_names, el, simple_value=dt_value))
                 else:
                     prop_value.append(dt_value)
 
@@ -236,8 +243,8 @@ class Parser(object):
                     e_value = parse_property.embedded(el)
 
                 if root_class_names:
-                    prop_value.append(
-                        handle_microformat(root_class_names, el, e_value))
+                    prop_value.append(handle_microformat(
+                        root_class_names, el, simple_value=e_value))
                 else:
                     prop_value.append(e_value)
 
