@@ -7,6 +7,8 @@ import os.path
 import sys
 import glob
 import json
+from unittest import TestCase
+TestCase.maxDiff = None
 
 if sys.version < '3':
     text_type = unicode
@@ -317,12 +319,16 @@ def test_rels():
     assert result['rels'] == {
         u'in-reply-to': [u'http://example.com/1', u'http://example.com/2'],
         u'author': [u'http://example.com/a', u'http://example.com/b'],
+        u'alternate': [u'http://example.com/fr'],
+        u'home': [u'http://example.com/fr'],
     }
     assert result['rel-urls'] == {
         u'http://example.com/1': {'text': u"post 1", "rels": [u'in-reply-to']},
         u'http://example.com/2': {'text': u"post 2", "rels": [u'in-reply-to']},
         u'http://example.com/a': {'text': u"author a", "rels": [u'author']},
         u'http://example.com/b': {'text': u"author b", "rels": [u'author']},
+        u'http://example.com/fr': {'text': u'French mobile homepage', 
+            'media': u'handheld', "rels":[u'alternate',u'home'], u'hreflang': u'fr'}
     }
 
 
@@ -418,7 +424,6 @@ def test_mf2tests():
             p = json.loads(Parser(doc=f).to_json())
         with open(jsonfile) as g:
             s = json.load(g)
-        p.pop('rel-urls',None)
         yield check_mf2, htmlfile, p,s
 
 def check_mf2(htmlfile, p,s):
