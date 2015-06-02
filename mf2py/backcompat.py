@@ -13,7 +13,8 @@ CLASSIC_ROOT_MAP = {
     'hresume': 'h-resume',
     'vevent': 'h-event',
     'hreview': 'h-review',
-    'hproduct': 'h-product'
+    'hproduct': 'h-product',
+    'hreview-aggregate': 'h-review-aggregate'
 }
 
 CLASSIC_PROPERTY_MAP = {
@@ -136,6 +137,25 @@ CLASSIC_PROPERTY_MAP = {
             'url': ['u-url'],
             'review': ['p-review', 'h-review', 'e-description'],
             'price': ['p-price'],
+        },
+    },
+    'hreview-aggregate': {
+        'classes': {
+            'summary': ['p-name'],
+            # doesn't work properly, see spec
+            'fn': ['p-item', 'h-item', 'p-name'],
+            # of the item being reviewed (p-item h-item u-photo)
+            'photo': ['u-photo'],
+            # of the item being reviewed (p-item h-item u-url)
+            'url': ['u-url'],
+            'reviewer': ['p-reviewer', 'p-author', 'h-card'],
+            'dtreviewed': ['dt-reviewed'],
+            'rating': ['p-rating'],
+            'best': ['p-best'],
+            'worst': ['p-worst'],
+            'description': ['p-description'],
+            'count': ['p-count'],
+            'votes': ['p-votes']
         },
     }
 }
