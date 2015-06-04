@@ -1,3 +1,4 @@
+from __future__ import unicode_literals, print_function
 from . import mf2_classes
 from .dom_helpers import get_attr
 import sys

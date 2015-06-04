@@ -1,4 +1,5 @@
 """functions to parse the properties of elements"""
+from __future__ import unicode_literals, print_function
 
 from .dom_helpers import get_attr
 import sys

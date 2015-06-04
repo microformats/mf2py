@@ -1,4 +1,5 @@
 # coding: utf-8
+from __future__ import unicode_literals, print_function
 
 import json
 from bs4 import BeautifulSoup
@@ -278,9 +279,9 @@ class Parser(object):
                 if "alternate" not in rel_attrs:
                     value_dict = self.__parsed__["rel-urls"].get(url, {})
                     value_dict["text"] = el.get_text().strip()
-                    url_rels = value_dict.get("rels",[])
+                    url_rels = value_dict.get("rels", [])
                     value_dict["rels"] = url_rels
-                    for knownattr in ("media","hreflang","type","title"):
+                    for knownattr in ("media", "hreflang", "type", "title"):
                         x = get_attr(el, knownattr)
                         if x is not None:
                             value_dict[knownattr] = x
@@ -299,7 +300,7 @@ class Parser(object):
                     if x is not "":
                         alternate_dict["rel"] = x
                     alternate_dict["text"] = el.get_text().strip()
-                    for knownattr in ("media","hreflang","type","title"):
+                    for knownattr in ("media", "hreflang", "type", "title"):
                         x = get_attr(el, knownattr)
                         if x is not None:
                             alternate_dict[knownattr] = x
