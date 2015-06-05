@@ -276,19 +276,22 @@ class Parser(object):
                 # there does not exist alternate in rel attributes
                 # then parse rels as local
                 value_dict = self.__parsed__["rel-urls"].get(url, {})
-                value_dict["text"] = el.get_text().strip()
-                url_rels = set(value_dict.get("rels",[]))
+                if "text" not in value_dict:
+                    value_dict["text"] = el.get_text().strip() #first one wins
+                url_rels = value_dict.get("rels",[])
+                value_dict["rels"] = url_rels
                 for knownattr in ("media","hreflang","type","title"):
                     x = get_attr(el, knownattr)
                     if x is not None:
                         value_dict[knownattr] = x
                 self.__parsed__["rel-urls"][url] = value_dict
                 for rel_value in rel_attrs:
-                    value_set = set(self.__parsed__["rels"].get(rel_value, []))
-                    value_set.add(url)
-                    url_rels.add(rel_value)
-                    self.__parsed__["rels"][rel_value] = list(value_set)
-                value_dict["rels"] = list(url_rels)
+                    value_list = self.__parsed__["rels"].get(rel_value, [])
+                    if url not in value_list:
+                        value_list.append(url)
+                    if rel_value not in url_rels:
+                        url_rels.append(rel_value)
+                    self.__parsed__["rels"][rel_value] = value_list
                 if "alternate" in rel_attrs:
                     alternate_list = self.__parsed__.get("alternates", [])
                     alternate_dict = {}
