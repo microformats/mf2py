@@ -417,13 +417,16 @@ def test_nested_values():
     }, entry["children"][0])
 
 def test_mf2tests():
-    allfiles = glob.glob(os.path.join('.', 'tests','tests', '*v1', '**', '*.json'))
+    allfiles = glob.glob(os.path.join('.', 'tests','tests', '*', '*', '*.json'))
     for jsonfile in allfiles:
         htmlfile = jsonfile[:-4]+'html'
         with open(htmlfile) as f:
             p = json.loads(Parser(doc=f).to_json())
-        with open(jsonfile) as g:
-            s = json.load(g)
+        with open(jsonfile) as jsonf:
+            try:
+                s = json.load(jsonf)
+            except e:
+                s="bad file: " + jsonfile + e
         yield check_mf2, htmlfile, p,s
 
 def check_mf2(htmlfile, p,s):
