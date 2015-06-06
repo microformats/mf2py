@@ -273,8 +273,6 @@ class Parser(object):
             if rel_attrs is not None:
                 # find the url and normalise it
                 url = urljoin(self.__url__, el.get('href', ''))
-                # there does not exist alternate in rel attributes
-                # then parse rels as local
                 value_dict = self.__parsed__["rel-urls"].get(url, {})
                 if "text" not in value_dict:
                     value_dict["text"] = el.get_text().strip() #first one wins

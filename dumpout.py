@@ -6,7 +6,7 @@ import sys
 import glob
 import json
 
-allfiles = glob.glob(os.path.join('.', 'tests','tests', 'x*', 'rel*', '*.json'))
+allfiles = glob.glob(os.path.join('.', 'tests','tests', '**', '**', 'dup*.json'))
 for jsonfile in allfiles:
     htmlfile = jsonfile[:-4]+'html'
     with open(htmlfile) as f:

@@ -14,7 +14,9 @@ CLASSIC_ROOT_MAP = {
     'vevent': 'h-event',
     'hreview': 'h-review',
     'hproduct': 'h-product',
-    'hreview-aggregate': 'h-review-aggregate'
+    'hreview-aggregate': 'h-review-aggregate',
+    'geo': 'h-geo',
+    'adr': 'h-adr',
 }
 
 CLASSIC_PROPERTY_MAP = {
@@ -102,11 +104,14 @@ CLASSIC_PROPERTY_MAP = {
             'dtend': ['dt-end'],
             'duration': ['dt-duration'],
             'description': ['p-description'],
-            'summary': ['p-summary'],
+            'summary': ['p-name'],
             'url': ['u-url'],
             'category': ['p-category'],
-            'location': ['h-card'],
+            'location': ['p-location'],
             'geo': ['p-location h-geo'],
+            'attendee': ['p-attendee'],
+            'contact': ['p-contact'],
+            'organizer': ['p-organizer'],
         },
     },
     'hreview': {
@@ -157,7 +162,24 @@ CLASSIC_PROPERTY_MAP = {
             'count': ['p-count'],
             'votes': ['p-votes']
         },
-    }
+    },
+    'geo': {
+        'classes': {
+            'latitude': 'p-latitude',
+            'longitude': 'p-longitude',
+        },
+    },
+    'adr': {
+        'classes': {
+            'post-office-box': 'p-post-office-box',
+            'extended-address': 'p-extended-address',
+            'street-address': 'p-street-address',
+            'locality': 'p-locality',
+            'region': 'p-region',
+            'postal-code': 'p-postal-code',
+            'country-name': 'p-country-name',
+        },
+    },
 }
 
 
