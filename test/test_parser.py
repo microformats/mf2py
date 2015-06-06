@@ -420,7 +420,9 @@ def test_mf2tests():
     for jsonfile in allfiles:
         htmlfile = jsonfile[:-4]+'html'
         with open(htmlfile) as f:
-            p = json.loads(Parser(doc=f).to_json())
+            parsed=Parser(doc=f)
+            p = json.loads(parsed.to_json())
+            yield check_unicode, htmlfile, parsed.to_dict()
         with open(jsonfile) as jsonf:
             try:
                 s = json.load(jsonf)
