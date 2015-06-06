@@ -417,7 +417,7 @@ def test_nested_values():
     }, entry["children"][0])
 
 def test_mf2tests():
-    allfiles = glob.glob(os.path.join('.', 'tests','tests', '**', '**', '*.json'))
+    allfiles = glob.glob(os.path.join('.', 'tests','tests', '*v1', '**', '*.json'))
     for jsonfile in allfiles:
         htmlfile = jsonfile[:-4]+'html'
         with open(htmlfile) as f:

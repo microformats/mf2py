@@ -165,19 +165,19 @@ CLASSIC_PROPERTY_MAP = {
     },
     'geo': {
         'classes': {
-            'latitude': 'p-latitude',
-            'longitude': 'p-longitude',
+            'latitude': ['p-latitude'],
+            'longitude': ['p-longitude'],
         },
     },
     'adr': {
         'classes': {
-            'post-office-box': 'p-post-office-box',
-            'extended-address': 'p-extended-address',
-            'street-address': 'p-street-address',
-            'locality': 'p-locality',
-            'region': 'p-region',
-            'postal-code': 'p-postal-code',
-            'country-name': 'p-country-name',
+            'post-office-box': ['p-post-office-box'],
+            'extended-address': ['p-extended-address'],
+            'street-address': ['p-street-address'],
+            'locality': ['p-locality'],
+            'region': ['p-region'],
+            'postal-code': ['p-postal-code'],
+            'country-name': ['p-country-name'],
         },
     },
 }
