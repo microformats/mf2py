@@ -425,8 +425,8 @@ def test_mf2tests():
         with open(jsonfile) as jsonf:
             try:
                 s = json.load(jsonf)
-            except e:
-                s="bad file: " + jsonfile + e
+            except:
+                s="bad file: " + jsonfile + sys.exc_info()[0]
         yield check_mf2, htmlfile, p,s
 
 def check_mf2(htmlfile, p,s):
