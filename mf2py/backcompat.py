@@ -1,8 +1,9 @@
 # coding: utf-8
-
 """Looks for classic microformats class names and augments them with
 microformats2 names. Ported and adapted from php-mf2.
 """
+
+from __future__ import unicode_literals, print_function
 
 # Classic Root Classname map
 CLASSIC_ROOT_MAP = {

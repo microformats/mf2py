@@ -1,4 +1,5 @@
 # coding: utf-8
+from __future__ import unicode_literals, print_function
 
 import json
 from bs4 import BeautifulSoup
@@ -299,7 +300,7 @@ class Parser(object):
                     if x is not "":
                         alternate_dict["rel"] = x
                     alternate_dict["text"] = el.get_text().strip()
-                    for knownattr in ("media","hreflang","type","title"):
+                    for knownattr in ("media", "hreflang", "type", "title"):
                         x = get_attr(el, knownattr)
                         if x is not None:
                             alternate_dict[knownattr] = x

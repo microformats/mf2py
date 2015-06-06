@@ -10,12 +10,7 @@ Python parser for [microformats 2](http://microformats.org/wiki/Microformats2).
 Current status: Full-featured and mostly stable. Implements the full
 mf2 spec, including backward compatibility with microformats1.
 
-Tom Morris: Please do help work on it. Currently I'm just writing test cases as we
-implement stuff and TDDing to completion. Once the parser is stable, I intend
-to import one of the full test suites.
-
-Will eventually need good documentation and tidying up.
-
+Documentation, code tidying and so on is rather lacking.	
 
 License: [MIT](http://opensource.org/licenses/mit-license.php)
 

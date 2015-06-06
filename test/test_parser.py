@@ -1,14 +1,13 @@
-# coding: utf-8
-
+from __future__ import unicode_literals, print_function
 from mf2py import Parser
-from nose.tools import assert_equal, assert_true
-from pprint import pprint
+from nose.tools import assert_equal, assert_true, assert_false
 import os.path
 import sys
 import glob
 import json
 from unittest import TestCase
 TestCase.maxDiff = None
+
 
 if sys.version < '3':
     text_type = unicode
@@ -47,40 +46,40 @@ def test_user_agent():
 
 def test_base():
     p = Parser(doc=open("test/examples/base.html"))
-    assert_equal(p.__url__, u"http://tantek.com/")
+    assert_equal(p.__url__, "http://tantek.com/")
 
 
 def test_simple_parse():
     result = parse_fixture("simple_person_reference.html")
     assert_equal(result["items"][0]["properties"],
-                 {u'name': [u'Frances Berriman']})
+                 {'name': ['Frances Berriman']})
 
 
 def test_simple_person_reference_implied():
     p = Parser(doc=open("test/examples/simple_person_reference_implied.html"))
     result = p.to_dict()
     assert_equal(result["items"][0]["properties"],
-                 {u'name': [u'Frances Berriman']})
+                 {'name': ['Frances Berriman']})
 
 
 def test_simple_person_reference_same_element():
     result = parse_fixture("simple_person_reference_same_element.html")
     assert_equal(result["items"][0]["properties"],
-                 {u'name': [u'Frances Berriman']})
+                 {'name': ['Frances Berriman']})
 
 
 def test_person_with_url():
     p = Parser(doc=open("test/examples/person_with_url.html"))
     result = p.to_dict()
     assert_equal(result["items"][0]["properties"]["name"],
-                 [u'Tom Morris'])
+                 ['Tom Morris'])
     assert_equal(result["items"][0]["properties"]["url"],
-                 [u'http://tommorris.org/'])
+                 ['http://tommorris.org/'])
 
 
 def test_vcp():
     result = parse_fixture("value_class_person.html")
-    assert_equal(result["items"][0]["properties"]["tel"], [u'+44 1234 567890'])
+    assert_equal(result["items"][0]["properties"]["tel"], ['+44 1234 567890'])
 
 
 def test_multiple_root_classnames():
@@ -225,19 +224,19 @@ def test_hoisting_nested_hcard():
                 'properties': {
                     'author': [
                         {
-                            'properties': {u'name': [u'KP1']},
-                            'type': [u'h-card'],
-                            'value': u'KP1'
+                            'properties': {'name': ['KP1']},
+                            'type': ['h-card'],
+                            'value': 'KP1'
                         }
                     ],
                     'in-reply-to': [
                         {
-                            'properties': {u'name': [u'KP']},
-                            'type': [u'h-cite'],
-                            'value': u'KP'
+                            'properties': {'name': ['KP']},
+                            'type': ['h-cite'],
+                            'value': 'KP'
                         }
                     ],
-                    'name': [u'KP\n    KP1']
+                    'name': ['KP\n    KP1']
                 },
                 'type': ['h-entry']
             }
@@ -245,16 +244,16 @@ def test_hoisting_nested_hcard():
         'rels': {},
         'rel-urls': {}
     }
-    assert_equal([u'KP\n    KP1'], result['items'][0]['properties']['name'])
+    assert_equal(['KP\n    KP1'], result['items'][0]['properties']['name'])
     assert_equal(expected, result)
 
 
 def test_html_tag_class():
     result = parse_fixture("hfeed_on_html_tag.html")
-    assert_equal([u'h-feed'], result['items'][0]['type'])
+    assert_equal(['h-feed'], result['items'][0]['type'])
 
-    assert_equal([u'entry1'], result['items'][0]['children'][0]['properties']['name'])
-    assert_equal([u'entry2'], result['items'][0]['children'][1]['properties']['name'])
+    assert_equal(['entry1'], result['items'][0]['children'][0]['properties']['name'])
+    assert_equal(['entry2'], result['items'][0]['children'][1]['properties']['name'])
 
 
 def test_string_strip():
@@ -271,11 +270,11 @@ def test_backcompat_hproduct():
     result = parse_fixture("backcompat_hproduct.html")
     assert len(result["items"]) == 1
     assert result["items"][0]["type"] == ["h-product"]
-    assert result["items"][0]["properties"]["category"] == [u'bullshit']
-    assert result["items"][0]["properties"]["brand"] == [u'Quacktastic Products']
-    assert result["items"][0]["properties"]["identifier"] == [u'#BULLSHIT-001']
-    assert result["items"][0]["properties"]['description'][0] ==  u"Magical tasty sugar pills that don't do anything."
-    assert result["items"][0]["properties"]["name"] == [u"Tom's Magical Quack Tincture"]
+    assert result["items"][0]["properties"]["category"] == ['bullshit']
+    assert result["items"][0]["properties"]["brand"] == ['Quacktastic Products']
+    assert result["items"][0]["properties"]["identifier"] == ['#BULLSHIT-001']
+    assert result["items"][0]["properties"]['description'][0] ==  "Magical tasty sugar pills that don't do anything."
+    assert result["items"][0]["properties"]["name"] == ["Tom's Magical Quack Tincture"]
 
 
 def test_backcompat_hproduct_nested_hreview():
@@ -302,7 +301,7 @@ def test_backcompat_rel_bookmark():
 def test_area_uparsing():
     result = parse_fixture("area.html")
     assert result["items"][0]["properties"] == {
-        u'url': [u'http://suda.co.uk'], u'name': [u'Brian Suda']}
+        'url': ['http://suda.co.uk'], 'name': ['Brian Suda']}
     assert 'shape' in result["items"][0].keys()
     assert 'coords' in result["items"][0].keys()
 
@@ -311,7 +310,7 @@ def test_src_equiv():
     result = parse_fixture("test_src_equiv.html")
     for item in result["items"]:
         assert 'x-example' in item['properties'].keys()
-        assert u'http://example.org/' == item['properties']['x-example'][0]
+        assert 'http://example.org/' == item['properties']['x-example'][0]
 
 
 def test_rels():
@@ -335,19 +334,19 @@ def test_rels():
 def test_alternates():
     result = parse_fixture("rel.html")
     assert result['alternates'] == [{
-        'url': u'http://example.com/fr', 'media': u'handheld',
-        'text': u'French mobile homepage',
-        'rel': u'home', 'hreflang': u'fr'
+        'url': 'http://example.com/fr', 'media': 'handheld',
+        'text': 'French mobile homepage',
+        'rel': 'home', 'hreflang': 'fr'
     }]
 
 
 def test_enclosures():
     result = parse_fixture("rel_enclosure.html")
-    assert result['rels'] == {u'enclosure': [u'http://example.com/movie.mp4']}
-    assert result['rel-urls'] == {u'http://example.com/movie.mp4': {
-        'rels': [u'enclosure'],
-        'text': u'my movie',
-        'type': u'video/mpeg'}
+    assert result['rels'] == {'enclosure': ['http://example.com/movie.mp4']}
+    assert result['rel-urls'] == {'http://example.com/movie.mp4': {
+        'rels': ['enclosure'],
+        'text': 'my movie',
+        'type': 'video/mpeg'}
     }
 
 
@@ -367,19 +366,19 @@ def test_complex_e_content():
 <div class="h-card e-content"><p>Hello</p></div></div>""").to_dict()
 
     assert_equal({
-        "type": [u"h-entry"],
+        "type": ["h-entry"],
         "properties": {
-            u"content": [{
+            "content": [{
                 "type": [
-                    u"h-card"
+                    "h-card"
                 ],
                 "properties": {
-                    "name": [u"Hello"]
+                    "name": ["Hello"]
                 },
-                "html": u"<p>Hello</p>",
-                "value": u"Hello"
+                "html": "<p>Hello</p>",
+                "value": "Hello"
             }],
-            "name": [u"Hello"]
+            "name": ["Hello"]
         }
     }, result["items"][0])
 
@@ -432,3 +431,25 @@ def test_mf2tests():
 def check_mf2(htmlfile, p,s):
     assert_equal(p,s)
 
+
+def assert_unicode_everywhere(obj):
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            assert_false(isinstance(k, binary_type),
+                         'key=%r; type=%r' % (k, type(k)))
+            assert_unicode_everywhere(v)
+
+    elif isinstance(obj, list):
+        for v in obj:
+            assert_unicode_everywhere(v)
+
+    assert_false(isinstance(obj, binary_type),
+                 'value=%r; type=%r' % (obj, type(obj)))
+
+def check_unicode(filename,jsonblob):
+    assert_unicode_everywhere(jsonblob)
+    
+def test_unicode_everywhere():
+    for h in os.listdir("test/examples"):
+        result = parse_fixture(h)
+        yield check_unicode, h, result
