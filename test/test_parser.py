@@ -326,7 +326,7 @@ def test_rels():
         u'http://example.com/2': {'text': u"post 2", "rels": [u'in-reply-to']},
         u'http://example.com/a': {'text': u"author a", "rels": [u'author']},
         u'http://example.com/b': {'text': u"author b", "rels": [u'author']},
-        u'http://example.com/fr': {'text': u'French mobile homepage', 
+        u'http://example.com/fr': {'text': u'French mobile homepage',
             'media': u'handheld', "rels":[u'alternate',u'home'], u'hreflang': u'fr'}
     }
 
@@ -415,24 +415,6 @@ def test_nested_values():
         'type': ['h-card'],
     }, entry["children"][0])
 
-def test_mf2tests():
-    allfiles = glob.glob(os.path.join('.', 'tests','tests', '*', '*', '*.json'))
-    for jsonfile in allfiles:
-        htmlfile = jsonfile[:-4]+'html'
-        with open(htmlfile) as f:
-            parsed=Parser(doc=f)
-            p = json.loads(parsed.to_json())
-            yield check_unicode, htmlfile, parsed.to_dict()
-        with open(jsonfile) as jsonf:
-            try:
-                s = json.load(jsonf)
-            except:
-                s="bad file: " + jsonfile + sys.exc_info()[0]
-        yield check_mf2, htmlfile, p,s
-
-def check_mf2(htmlfile, p,s):
-    assert_equal(p,s)
-
 
 def assert_unicode_everywhere(obj):
     if isinstance(obj, dict):
@@ -448,9 +430,11 @@ def assert_unicode_everywhere(obj):
     assert_false(isinstance(obj, binary_type),
                  'value=%r; type=%r' % (obj, type(obj)))
 
-def check_unicode(filename,jsonblob):
+
+def check_unicode(filename, jsonblob):
     assert_unicode_everywhere(jsonblob)
-    
+
+
 def test_unicode_everywhere():
     for h in os.listdir("test/examples"):
         result = parse_fixture(h)
