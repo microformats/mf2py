@@ -1,3 +1,3 @@
 [submodule "tests"]
-	path = tests
+	path = testsuite
 	url = https://github.com/kevinmarks/tests
