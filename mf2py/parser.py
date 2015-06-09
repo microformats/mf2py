@@ -1,30 +1,21 @@
 # coding: utf-8
 from __future__ import unicode_literals, print_function
-
-import json
 from bs4 import BeautifulSoup
-from bs4 import UnicodeDammit
-
+from mf2py import backcompat, mf2_classes, implied_properties, parse_property
+from mf2py import temp_fixes
+from mf2py.dom_helpers import get_attr
+import json
 import requests
-
-from .dom_helpers import get_attr
-from . import (
-    backcompat,
-    mf2_classes,
-    implied_properties,
-    parse_property,
-    temp_fixes,
-)
-
 import sys
+
 if sys.version < '3':
     from urlparse import urlparse, urljoin
+    text_type = unicode
+    binary_type = str
 else:
     from urllib.parse import urlparse, urljoin
-
-def unmung(s):
-    return UnicodeDammit(s,["utf-8","windows-1252"]).unicode_markup
-    
+    text_type = str
+    binary_type = bytes
 
 
 def parse(doc=None, url=None):
@@ -131,28 +122,28 @@ class Parser(object):
 
             # if some properties not already found find in implied ways
             if "name" not in properties:
-                properties["name"] = [unmung(prop) for prop in implied_properties.name(el)]
+                properties["name"] = [text_type(prop) for prop in implied_properties.name(el)]
             if "photo" not in properties:
                 x = implied_properties.photo(el, base_url=self.__url__)
                 if x is not None:
-                    properties["photo"] = [unmung(u) for u in x]
+                    properties["photo"] = [text_type(u) for u in x]
 
             if "url" not in properties:
                 x = implied_properties.url(el, base_url=self.__url__)
                 if x is not None:
-                    properties["url"] = [unmung(u) for u in x]
+                    properties["url"] = [text_type(u) for u in x]
 
             # build microformat with type and properties
-            microformat = {"type": [unmung(class_name) for class_name in root_class_names],
+            microformat = {"type": [text_type(class_name) for class_name in root_class_names],
                            "properties": properties}
             if str(el.name) == "area":
                 shape = get_attr(el, 'shape')
                 if shape is not None:
-                    microformat['shape'] = unmung(shape)
+                    microformat['shape'] = text_type(shape)
 
                 coords = get_attr(el, 'coords')
                 if coords is not None:
-                    microformat['coords'] = unmung(coords)
+                    microformat['coords'] = text_type(coords)
 
             # insert children if any
             if children:
@@ -167,7 +158,7 @@ class Parser(object):
                     # details: https://github.com/tommorris/mf2py/issues/35
                     microformat.update(simple_value)
                 else:
-                    microformat["value"] = unmung(simple_value)
+                    microformat["value"] = text_type(simple_value)
 
             return microformat
 
@@ -191,7 +182,7 @@ class Parser(object):
 
                 # if value has not been parsed then parse it
                 if p_value is None:
-                    p_value = unmung(parse_property.text(el).strip())
+                    p_value = text_type(parse_property.text(el).strip())
 
                 if root_class_names:
                     prop_value.append(handle_microformat(
@@ -215,7 +206,7 @@ class Parser(object):
                         root_class_names, el, value_property="url",
                         simple_value=u_value))
                 else:
-                    prop_value.append(unmung(u_value))
+                    prop_value.append(text_type(u_value))
 
             # Parse datetime dt-* properties.
             dt_value = None
@@ -233,10 +224,10 @@ class Parser(object):
 
                 if root_class_names:
                     prop_value.append(handle_microformat(
-                        root_class_names, el, simple_value=unmung(dt_value)))
+                        root_class_names, el, simple_value=text_type(dt_value)))
                 else:
                     if dt_value is not None:
-                        prop_value.append(unmung(dt_value))
+                        prop_value.append(text_type(dt_value))
 
             # Parse embedded markup e-* properties.
             e_value = None
@@ -274,11 +265,11 @@ class Parser(object):
         def parse_rels(el):
             """Parse an element for rel microformats
             """
-            rel_attrs = [unmung(rel) for rel in get_attr(el, 'rel')]
+            rel_attrs = [text_type(rel) for rel in get_attr(el, 'rel')]
             # if rel attributes exist
             if rel_attrs is not None:
                 # find the url and normalise it
-                url = unmung(urljoin(self.__url__, el.get('href', '')))
+                url = text_type(urljoin(self.__url__, el.get('href', '')))
                 value_dict = self.__parsed__["rel-urls"].get(url, {})
                 if "text" not in value_dict:
                     value_dict["text"] = el.get_text().strip() #first one wins
@@ -287,7 +278,7 @@ class Parser(object):
                 for knownattr in ("media","hreflang","type","title"):
                     x = get_attr(el, knownattr)
                     if x is not None:
-                        value_dict[knownattr] = unmung(x)
+                        value_dict[knownattr] = text_type(x)
                 self.__parsed__["rel-urls"][url] = value_dict
                 for rel_value in rel_attrs:
                     value_list = self.__parsed__["rels"].get(rel_value, [])
@@ -304,11 +295,11 @@ class Parser(object):
                         [r for r in rel_attrs if not r == "alternate"])
                     if x is not "":
                         alternate_dict["rel"] = x
-                    alternate_dict["text"] = unmung(el.get_text().strip())
+                    alternate_dict["text"] = text_type(el.get_text().strip())
                     for knownattr in ("media", "hreflang", "type", "title"):
                         x = get_attr(el, knownattr)
                         if x is not None:
-                            alternate_dict[knownattr] = unmung(x)
+                            alternate_dict[knownattr] = text_type(x)
                     alternate_list.append(alternate_dict)
                     self.__parsed__["alternates"] = alternate_list
 
