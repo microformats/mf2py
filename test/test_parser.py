@@ -3,6 +3,10 @@ from mf2py import Parser
 from nose.tools import assert_equal, assert_true, assert_false
 import os.path
 import sys
+import glob
+import json
+from unittest import TestCase
+TestCase.maxDiff = None
 
 
 if sys.version < '3':
@@ -312,14 +316,18 @@ def test_src_equiv():
 def test_rels():
     result = parse_fixture("rel.html")
     assert result['rels'] == {
-        'in-reply-to': ['http://example.com/1', 'http://example.com/2'],
-        'author': ['http://example.com/a', 'http://example.com/b'],
+        u'in-reply-to': [u'http://example.com/1', u'http://example.com/2'],
+        u'author': [u'http://example.com/a', u'http://example.com/b'],
+        u'alternate': [u'http://example.com/fr'],
+        u'home': [u'http://example.com/fr'],
     }
     assert result['rel-urls'] == {
-        'http://example.com/1': {'text': "post 1", "rels": ['in-reply-to']},
-        'http://example.com/2': {'text': "post 2", "rels": ['in-reply-to']},
-        'http://example.com/a': {'text': "author a", "rels": ['author']},
-        'http://example.com/b': {'text': "author b", "rels": ['author']},
+        u'http://example.com/1': {'text': u"post 1", "rels": [u'in-reply-to']},
+        u'http://example.com/2': {'text': u"post 2", "rels": [u'in-reply-to']},
+        u'http://example.com/a': {'text': u"author a", "rels": [u'author']},
+        u'http://example.com/b': {'text': u"author b", "rels": [u'author']},
+        u'http://example.com/fr': {'text': u'French mobile homepage',
+            'media': u'handheld', "rels":[u'alternate',u'home'], u'hreflang': u'fr'}
     }
 
 
@@ -423,7 +431,11 @@ def assert_unicode_everywhere(obj):
                  'value=%r; type=%r' % (obj, type(obj)))
 
 
+def check_unicode(filename, jsonblob):
+    assert_unicode_everywhere(jsonblob)
+
+
 def test_unicode_everywhere():
     for h in os.listdir("test/examples"):
         result = parse_fixture(h)
-        assert_unicode_everywhere(result)
+        yield check_unicode, h, result

@@ -14,7 +14,10 @@ CLASSIC_ROOT_MAP = {
     'hresume': 'h-resume',
     'vevent': 'h-event',
     'hreview': 'h-review',
-    'hproduct': 'h-product'
+    'hproduct': 'h-product',
+    'hreview-aggregate': 'h-review-aggregate',
+    'geo': 'h-geo',
+    'adr': 'h-adr',
 }
 
 CLASSIC_PROPERTY_MAP = {
@@ -102,11 +105,14 @@ CLASSIC_PROPERTY_MAP = {
             'dtend': ['dt-end'],
             'duration': ['dt-duration'],
             'description': ['p-description'],
-            'summary': ['p-summary'],
+            'summary': ['p-name'],
             'url': ['u-url'],
             'category': ['p-category'],
-            'location': ['h-card'],
+            'location': ['p-location'],
             'geo': ['p-location h-geo'],
+            'attendee': ['p-attendee'],
+            'contact': ['p-contact'],
+            'organizer': ['p-organizer'],
         },
     },
     'hreview': {
@@ -138,7 +144,43 @@ CLASSIC_PROPERTY_MAP = {
             'review': ['p-review', 'h-review', 'e-description'],
             'price': ['p-price'],
         },
-    }
+    },
+    'hreview-aggregate': {
+        'classes': {
+            'summary': ['p-name'],
+            # doesn't work properly, see spec
+            'fn': ['p-item', 'h-item', 'p-name'],
+            # of the item being reviewed (p-item h-item u-photo)
+            'photo': ['u-photo'],
+            # of the item being reviewed (p-item h-item u-url)
+            'url': ['u-url'],
+            'reviewer': ['p-reviewer', 'p-author', 'h-card'],
+            'dtreviewed': ['dt-reviewed'],
+            'rating': ['p-rating'],
+            'best': ['p-best'],
+            'worst': ['p-worst'],
+            'description': ['p-description'],
+            'count': ['p-count'],
+            'votes': ['p-votes']
+        },
+    },
+    'geo': {
+        'classes': {
+            'latitude': ['p-latitude'],
+            'longitude': ['p-longitude'],
+        },
+    },
+    'adr': {
+        'classes': {
+            'post-office-box': ['p-post-office-box'],
+            'extended-address': ['p-extended-address'],
+            'street-address': ['p-street-address'],
+            'locality': ['p-locality'],
+            'region': ['p-region'],
+            'postal-code': ['p-postal-code'],
+            'country-name': ['p-country-name'],
+        },
+    },
 }
 
 
