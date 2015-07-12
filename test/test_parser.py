@@ -167,7 +167,7 @@ def test_datetime_vcp_parsing():
     assert_equal(result["items"][1]["properties"]["published"][0],
                  "3014-01-01T01:21:00Z")
     assert_equal(result["items"][2]["properties"]["updated"][0],
-                 "2014-03-11T09:55:00")
+                 "2014-03-11 09:55:00")
     assert_equal(result["items"][3]["properties"]["published"][0],
                  "2014-01-30T15:28:00")
     assert_equal(result["items"][4]["properties"]["published"][0],
