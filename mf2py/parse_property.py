@@ -20,7 +20,7 @@ RAWTIME_RE = r'(?P<hour>\d{1,2})(:(?P<minute>\d{2})(:(?P<second>\d{2})(\.\d+)?)?
 AMPM_RE = 'am|pm|a\.m\.|p\.m\.'
 TIMEZONE_RE = r'Z|[+-]\d{2}:?\d{2}?'
 TIME_RE = r'(?P<rawtime>%s)( ?(?P<ampm>%s))?( ?(?P<tz>%s))?' % (RAWTIME_RE, AMPM_RE, TIMEZONE_RE)
-DATETIME_RE = r'(?P<date>%s)[T ](?P<time>%s)' % (DATE_RE, TIME_RE)
+DATETIME_RE = r'(?P<date>%s)(?P<separator>[T ])(?P<time>%s)' % (DATE_RE, TIME_RE)
 
 
 def is_vcp_class(c):
@@ -98,7 +98,7 @@ def datetime(el, default_date=None):
     """
     def try_normalize(dtstr, match=None):
         """Try to normalize a datetime string.
-        1. Use 'T' as the date/time separator.
+        <strike>1. Use 'T' as the date/time separator.</strike>
         2. Convert 12-hour time to 24-hour time
 
         pass match in if we have already calculated it to avoid rework
@@ -110,11 +110,13 @@ def datetime(el, default_date=None):
             minutestr = match.group('minute') or '00'
             secondstr = match.group('second') or '00'
             ampmstr = match.group('ampm')
+            separator = match.group('separator')
             if ampmstr:
                 hourstr = match.group('hour')
                 if ampmstr.startswith('p'):
                     hourstr = str(int(hourstr) + 12)
-            dtstr = '%sT%s:%s:%s' % (datestr, hourstr, minutestr, secondstr)
+            dtstr = '%s%s%s:%s:%s' % (
+                datestr, separator, hourstr, minutestr, secondstr)
             tzstr = match.group('tz')
             if tzstr:
                 dtstr += tzstr
