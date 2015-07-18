@@ -1,6 +1,7 @@
 # coding: utf-8
 from __future__ import unicode_literals, print_function
 from bs4 import BeautifulSoup
+from bs4.element import Tag
 from mf2py import backcompat, mf2_classes, implied_properties, parse_property
 from mf2py import temp_fixes
 from mf2py.dom_helpers import get_attr
@@ -58,7 +59,7 @@ class Parser(object):
 
         if doc:
             self.__doc__ = doc
-            if not isinstance(self.__doc__, BeautifulSoup):
+            if not ( isinstance(self.__doc__, BeautifulSoup) or isinstance(self.__doc__, Tag) ):
                 self.__doc__ = BeautifulSoup(self.__doc__)
 
         if url:
