@@ -54,3 +54,10 @@ Filter by microformat type
 
     p.to_dict(filter_by_type="h-entry")
     p.to_json(filter_by_type="h-entry")
+
+Contributions
+-------------
+
+We welcome contributions and bug reports via Github, and on the microformats wiki.
+
+We try to follow the [IndieWebCamp code of conduct](http://indiewebcamp.com/code-of-conduct). Please be respectful of other contributors, and forge a spirit of positive co-operation without discrimination or disrespect.
