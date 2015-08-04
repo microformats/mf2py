@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 0.2.7 - 2015-08-03
+## Changed
+- Now produces unicode strings for every key and value, no more byte
+  strings anywhere.
+- Do not add 'T' between date and time when normalizing dates
+## Added
+- Unit tests for running the microformats test suite
+
 ## 0.2.6 - 2015-05-06
 ## Added
 - New top-level "rel-urls" entry, contains rich data parsed from rel

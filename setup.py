@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name='mf2py',
-      version='0.2.6',
+      version='0.2.7',
       description='Python Microformats2 parser',
       author='Tom Morris',
       author_email='tom@tommorris.org',
