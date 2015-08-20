@@ -98,6 +98,12 @@ class Parser(object):
         on initialization.
         """
         self._default_date = None
+        # _default_date exists to provide implementation for rules described
+        # in legacy value-class-pattern. basically, if you have two dt-
+        # properties and one does not have the full date, it can use the
+        # existing date as a template.
+        # see value-class-pattern#microformats2_parsers on wiki.
+        # see also the implied_relative_datetimes testcase.
 
         def handle_microformat(root_class_names, el, value_property=None,
                                simple_value=None):

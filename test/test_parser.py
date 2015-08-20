@@ -416,6 +416,12 @@ def test_nested_values():
     }, entry["children"][0])
 
 
+def test_relative_datetime():
+    result = parse_fixture("implied_relative_datetimes.html")
+    assert_equal('2015-01-02T05:06:00',
+                 result[u'items'][0][u'properties'][u'updated'][0])
+
+
 def assert_unicode_everywhere(obj):
     if isinstance(obj, dict):
         for k, v in obj.items():
