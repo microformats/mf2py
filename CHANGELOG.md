@@ -1,24 +1,29 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 0.2.8 - 2015-09-21
+### Changed
+- Stricter checks that Parser.__init__ params are actually None before
+  ignoring them.
+
 ## 0.2.7 - 2015-08-03
-## Changed
+### Changed
 - Now produces unicode strings for every key and value, no more byte
   strings anywhere.
 - Do not add 'T' between date and time when normalizing dates
-## Added
+### Added
 - Unit tests for running the microformats test suite
 
 ## 0.2.6 - 2015-05-06
-## Added
+### Added
 - New top-level "rel-urls" entry, contains rich data parsed from rel
   links, organized by URL.
 
 ## 0.2.5 - 2015-03-01
-## Added
+### Added
 - convenience method `mf2py.parse` that takes the same arguments as Parser
   and returns a dict.
-## Changed
+### Changed
 - nested h-* classes now parse their "value" based on the property
   they represent (p-*, u-*, dt-*), so for example "p-in-reply-to
   h-cite" would have a name as its value and "u-in-reply-to h-cite"
