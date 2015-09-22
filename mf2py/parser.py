@@ -57,12 +57,14 @@ class Parser(object):
         self.__doc__ = None
         self.__parsed__ = {"items": [], "rels": {}, "rel-urls": {}}
 
-        if doc:
+        if doc is not None:
             self.__doc__ = doc
-            if not ( isinstance(self.__doc__, BeautifulSoup) or isinstance(self.__doc__, Tag) ):
-                self.__doc__ = BeautifulSoup(self.__doc__)
+            if isinstance(doc, BeautifulSoup) or isinstance(doc, Tag):
+                self.__doc__ = doc
+            else:
+                self.__doc__ = BeautifulSoup(doc)
 
-        if url:
+        if url is not None:
             self.__url__ = url
 
             if self.__doc__ is None:
