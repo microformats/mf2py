@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 0.1.0 - 2015-10-05
+### Changed
+- Version number bumped to 1.0.0 following community discussion.
+
 ## 0.2.8 - 2015-09-21
 ### Changed
 - Stricter checks that Parser.__init__ params are actually None before
