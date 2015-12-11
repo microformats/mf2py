@@ -59,7 +59,7 @@ def text(el):
 
 def url(el, base_url=''):
     """Process u-* properties"""
-    prop_value = get_attr(el, "href", check_name=("a", "area"))
+    prop_value = get_attr(el, "href", check_name=("a", "area", "link"))
     if prop_value is not None:
         return urljoin(base_url, prop_value)  # make urls absolute
 
