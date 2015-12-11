@@ -356,6 +356,17 @@ def test_empty_href():
     for hcard in result['items']:
         assert hcard['properties'].get('url') == ['http://foo.com']
 
+        
+def test_link_with_u_url():
+    result = parse_fixture("link_with_u-url.html", "http://foo.com")
+    assert_equal({
+        "type": ["h-card"],
+        "properties": {
+            "name": [""],
+            "url": ["http://foo.com/"],
+        },
+    }, result["items"][0])
+    
 
 def test_complex_e_content():
     """When parsing h-* e-* properties, we should fold {"value":..., "html":...}
