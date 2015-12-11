@@ -1,7 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## 0.1.0 - 2015-10-05
+## 1.0.1 - 2015-12-11
+### Changed
+- `u-*` properties are now parsed from `<link>` elements per the updated spec
+  http://microformats.org/wiki/microformats2-parsing-issues#link_elements_and_u-_parsing
+
+## 1.0.0 - 2015-10-05
 ### Changed
 - Version number bumped to 1.0.0 following community discussion.
 
