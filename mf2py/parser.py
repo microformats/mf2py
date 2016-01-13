@@ -3,7 +3,8 @@ from __future__ import unicode_literals, print_function
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 from mf2py import backcompat, mf2_classes, implied_properties, parse_property
-from mf2py import temp_fixes, VERSION
+from mf2py import temp_fixes
+from mf2py.version import __version__
 from mf2py.dom_helpers import get_attr
 import json
 import requests
@@ -50,7 +51,7 @@ class Parser(object):
       useragent (string): the User-Agent string for the Parser
     """
 
-    useragent = 'mf2py - microformats2 parser for python - version {} - https://github.com/tommorris/mf2py'.format(VERSION)
+    useragent = 'mf2py - microformats2 parser for python - version {} - https://github.com/tommorris/mf2py'.format(__version__)
 
     def __init__(self, doc=None, url=None):
         self.__url__ = None

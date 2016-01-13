@@ -1,10 +1,16 @@
 #!/usr/bin/env python
 
 from setuptools import setup
-from mf2py import VERSION
+import os.path
+
+ns = {}
+with open(os.path.join(os.path.dirname(__file__), 'mf2py/version.py'))\
+        as version_file:
+    exec(version_file.read(), ns)
+
 
 setup(name='mf2py',
-      version=VERSION,
+      version=ns['__version__'],
       description='Python Microformats2 parser',
       author='Tom Morris',
       author_email='tom@tommorris.org',
