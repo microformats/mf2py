@@ -51,7 +51,7 @@ class Parser(object):
       useragent (string): the User-Agent string for the Parser
     """
 
-    useragent = 'mf2py - microformats2 parser for python - version {} - https://github.com/tommorris/mf2py'.format(__version__)
+    useragent = 'mf2py - microformats2 parser for python - version {0} - https://github.com/tommorris/mf2py'.format(__version__)
 
     def __init__(self, doc=None, url=None):
         self.__url__ = None
