@@ -68,7 +68,9 @@ class Parser(object):
             self.__url__ = url
 
             if self.__doc__ is None:
-                data = requests.get(self.__url__)
+                data = requests.get(self.__url__, headers={
+                    'User-Agent': self.useragent,
+                })
 
                 # check for charater encodings and use 'correct' data
                 if 'charset' in data.headers.get('content-type', ''):

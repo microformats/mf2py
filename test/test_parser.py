@@ -1,11 +1,13 @@
 from __future__ import unicode_literals, print_function
-from mf2py import Parser
-from nose.tools import assert_equal, assert_true, assert_false
+
 import os.path
 import sys
-import glob
-import json
+
+import mock
+from nose.tools import assert_equal, assert_true, assert_false
+from mf2py import Parser
 from unittest import TestCase
+
 TestCase.maxDiff = None
 
 
@@ -36,8 +38,21 @@ def test_open_file():
     assert_true(type(p.to_dict()) is dict)
 
 
-def test_user_agent():
+@mock.patch('requests.get')
+def test_user_agent(getter):
     assert_true(Parser.useragent.startswith('mf2py - microformats2 parser for python'))
+
+    resp = mock.MagicMock()
+    resp.content = b''
+    resp.text = ''
+    resp.headers = {}
+    getter.return_value = resp
+
+    Parser(url='http://example.com')
+    getter.assert_called_with('http://example.com', headers={
+        'User-Agent': Parser.useragent
+    })
+
     Parser.useragent = 'something else'
     assert_equal(Parser.useragent, 'something else')
     # set back to default. damn stateful classes
@@ -356,7 +371,7 @@ def test_empty_href():
     for hcard in result['items']:
         assert hcard['properties'].get('url') == ['http://foo.com']
 
-        
+
 def test_link_with_u_url():
     result = parse_fixture("link_with_u-url.html", "http://foo.com")
     assert_equal({
@@ -366,7 +381,7 @@ def test_link_with_u_url():
             "url": ["http://foo.com/"],
         },
     }, result["items"][0])
-    
+
 
 def test_complex_e_content():
     """When parsing h-* e-* properties, we should fold {"value":..., "html":...}
