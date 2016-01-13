@@ -37,7 +37,7 @@ def test_open_file():
 
 
 def test_user_agent():
-    assert_equal(Parser.useragent, 'mf2py - microformats2 parser for python')
+    assert_true(Parser.useragent.startswith('mf2py - microformats2 parser for python'))
     Parser.useragent = 'something else'
     assert_equal(Parser.useragent, 'something else')
     # set back to default. damn stateful classes

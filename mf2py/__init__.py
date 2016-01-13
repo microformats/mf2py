@@ -5,7 +5,10 @@ a microformatted HTML document and returns a well-formed JSON
 dictionary.
 """
 
+VERSION = '1.0.1'
+
 from .parser import Parser, parse
 from .mf_helpers import get_url
+
 
 __all__ = ['Parser', 'parse', 'get_url']

@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 from setuptools import setup
+from mf2py import VERSION
 
 setup(name='mf2py',
-      version='1.0.1',
+      version=VERSION,
       description='Python Microformats2 parser',
       author='Tom Morris',
       author_email='tom@tommorris.org',
