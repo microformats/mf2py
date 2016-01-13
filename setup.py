@@ -10,7 +10,7 @@ setup(name='mf2py',
       author_email='tom@tommorris.org',
       url='http://microformats.org/wiki/mf2py',
       install_requires=['html5lib', 'requests', 'BeautifulSoup4'],
-      tests_require=['nose'],
+      tests_require=['nose', 'mock'],
       packages=['mf2py'],
       classifiers=[
           'Development Status :: 4 - Beta',
