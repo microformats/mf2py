@@ -21,7 +21,7 @@ else:
 
 def parse_fixture(path, url=None):
     with open(os.path.join("test/examples/", path)) as f:
-        p = Parser(doc=f, url=url)
+        p = Parser(doc=f, url=url, html_parser='html5lib')
         return p.to_dict()
 
 
