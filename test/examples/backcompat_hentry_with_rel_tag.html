@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Backcompat rel=tag</title>
+  </head>
+  <body>
+    <article class="hentry">
+      <a rel="tag" href="https://example.com/tags/cat">rhinoceros</a>
+      <a rel="tag" href="https://example.com/tags/dog/">giraffe</a>
+      <!-- throw some bad input at the parser -->
+      <a rel="tag"></a>
+      <a rel="tag" href=""></a>
+    </article>
+  </body>
+</html>

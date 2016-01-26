@@ -313,6 +313,14 @@ def test_backcompat_rel_bookmark():
         assert result['items'][ii]['properties']['url'] == [url]
 
 
+def test_backcompat_rel_tag():
+    """Confirm that rel=tag inside of an h-entry is converted
+    to a p-category and the last path segment of the href is used.
+    """
+    result = parse_fixture('backcompat_hentry_with_rel_tag.html')
+    assert result['items'][0]['properties']['category'] == ['cat', 'dog']
+
+
 def test_area_uparsing():
     result = parse_fixture("area.html")
     assert result["items"][0]["properties"] == {
