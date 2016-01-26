@@ -173,11 +173,10 @@ def make_classes_rule(old_class, new_classes):
 
 # The RULES map has a list of rules for each root class type.
 # We'll build the vast majority of it from the CLASSIC_PROPERTY_MAP
-RULES = {
-    old_root: [make_classes_rule(old_class, new_classes)
-               for old_class, new_classes in properties.items()]
-    for old_root, properties in CLASSIC_PROPERTY_MAP.items()
-}
+RULES = dict(
+    (old_root, [make_classes_rule(old_class, new_classes)
+                for old_class, new_classes in properties.items()])
+    for old_root, properties in CLASSIC_PROPERTY_MAP.items())
 
 
 def rel_bookmark_to_url_rule(child, **kwargs):
@@ -202,7 +201,7 @@ def rel_tag_to_category_rule(child, doc, **kwargs):
     if ('tag' in rels and child.get('href')
             and 'p-category' not in classes
             and 'u-category' not in classes):
-        segments = filter(None, child.get('href').split('/'))
+        segments = [seg for seg in child.get('href').split('/') if seg]
         if segments:
             data = doc.new_tag('data')
             data['class'] = ['p-category']
