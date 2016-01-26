@@ -20,7 +20,7 @@ else:
     binary_type = bytes
 
 
-def parse(doc=None, url=None):
+def parse(doc=None, url=None, html_parser=None):
     """
     Parse a microformats2 document or url and return a json dictionary.
 
@@ -30,10 +30,13 @@ def parse(doc=None, url=None):
         given url
       url (string): url of the file to be processed. Optionally extracted from
         base-element of given doc
+      html_parser (string): optional, select a specific HTML parser. Valid
+        options from the BeautifulSoup documentation are:
+        "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
 
     Return: a json dict represented the structured data in this document.
     """
-    return Parser(doc=doc, url=url).to_dict()
+    return Parser(doc, url, html_parser).to_dict()
 
 
 class Parser(object):
@@ -46,6 +49,9 @@ class Parser(object):
         given url
       url (string): url of the file to be processed. Optionally extracted from
         base-element of given doc
+      html_parser (string): optional, select a specific HTML parser. Valid
+        options from the BeautifulSoup documentation are:
+        "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
 
     Attributes:
       useragent (string): the User-Agent string for the Parser
@@ -53,7 +59,7 @@ class Parser(object):
 
     useragent = 'mf2py - microformats2 parser for python - version {0} - https://github.com/tommorris/mf2py'.format(__version__)
 
-    def __init__(self, doc=None, url=None):
+    def __init__(self, doc=None, url=None, html_parser=None):
         self.__url__ = None
         self.__doc__ = None
         self.__parsed__ = {"items": [], "rels": {}, "rel-urls": {}}
@@ -63,7 +69,7 @@ class Parser(object):
             if isinstance(doc, BeautifulSoup) or isinstance(doc, Tag):
                 self.__doc__ = doc
             else:
-                self.__doc__ = BeautifulSoup(doc)
+                self.__doc__ = BeautifulSoup(doc, features=html_parser)
 
         if url is not None:
             self.__url__ = url
@@ -75,9 +81,9 @@ class Parser(object):
 
                 # check for charater encodings and use 'correct' data
                 if 'charset' in data.headers.get('content-type', ''):
-                    self.__doc__ = BeautifulSoup(data.text)
+                    self.__doc__ = BeautifulSoup(data.text, features=html_parser)
                 else:
-                    self.__doc__ = BeautifulSoup(data.content)
+                    self.__doc__ = BeautifulSoup(data.content, features=html_parser)
 
         # check for <base> tag
         if self.__doc__:

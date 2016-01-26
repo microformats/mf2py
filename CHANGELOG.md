@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 1.0.2 - 2016-01-26
+### Added
+- Backward compatibility parsing for rel=tag properties. These are now converted
+  to p-category based on the last path segment of the tag URI as spec'd in
+  http://microformats.org/wiki/h-entry#Parser_Compatibility
+- Optional property html_parser to specify the html parser that BeautifulSoup
+  should use (e.g., "lxml" or "html5lib")
+
 ## 1.0.1 - 2015-12-11
 ### Changed
 - `u-*` properties are now parsed from `<link>` elements per the updated spec
