@@ -5,6 +5,12 @@ microformats2 names. Ported and adapted from php-mf2.
 
 from __future__ import unicode_literals, print_function
 
+import sys
+if sys.version < '3':
+    from urllib import unquote
+else:
+    from urllib.parse import unquote
+
 # Classic Root Classname map
 CLASSIC_ROOT_MAP = {
     'vcard': 'h-card',
@@ -205,7 +211,7 @@ def rel_tag_to_category_rule(child, doc, **kwargs):
         if segments:
             data = doc.new_tag('data')
             data['class'] = ['p-category']
-            data['value'] = segments[-1]
+            data['value'] = unquote(segments[-1])
             child.parent.append(data)
 
 

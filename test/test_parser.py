@@ -318,7 +318,7 @@ def test_backcompat_rel_tag():
     to a p-category and the last path segment of the href is used.
     """
     result = parse_fixture('backcompat_hentry_with_rel_tag.html')
-    assert result['items'][0]['properties']['category'] == ['cat', 'dog']
+    assert result['items'][0]['properties']['category'] == ['cat', 'dog', 'mountain lion']
 
 
 def test_area_uparsing():
