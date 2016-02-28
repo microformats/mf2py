@@ -4,12 +4,14 @@ microformats2 names. Ported and adapted from php-mf2.
 """
 
 from __future__ import unicode_literals, print_function
+import bs4
 
 import sys
 if sys.version < '3':
     from urllib import unquote
 else:
     from urllib.parse import unquote
+
 
 # Classic Root Classname map
 CLASSIC_ROOT_MAP = {
@@ -228,7 +230,7 @@ def apply_rules(doc):
     modifies BeautifulSoup document in-place
     """
     def apply_rules_to_children(parent, rules):
-        for child in parent.find_all(recursive=False):
+        for child in (c for c in parent.children if isinstance(c, bs4.Tag)):
             for rule in rules:
                 rule(child, doc=doc)
             # recurse if it's not a nested root
@@ -236,11 +238,13 @@ def apply_rules(doc):
                        for cls in child.get('class', [])):
                 apply_rules_to_children(child, rules)
 
-    for old_root, new_root in CLASSIC_ROOT_MAP.items():
-        for el in doc.find_all(lambda el: old_root in el.get('class', [])
-                               and new_root not in el.get('class', [])):
-            el['class'].append(new_root)
+    def has_classic_root(el):
+        return any(cls in CLASSIC_ROOT_MAP for cls in el.get('class', []))
 
-    for old_root, rules in RULES.items():
-        for el in doc.find_all(class_=old_root):
-            apply_rules_to_children(el, rules)
+    for el in doc.find_all(has_classic_root):
+        for old_root in el.get('class', []):
+            if old_root in CLASSIC_ROOT_MAP:
+                new_root = CLASSIC_ROOT_MAP[old_root]
+                if new_root not in el.get('class', []):
+                    el['class'].append(new_root)
+                    apply_rules_to_children(el, RULES.get(old_root, []))
