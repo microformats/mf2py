@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 1.0.3 - 2016-02-05
+### Changed
+- Performance improvement by limiting number of calls to soup.find_all
+  in backcompat module. Should not be any functional changes.
+
 ## 1.0.2 - 2016-01-26
 ### Added
 - Backward compatibility parsing for rel=tag properties. These are now converted
