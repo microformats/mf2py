@@ -1,33 +1,26 @@
 # coding: utf-8
 from __future__ import unicode_literals, print_function
-
-import json
 from bs4 import BeautifulSoup
-from bs4 import UnicodeDammit
-
+from bs4.element import Tag
+from mf2py import backcompat, mf2_classes, implied_properties, parse_property
+from mf2py import temp_fixes
+from mf2py.version import __version__
+from mf2py.dom_helpers import get_attr
+import json
 import requests
-
-from .dom_helpers import get_attr
-from . import (
-    backcompat,
-    mf2_classes,
-    implied_properties,
-    parse_property,
-    temp_fixes,
-)
-
 import sys
+
 if sys.version < '3':
     from urlparse import urlparse, urljoin
+    text_type = unicode
+    binary_type = str
 else:
     from urllib.parse import urlparse, urljoin
-
-def unmung(s):
-    return UnicodeDammit(s,["utf-8","windows-1252"]).unicode_markup
-    
+    text_type = str
+    binary_type = bytes
 
 
-def parse(doc=None, url=None):
+def parse(doc=None, url=None, html_parser=None):
     """
     Parse a microformats2 document or url and return a json dictionary.
 
@@ -37,10 +30,13 @@ def parse(doc=None, url=None):
         given url
       url (string): url of the file to be processed. Optionally extracted from
         base-element of given doc
+      html_parser (string): optional, select a specific HTML parser. Valid
+        options from the BeautifulSoup documentation are:
+        "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
 
     Return: a json dict represented the structured data in this document.
     """
-    return Parser(doc=doc, url=url).to_dict()
+    return Parser(doc, url, html_parser).to_dict()
 
 
 class Parser(object):
@@ -53,34 +49,41 @@ class Parser(object):
         given url
       url (string): url of the file to be processed. Optionally extracted from
         base-element of given doc
+      html_parser (string): optional, select a specific HTML parser. Valid
+        options from the BeautifulSoup documentation are:
+        "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
 
     Attributes:
       useragent (string): the User-Agent string for the Parser
     """
 
-    useragent = 'mf2py - microformats2 parser for python'
+    useragent = 'mf2py - microformats2 parser for python - version {0} - https://github.com/tommorris/mf2py'.format(__version__)
 
-    def __init__(self, doc=None, url=None):
+    def __init__(self, doc=None, url=None, html_parser=None):
         self.__url__ = None
         self.__doc__ = None
         self.__parsed__ = {"items": [], "rels": {}, "rel-urls": {}}
 
-        if doc:
+        if doc is not None:
             self.__doc__ = doc
-            if not isinstance(self.__doc__, BeautifulSoup):
-                self.__doc__ = BeautifulSoup(self.__doc__)
+            if isinstance(doc, BeautifulSoup) or isinstance(doc, Tag):
+                self.__doc__ = doc
+            else:
+                self.__doc__ = BeautifulSoup(doc, features=html_parser)
 
-        if url:
+        if url is not None:
             self.__url__ = url
 
             if self.__doc__ is None:
-                data = requests.get(self.__url__)
+                data = requests.get(self.__url__, headers={
+                    'User-Agent': self.useragent,
+                })
 
                 # check for charater encodings and use 'correct' data
                 if 'charset' in data.headers.get('content-type', ''):
-                    self.__doc__ = BeautifulSoup(data.text)
+                    self.__doc__ = BeautifulSoup(data.text, features=html_parser)
                 else:
-                    self.__doc__ = BeautifulSoup(data.content)
+                    self.__doc__ = BeautifulSoup(data.content, features=html_parser)
 
         # check for <base> tag
         if self.__doc__:
@@ -106,6 +109,12 @@ class Parser(object):
         on initialization.
         """
         self._default_date = None
+        # _default_date exists to provide implementation for rules described
+        # in legacy value-class-pattern. basically, if you have two dt-
+        # properties and one does not have the full date, it can use the
+        # existing date as a template.
+        # see value-class-pattern#microformats2_parsers on wiki.
+        # see also the implied_relative_datetimes testcase.
 
         def handle_microformat(root_class_names, el, value_property=None,
                                simple_value=None):
@@ -131,28 +140,28 @@ class Parser(object):
 
             # if some properties not already found find in implied ways
             if "name" not in properties:
-                properties["name"] = [unmung(prop) for prop in implied_properties.name(el)]
+                properties["name"] = [text_type(prop) for prop in implied_properties.name(el)]
             if "photo" not in properties:
                 x = implied_properties.photo(el, base_url=self.__url__)
                 if x is not None:
-                    properties["photo"] = [unmung(u) for u in x]
+                    properties["photo"] = [text_type(u) for u in x]
 
             if "url" not in properties:
                 x = implied_properties.url(el, base_url=self.__url__)
                 if x is not None:
-                    properties["url"] = [unmung(u) for u in x]
+                    properties["url"] = [text_type(u) for u in x]
 
             # build microformat with type and properties
-            microformat = {"type": [unmung(class_name) for class_name in root_class_names],
+            microformat = {"type": [text_type(class_name) for class_name in root_class_names],
                            "properties": properties}
             if str(el.name) == "area":
                 shape = get_attr(el, 'shape')
                 if shape is not None:
-                    microformat['shape'] = unmung(shape)
+                    microformat['shape'] = text_type(shape)
 
                 coords = get_attr(el, 'coords')
                 if coords is not None:
-                    microformat['coords'] = unmung(coords)
+                    microformat['coords'] = text_type(coords)
 
             # insert children if any
             if children:
@@ -167,7 +176,7 @@ class Parser(object):
                     # details: https://github.com/tommorris/mf2py/issues/35
                     microformat.update(simple_value)
                 else:
-                    microformat["value"] = unmung(simple_value)
+                    microformat["value"] = text_type(simple_value)
 
             return microformat
 
@@ -191,7 +200,7 @@ class Parser(object):
 
                 # if value has not been parsed then parse it
                 if p_value is None:
-                    p_value = unmung(parse_property.text(el).strip())
+                    p_value = text_type(parse_property.text(el).strip())
 
                 if root_class_names:
                     prop_value.append(handle_microformat(
@@ -215,7 +224,7 @@ class Parser(object):
                         root_class_names, el, value_property="url",
                         simple_value=u_value))
                 else:
-                    prop_value.append(unmung(u_value))
+                    prop_value.append(text_type(u_value))
 
             # Parse datetime dt-* properties.
             dt_value = None
@@ -233,10 +242,10 @@ class Parser(object):
 
                 if root_class_names:
                     prop_value.append(handle_microformat(
-                        root_class_names, el, simple_value=unmung(dt_value)))
+                        root_class_names, el, simple_value=text_type(dt_value)))
                 else:
                     if dt_value is not None:
-                        prop_value.append(unmung(dt_value))
+                        prop_value.append(text_type(dt_value))
 
             # Parse embedded markup e-* properties.
             e_value = None
@@ -274,11 +283,11 @@ class Parser(object):
         def parse_rels(el):
             """Parse an element for rel microformats
             """
-            rel_attrs = [unmung(rel) for rel in get_attr(el, 'rel')]
+            rel_attrs = [text_type(rel) for rel in get_attr(el, 'rel')]
             # if rel attributes exist
             if rel_attrs is not None:
                 # find the url and normalise it
-                url = unmung(urljoin(self.__url__, el.get('href', '')))
+                url = text_type(urljoin(self.__url__, el.get('href', '')))
                 value_dict = self.__parsed__["rel-urls"].get(url, {})
                 if "text" not in value_dict:
                     value_dict["text"] = el.get_text().strip() #first one wins
@@ -287,7 +296,7 @@ class Parser(object):
                 for knownattr in ("media","hreflang","type","title"):
                     x = get_attr(el, knownattr)
                     if x is not None:
-                        value_dict[knownattr] = unmung(x)
+                        value_dict[knownattr] = text_type(x)
                 self.__parsed__["rel-urls"][url] = value_dict
                 for rel_value in rel_attrs:
                     value_list = self.__parsed__["rels"].get(rel_value, [])
@@ -304,11 +313,11 @@ class Parser(object):
                         [r for r in rel_attrs if not r == "alternate"])
                     if x is not "":
                         alternate_dict["rel"] = x
-                    alternate_dict["text"] = unmung(el.get_text().strip())
+                    alternate_dict["text"] = text_type(el.get_text().strip())
                     for knownattr in ("media", "hreflang", "type", "title"):
                         x = get_attr(el, knownattr)
                         if x is not None:
-                            alternate_dict[knownattr] = unmung(x)
+                            alternate_dict[knownattr] = text_type(x)
                     alternate_list.append(alternate_dict)
                     self.__parsed__["alternates"] = alternate_list
 
