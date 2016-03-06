@@ -1,11 +1,13 @@
 from __future__ import unicode_literals, print_function
-from mf2py import Parser
-from nose.tools import assert_equal, assert_true, assert_false
+
 import os.path
 import sys
-import glob
-import json
+
+import mock
+from nose.tools import assert_equal, assert_true, assert_false
+from mf2py import Parser
 from unittest import TestCase
+
 TestCase.maxDiff = None
 
 
@@ -19,7 +21,7 @@ else:
 
 def parse_fixture(path, url=None):
     with open(os.path.join("test/examples/", path)) as f:
-        p = Parser(doc=f, url=url)
+        p = Parser(doc=f, url=url, html_parser='html5lib')
         return p.to_dict()
 
 
@@ -36,8 +38,21 @@ def test_open_file():
     assert_true(type(p.to_dict()) is dict)
 
 
-def test_user_agent():
-    assert_equal(Parser.useragent, 'mf2py - microformats2 parser for python')
+@mock.patch('requests.get')
+def test_user_agent(getter):
+    assert_true(Parser.useragent.startswith('mf2py - microformats2 parser for python'))
+
+    resp = mock.MagicMock()
+    resp.content = b''
+    resp.text = ''
+    resp.headers = {}
+    getter.return_value = resp
+
+    Parser(url='http://example.com')
+    getter.assert_called_with('http://example.com', headers={
+        'User-Agent': Parser.useragent
+    })
+
     Parser.useragent = 'something else'
     assert_equal(Parser.useragent, 'something else')
     # set back to default. damn stateful classes
@@ -167,7 +182,7 @@ def test_datetime_vcp_parsing():
     assert_equal(result["items"][1]["properties"]["published"][0],
                  "3014-01-01T01:21:00Z")
     assert_equal(result["items"][2]["properties"]["updated"][0],
-                 "2014-03-11T09:55:00")
+                 "2014-03-11 09:55:00")
     assert_equal(result["items"][3]["properties"]["published"][0],
                  "2014-01-30T15:28:00")
     assert_equal(result["items"][4]["properties"]["published"][0],
@@ -298,6 +313,14 @@ def test_backcompat_rel_bookmark():
         assert result['items'][ii]['properties']['url'] == [url]
 
 
+def test_backcompat_rel_tag():
+    """Confirm that rel=tag inside of an h-entry is converted
+    to a p-category and the last path segment of the href is used.
+    """
+    result = parse_fixture('backcompat_hentry_with_rel_tag.html')
+    assert result['items'][0]['properties']['category'] == ['cat', 'dog', 'mountain lion']
+
+
 def test_area_uparsing():
     result = parse_fixture("area.html")
     assert result["items"][0]["properties"] == {
@@ -326,7 +349,7 @@ def test_rels():
         u'http://example.com/2': {'text': u"post 2", "rels": [u'in-reply-to']},
         u'http://example.com/a': {'text': u"author a", "rels": [u'author']},
         u'http://example.com/b': {'text': u"author b", "rels": [u'author']},
-        u'http://example.com/fr': {'text': u'French mobile homepage', 
+        u'http://example.com/fr': {'text': u'French mobile homepage',
             'media': u'handheld', "rels":[u'alternate',u'home'], u'hreflang': u'fr'}
     }
 
@@ -355,6 +378,17 @@ def test_empty_href():
 
     for hcard in result['items']:
         assert hcard['properties'].get('url') == ['http://foo.com']
+
+
+def test_link_with_u_url():
+    result = parse_fixture("link_with_u-url.html", "http://foo.com")
+    assert_equal({
+        "type": ["h-card"],
+        "properties": {
+            "name": [""],
+            "url": ["http://foo.com/"],
+        },
+    }, result["items"][0])
 
 
 def test_complex_e_content():
@@ -415,23 +449,11 @@ def test_nested_values():
         'type': ['h-card'],
     }, entry["children"][0])
 
-def test_mf2tests():
-    allfiles = glob.glob(os.path.join('.', 'tests','tests', '*', '*', '*.json'))
-    for jsonfile in allfiles:
-        htmlfile = jsonfile[:-4]+'html'
-        with open(htmlfile) as f:
-            parsed=Parser(doc=f)
-            p = json.loads(parsed.to_json())
-            yield check_unicode, htmlfile, parsed.to_dict()
-        with open(jsonfile) as jsonf:
-            try:
-                s = json.load(jsonf)
-            except:
-                s="bad file: " + jsonfile + sys.exc_info()[0]
-        yield check_mf2, htmlfile, p,s
 
-def check_mf2(htmlfile, p,s):
-    assert_equal(p,s)
+def test_relative_datetime():
+    result = parse_fixture("implied_relative_datetimes.html")
+    assert_equal('2015-01-02T05:06:00',
+                 result[u'items'][0][u'properties'][u'updated'][0])
 
 
 def assert_unicode_everywhere(obj):
@@ -448,9 +470,11 @@ def assert_unicode_everywhere(obj):
     assert_false(isinstance(obj, binary_type),
                  'value=%r; type=%r' % (obj, type(obj)))
 
-def check_unicode(filename,jsonblob):
+
+def check_unicode(filename, jsonblob):
     assert_unicode_everywhere(jsonblob)
-    
+
+
 def test_unicode_everywhere():
     for h in os.listdir("test/examples"):
         result = parse_fixture(h)

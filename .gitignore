@@ -7,3 +7,4 @@ dist/
 mf2py.egg-info/
 nbproject/
 venv/
+*~
