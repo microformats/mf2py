@@ -1,7 +1,7 @@
 """functions to parse the properties of elements"""
 from __future__ import unicode_literals, print_function
 
-from .dom_helpers import get_attr
+from .dom_helpers import get_attr, get_children, get_descendents
 import sys
 import re
 
@@ -23,20 +23,20 @@ TIME_RE = r'(?P<rawtime>%s)( ?(?P<ampm>%s))?( ?(?P<tz>%s))?' % (RAWTIME_RE, AMPM
 DATETIME_RE = r'(?P<date>%s)(?P<separator>[T ])(?P<time>%s)' % (DATE_RE, TIME_RE)
 
 
-def is_vcp_class(c):
-    return c == 'value' or c == 'value-title'
-
-
 def get_vcp_value(el):
     if 'value-title' in el.get('class', []):
         return el.get('title')
     return el.get_text()
 
 
+def get_vcp_children(el):
+    return [c for c in get_children(el) if c.has_attr('class')
+            and ('value' in c['class'] or 'value-title' in c['class'])]
+
 def text(el):
     """Process p-* properties"""
     # handle value-class-pattern
-    value_els = el.find_all(class_=is_vcp_class, recursive=False)
+    value_els = get_vcp_children(el)
     if value_els:
         return ''.join(get_vcp_value(el) for el in value_els)
 
@@ -71,7 +71,7 @@ def url(el, base_url=''):
     if prop_value is not None:
         return urljoin(base_url, prop_value)
 
-    value_els = el.find_all(class_=is_vcp_class, recursive=False)
+    value_els = get_vcp_children(el)
     if value_els:
         return urljoin(base_url, ''.join(get_vcp_value(el) for el in value_els))
 
@@ -123,7 +123,7 @@ def datetime(el, default_date=None):
         return dtstr
 
     # handle value-class-pattern
-    value_els = el.find_all(class_=is_vcp_class)
+    value_els = get_vcp_children(el)
     if value_els:
         date_parts = []
         for value_el in value_els:

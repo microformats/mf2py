@@ -5,7 +5,7 @@ from bs4.element import Tag
 from mf2py import backcompat, mf2_classes, implied_properties, parse_property
 from mf2py import temp_fixes
 from mf2py.version import __version__
-from mf2py.dom_helpers import get_attr
+from mf2py.dom_helpers import get_attr, get_children, get_descendents
 import json
 import requests
 import sys
@@ -87,7 +87,8 @@ class Parser(object):
 
         # check for <base> tag
         if self.__doc__:
-            poss_base = self.__doc__.find("base")
+            poss_base = next((el for el in get_descendents(self.__doc__)
+                              if el.name == 'base'), None)
             if poss_base:
                 poss_base_url = poss_base.get('href')  # try to get href
                 if poss_base_url:
@@ -125,7 +126,7 @@ class Parser(object):
             self._default_date = None
 
             # parse for properties and children
-            for child in el.find_all(True, recursive=False):
+            for child in get_children(el):
                 child_props, child_children = parse_props(child)
                 for key, new_value in child_props.items():
                     prop_value = properties.get(key, [])
@@ -270,7 +271,7 @@ class Parser(object):
 
             # parse child tags, provided this isn't a microformat root-class
             if not root_class_names:
-                for child in el.find_all(True, recursive=False):
+                for child in get_children(el):
                     child_properties, child_microformats = parse_props(child)
                     for prop_name in child_properties:
                         v = props.get(prop_name, [])
@@ -342,7 +343,7 @@ class Parser(object):
                 ctx.append(result)
             else:
                 # parse child tags
-                for child in el.find_all(True, recursive=False):
+                for child in get_children(el):
                     parse_el(child, ctx)
 
         ctx = []
@@ -351,8 +352,10 @@ class Parser(object):
         self.__parsed__["items"] = ctx
 
         # parse for rel values
-        for el in self.__doc__.find_all(["a", "link"], attrs={'rel': True}):
-            parse_rels(el)
+        for el in get_descendents(self.__doc__):
+            if el.name in ('a', 'link') and el.has_attr('rel'):
+                parse_rels(el)
+
 
     def to_dict(self, filter_by_type=None):
         """Get a dictionary version of the parsed microformat document.
