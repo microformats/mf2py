@@ -4,6 +4,7 @@ microformats2 names. Ported and adapted from php-mf2.
 """
 
 from __future__ import unicode_literals, print_function
+from .dom_helpers import get_descendents
 import bs4
 
 import sys
@@ -238,13 +239,11 @@ def apply_rules(doc):
                        for cls in child.get('class', [])):
                 apply_rules_to_children(child, rules)
 
-    def has_classic_root(el):
-        return any(cls in CLASSIC_ROOT_MAP for cls in el.get('class', []))
-
-    for el in doc.find_all(has_classic_root):
-        for old_root in el.get('class', []):
-            if old_root in CLASSIC_ROOT_MAP:
-                new_root = CLASSIC_ROOT_MAP[old_root]
-                if new_root not in el.get('class', []):
-                    el['class'].append(new_root)
-                    apply_rules_to_children(el, RULES.get(old_root, []))
+    for el in get_descendents(doc):
+        if any(cls in CLASSIC_ROOT_MAP for cls in el.get('class', [])):
+            for old_root in el.get('class', []):
+                if old_root in CLASSIC_ROOT_MAP:
+                    new_root = CLASSIC_ROOT_MAP[old_root]
+                    if new_root not in el.get('class', []):
+                        el['class'].append(new_root)
+                        apply_rules_to_children(el, RULES.get(old_root, []))
