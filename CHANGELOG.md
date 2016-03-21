@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 1.0.4 - 2016-03-21
+### Changed
+- Performance improvement changing simple calls to soup.find_all to
+  a manual iteration over .contents.
+
 ## 1.0.3 - 2016-02-05
 ### Changed
 - Performance improvement by limiting number of calls to soup.find_all
