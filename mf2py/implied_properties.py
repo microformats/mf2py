@@ -20,12 +20,12 @@ def name(el):
     """
     # if image use alt text if not empty
     prop_value = get_attr(el, "alt", check_name=("img", "area"))
-    if prop_value is not None:
+    if prop_value:
         return [prop_value]
 
     # if abbreviation use the title if not empty
     prop_value = get_attr(el, "title", check_name="abbr")
-    if prop_value is not None:
+    if prop_value:
         return [prop_value]
 
     # if only one child
@@ -33,12 +33,12 @@ def name(el):
     if len(children) == 1:
         # use alt if child is img
         prop_value = get_attr(children[0], "alt", check_name="img")
-        if prop_value is not None:
+        if prop_value:
             return [prop_value]
 
         # use title if child is abbr
         prop_value = get_attr(children[0], "title", check_name="abbr")
-        if prop_value is not None:
+        if prop_value:
             return [prop_value]
 
         grandchildren = list(get_children(children[0]))
@@ -46,12 +46,12 @@ def name(el):
         if len(grandchildren) == 1:
             # use alt if grandchild is img
             prop_value = get_attr(grandchildren[0], "alt", check_name="img")
-            if prop_value is not None:
+            if prop_value:
                 return [prop_value]
 
             # use title if grandchild is title
             prop_value = get_attr(grandchildren[0], "title", check_name="abbr")
-            if prop_value is not None:
+            if prop_value:
                 return [prop_value]
 
     # use text if all else fails
@@ -70,12 +70,12 @@ def photo(el, base_url=''):
     """
     # if element is an image use source if exists
     prop_value = get_attr(el, "src", check_name="img")
-    if prop_value is not None:
+    if prop_value:
         return [urljoin(base_url, prop_value)]
 
     # if element is an object use data if exists
     prop_value = get_attr(el, "data", check_name="object")
-    if prop_value is not None:
+    if prop_value:
         return [prop_value]
 
     # if element has one image child use source if exists and img is
@@ -85,7 +85,7 @@ def photo(el, base_url=''):
         poss_img = poss_imgs[0]
         if mf2_classes.root(poss_img.get('class', [])) == []:
             prop_value = get_attr(poss_img, "src", check_name="img")
-            if prop_value is not None:
+            if prop_value:
                 return [urljoin(base_url, prop_value)]
 
     # if element has one object child use data if exists and object is
@@ -95,7 +95,7 @@ def photo(el, base_url=''):
         poss_obj = poss_objs[0]
         if mf2_classes.root(poss_obj.get('class', [])) == []:
             prop_value = get_attr(poss_obj, "data", check_name="object")
-            if prop_value is not None:
+            if prop_value:
                 return [prop_value]
 
     children = list(get_children(el))
@@ -108,7 +108,7 @@ def photo(el, base_url=''):
             poss_img = poss_imgs[0]
             if mf2_classes.root(poss_img.get('class', [])) == []:
                 prop_value = get_attr(poss_img, "src", check_name="img")
-                if prop_value is not None:
+                if prop_value:
                     return [urljoin(base_url, prop_value)]
 
         # if element has one object child use data if exists and
@@ -118,7 +118,7 @@ def photo(el, base_url=''):
             poss_obj = poss_objs[0]
             if mf2_classes.root(poss_obj.get('class', [])) == []:
                 prop_value = get_attr(poss_obj, "data", check_name="object")
-                if prop_value is not None:
+                if prop_value:
                     return [prop_value]
 
 
@@ -134,7 +134,7 @@ def url(el, base_url=''):
     """
     # if element is a link use its href if exists
     prop_value = get_attr(el, "href", check_name=("a", "area"))
-    if prop_value is not None:
+    if prop_value:
         return [urljoin(base_url, prop_value)]
 
     # if one link child use its href
@@ -143,5 +143,5 @@ def url(el, base_url=''):
         poss_a = poss_as[0]
         if mf2_classes.root(poss_a.get('class', [])) == []:
             prop_value = get_attr(poss_a, "href", check_name="a")
-            if prop_value is not None:
+            if prop_value:
                 return [urljoin(base_url, prop_value)]
