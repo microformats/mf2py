@@ -137,19 +137,26 @@ def test_plain_child_microformat():
 
 def test_implied_name():
     result = parse_fixture("implied_properties.html")
-    assert_equal(result["items"][0]["properties"]["name"][0], "Tom Morris")
+    for i in range(6):
+        assert_equal(result["items"][i]["properties"]["name"][0], "Tom Morris")
 
 
 def test_implied_url():
-    result = parse_fixture("implied_properties.html")
-    assert_equal(result["items"][1]["properties"]["url"][0],
-                 "http://tommorris.org/")
+    result = parse_fixture("implied_properties.html", url="http://foo.com/")
+    assert_equal(
+        result["items"][1]["properties"]["url"][0], "http://tommorris.org/")
+    # img should not have a "url" property
+    assert_true("url" not in result["items"][4]["properties"])
+    # href="" is relative to the base url
+    assert_equal(result["items"][5]["properties"]["url"][0], "http://foo.com/")
 
 
 def test_implied_nested_photo():
-    result = parse_fixture("implied_properties.html")
+    result = parse_fixture("implied_properties.html", url="http://bar.org")
     assert_equal(result["items"][2]["properties"]["photo"][0],
                  "http://tommorris.org/photo.png")
+    # src="" is relative to the base url
+    assert_equal(result["items"][5]["properties"]["photo"][0], "http://bar.org")
 
 
 def test_implied_nested_photo_alt_name():
