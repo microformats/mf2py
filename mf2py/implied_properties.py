@@ -18,14 +18,19 @@ def name(el):
     Returns:
       string: the implied name value
     """
+    def non_empty(val):
+        """If alt or title is empty, we don't want to use it as the implied
+        name"""
+        return val is not None and val != ''
+
     # if image use alt text if not empty
     prop_value = get_attr(el, "alt", check_name=("img", "area"))
-    if prop_value is not None:
+    if non_empty(prop_value):
         return [prop_value]
 
     # if abbreviation use the title if not empty
     prop_value = get_attr(el, "title", check_name="abbr")
-    if prop_value is not None:
+    if non_empty(prop_value):
         return [prop_value]
 
     # if only one child
@@ -33,12 +38,12 @@ def name(el):
     if len(children) == 1:
         # use alt if child is img
         prop_value = get_attr(children[0], "alt", check_name="img")
-        if prop_value is not None:
+        if non_empty(prop_value):
             return [prop_value]
 
         # use title if child is abbr
         prop_value = get_attr(children[0], "title", check_name="abbr")
-        if prop_value is not None:
+        if non_empty(prop_value):
             return [prop_value]
 
         grandchildren = list(get_children(children[0]))
@@ -46,12 +51,12 @@ def name(el):
         if len(grandchildren) == 1:
             # use alt if grandchild is img
             prop_value = get_attr(grandchildren[0], "alt", check_name="img")
-            if prop_value is not None:
+            if non_empty(prop_value):
                 return [prop_value]
 
             # use title if grandchild is title
             prop_value = get_attr(grandchildren[0], "title", check_name="abbr")
-            if prop_value is not None:
+            if non_empty(prop_value):
                 return [prop_value]
 
     # use text if all else fails
@@ -134,7 +139,7 @@ def url(el, base_url=''):
     """
     # if element is a link use its href if exists
     prop_value = get_attr(el, "href", check_name=("a", "area"))
-    if prop_value is not None:
+    if prop_value is not None:  # an empty href is valid
         return [urljoin(base_url, prop_value)]
 
     # if one link child use its href

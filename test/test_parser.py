@@ -1,6 +1,7 @@
 from __future__ import unicode_literals, print_function
 
 import os.path
+import re
 import sys
 
 import mock
@@ -136,19 +137,26 @@ def test_plain_child_microformat():
 
 def test_implied_name():
     result = parse_fixture("implied_properties.html")
-    assert_equal(result["items"][0]["properties"]["name"][0], "Tom Morris")
+    for i in range(6):
+        assert_equal(result["items"][i]["properties"]["name"][0], "Tom Morris")
 
 
 def test_implied_url():
-    result = parse_fixture("implied_properties.html")
-    assert_equal(result["items"][1]["properties"]["url"][0],
-                 "http://tommorris.org/")
+    result = parse_fixture("implied_properties.html", url="http://foo.com/")
+    assert_equal(
+        result["items"][1]["properties"]["url"][0], "http://tommorris.org/")
+    # img should not have a "url" property
+    assert_true("url" not in result["items"][4]["properties"])
+    # href="" is relative to the base url
+    assert_equal(result["items"][5]["properties"]["url"][0], "http://foo.com/")
 
 
 def test_implied_nested_photo():
-    result = parse_fixture("implied_properties.html")
+    result = parse_fixture("implied_properties.html", url="http://bar.org")
     assert_equal(result["items"][2]["properties"]["photo"][0],
                  "http://tommorris.org/photo.png")
+    # src="" is relative to the base url
+    assert_equal(result["items"][5]["properties"]["photo"][0], "http://bar.org")
 
 
 def test_implied_nested_photo_alt_name():
@@ -450,6 +458,37 @@ def test_nested_values():
     }, entry["children"][0])
 
 
+def test_implied_name_empty_alt():
+    """An empty alt text should not prevent us from including other
+    children in the implied name.
+    """
+    p = Parser(doc= """
+<a class="h-card" href="https://twitter.com/kylewmahan">
+  <img src="https://pbs.twimg.com/profile_images/641457114381074432/vUdKopH8.jpg" alt="">
+  @kylewmahan
+</a>""").to_dict()
+
+    hcard = p['items'][0]
+
+    assert_equal({
+        'type': ['h-card'],
+        'properties': {
+            'name': ['@kylewmahan'],
+            'url': ['https://twitter.com/kylewmahan'],
+            'photo': ['https://pbs.twimg.com/profile_images/641457114381074432/vUdKopH8.jpg'],
+        },
+    }, hcard)
+
+
+def test_implied_properties_silo_pub():
+    result = parse_fixture('silopub.html')
+    item = result['items'][0]
+
+    implied_name = item['properties']['name'][0]
+    implied_name = re.sub('\s+', ' ', implied_name).strip()
+    assert_equal('@kylewmahan on Twitter', implied_name)
+
+
 def test_relative_datetime():
     result = parse_fixture("implied_relative_datetimes.html")
     assert_equal('2015-01-02T05:06:00',
@@ -462,7 +501,6 @@ def assert_unicode_everywhere(obj):
             assert_false(isinstance(k, binary_type),
                          'key=%r; type=%r' % (k, type(k)))
             assert_unicode_everywhere(v)
-
     elif isinstance(obj, list):
         for v in obj:
             assert_unicode_everywhere(v)
