@@ -59,10 +59,16 @@ class Parser(object):
 
     useragent = 'mf2py - microformats2 parser for python - version {0} - https://github.com/tommorris/mf2py'.format(__version__)
 
+    dict_class = dict
+
     def __init__(self, doc=None, url=None, html_parser=None):
         self.__url__ = None
         self.__doc__ = None
-        self.__parsed__ = {"items": [], "rels": {}, "rel-urls": {}}
+        self.__parsed__ = self.dict_class([
+            ('items', []),
+            ('rels', self.dict_class()),
+            ('rel-urls', self.dict_class()),
+        ])
 
         if doc is not None:
             self.__doc__ = doc
@@ -121,7 +127,7 @@ class Parser(object):
                                simple_value=None):
             """Handles a (possibly nested) microformat, i.e. h-*
             """
-            properties = {}
+            properties = self.dict_class()
             children = []
             self._default_date = None
 
@@ -153,8 +159,10 @@ class Parser(object):
                     properties["url"] = [text_type(u) for u in x]
 
             # build microformat with type and properties
-            microformat = {"type": [text_type(class_name) for class_name in root_class_names],
-                           "properties": properties}
+            microformat = self.dict_class([
+                ("type", [text_type(class_name) for class_name in root_class_names]),
+                ("properties", properties),
+            ])
             if str(el.name) == "area":
                 shape = get_attr(el, 'shape')
                 if shape is not None:
@@ -184,7 +192,7 @@ class Parser(object):
         def parse_props(el):
             """Parse the properties from a single element
             """
-            props = {}
+            props = self.dict_class()
             children = []
 
             classes = el.get("class", [])
@@ -289,7 +297,7 @@ class Parser(object):
             if rel_attrs is not None:
                 # find the url and normalise it
                 url = text_type(urljoin(self.__url__, el.get('href', '')))
-                value_dict = self.__parsed__["rel-urls"].get(url, {})
+                value_dict = self.__parsed__["rel-urls"].get(url, self.dict_class())
                 if "text" not in value_dict:
                     value_dict["text"] = el.get_text().strip() #first one wins
                 url_rels = value_dict.get("rels",[])
@@ -308,7 +316,7 @@ class Parser(object):
                     self.__parsed__["rels"][rel_value] = value_list
                 if "alternate" in rel_attrs:
                     alternate_list = self.__parsed__.get("alternates", [])
-                    alternate_dict = {}
+                    alternate_dict = self.dict_class()
                     alternate_dict["url"] = url
                     x = " ".join(
                         [r for r in rel_attrs if not r == "alternate"])
