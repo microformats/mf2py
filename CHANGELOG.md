@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 1.0.5 - 2016-05-09
+
+- Implied property checks now ignore alt="", treating it the same as
+  if no alt value is defined.
+- Support for using a custom dict implementation by setting
+  mf2py.Parser.dict_class. collections.OrderedDict yields much nicer
+  output for hosted parsers.
+
 ## 1.0.4 - 2016-03-21
 ### Changed
 - Performance improvement changing simple calls to soup.find_all to
