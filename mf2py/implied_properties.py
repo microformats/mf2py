@@ -118,7 +118,8 @@ def photo(el, base_url=''):
 
         # if element has one object child use data if exists and
         # object is not root class
-        poss_objs = [c for c in get_children(children[0]) if c.name == 'object']
+        poss_objs = [c for c in get_children(children[0])
+                     if c.name == 'object']
         if len(poss_objs) == 1:
             poss_obj = poss_objs[0]
             if mf2_classes.root(poss_obj.get('class', [])) == []:

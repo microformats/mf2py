@@ -36,6 +36,7 @@ def get_children(node):
         if isinstance(child, bs4.Tag):
             yield child
 
+
 def get_descendents(node):
     for child in get_children(node):
         yield child

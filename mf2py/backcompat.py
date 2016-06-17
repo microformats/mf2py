@@ -167,6 +167,7 @@ CLASSIC_PROPERTY_MAP = {
     },
 }
 
+
 def make_classes_rule(old_class, new_classes):
     """Builds a rule for augmenting an mf1 class with its mf2
     equivalent(s).

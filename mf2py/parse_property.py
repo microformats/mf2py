@@ -1,7 +1,7 @@
 """functions to parse the properties of elements"""
 from __future__ import unicode_literals, print_function
 
-from .dom_helpers import get_attr, get_children, get_descendents
+from .dom_helpers import get_attr, get_children
 import sys
 import re
 
@@ -16,11 +16,14 @@ else:
 
 
 DATE_RE = r'\d{4}-\d{2}-\d{2}'
-RAWTIME_RE = r'(?P<hour>\d{1,2})(:(?P<minute>\d{2})(:(?P<second>\d{2})(\.\d+)?)?)?'
+SEC_RE = r'(:(?P<second>\d{2})(\.\d+)?)'
+RAWTIME_RE = r'(?P<hour>\d{1,2})(:(?P<minute>\d{2})%s?)?' % (SEC_RE)
 AMPM_RE = 'am|pm|a\.m\.|p\.m\.'
 TIMEZONE_RE = r'Z|[+-]\d{2}:?\d{2}?'
-TIME_RE = r'(?P<rawtime>%s)( ?(?P<ampm>%s))?( ?(?P<tz>%s))?' % (RAWTIME_RE, AMPM_RE, TIMEZONE_RE)
-DATETIME_RE = r'(?P<date>%s)(?P<separator>[T ])(?P<time>%s)' % (DATE_RE, TIME_RE)
+TIME_RE = (r'(?P<rawtime>%s)( ?(?P<ampm>%s))?( ?(?P<tz>%s))?' %
+           (RAWTIME_RE, AMPM_RE, TIMEZONE_RE))
+DATETIME_RE = (r'(?P<date>%s)(?P<separator>[T ])(?P<time>%s)'
+               % (DATE_RE, TIME_RE))
 
 
 def get_vcp_value(el):
@@ -45,11 +48,11 @@ def text(el):
     if prop_value is not None:
         return prop_value
 
-    prop_value = get_attr(el, "value", check_name=("data","input"))
+    prop_value = get_attr(el, "value", check_name=("data", "input"))
     if prop_value is not None:
         return prop_value
 
-    prop_value = get_attr(el, "alt", check_name=("img","area"))
+    prop_value = get_attr(el, "alt", check_name=("img", "area"))
     if prop_value is not None:
         return prop_value
 
@@ -64,7 +67,8 @@ def url(el, base_url=''):
     if prop_value is not None:
         return urljoin(base_url, prop_value)  # make urls absolute
 
-    prop_value = get_attr(el, "src", check_name=("img", "audio", "video", "source"))
+    prop_value = get_attr(el, "src", check_name=("img", "audio", "video",
+                                                 "source"))
     if prop_value is not None:
         return urljoin(base_url, prop_value)
 
@@ -74,7 +78,8 @@ def url(el, base_url=''):
 
     value_els = get_vcp_children(el)
     if value_els:
-        return urljoin(base_url, ''.join(get_vcp_value(el) for el in value_els))
+        return urljoin(base_url, ''.join(get_vcp_value(el)
+                       for el in value_els))
 
     prop_value = get_attr(el, "title", check_name="abbr")
     if prop_value is not None:
@@ -189,7 +194,8 @@ def datetime(el, default_date=None):
 
     # otherwise, treat it as a full date
     match = re.match(DATETIME_RE + '$', prop_value)
-    return try_normalize(prop_value, match=match), match and match.group('date')
+    return (try_normalize(prop_value, match=match),
+            match and match.group('date'),)
 
 
 def embedded(el):
