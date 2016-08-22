@@ -64,7 +64,14 @@ CLASSIC_PROPERTY_MAP = {
         'organization-name': ['p-organization-name'],
         'organization-unit': ['p-organization-unit'],
     },
-    'hentry': {
+    'hfeed': {
+        'title': ['p-name'], #for blogger, if they move hfeed to the right place
+        'description': ['p-summary'],  #for blogger, if they move hfeed to the right place
+        'site-title': ['p-name'], #for wordpress defaults
+        'site-description': ['p-summary'],  #for wordpress defaults
+        'category': ['p-category'],
+    },
+        'hentry': {
         'entry-title': ['p-name'],
         'entry-summary': ['p-summary'],
         'entry-content': ['e-content'],
