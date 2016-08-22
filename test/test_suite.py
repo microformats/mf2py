@@ -1,5 +1,5 @@
 from __future__ import unicode_literals, print_function
-from nose.tools import assert_equal, assert_true, assert_false
+from nose.tools import assert_equal
 import glob
 import json
 import mf2py

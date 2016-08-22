@@ -18,7 +18,7 @@ setup(name='mf2py',
       install_requires=['html5lib', 'requests', 'BeautifulSoup4'],
       tests_require=['nose', 'mock'],
       packages=['mf2py'],
-      test_suite = 'nose.collector',
+      test_suite='nose.collector',
       classifiers=[
           'Development Status :: 4 - Beta',
           'Intended Audience :: Developers',
