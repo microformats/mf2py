@@ -71,7 +71,7 @@ CLASSIC_PROPERTY_MAP = {
         'site-description': ['p-summary'],  #for wordpress defaults
         'category': ['p-category'],
     },
-        'hentry': {
+    'hentry': {
         'entry-title': ['p-name'],
         'entry-summary': ['p-summary'],
         'entry-content': ['e-content'],
