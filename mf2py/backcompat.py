@@ -42,7 +42,6 @@ CLASSIC_PROPERTY_MAP = {
         'email': ['u-email'],
         'logo': ['u-logo'],
         'photo': ['u-photo'],
-        'url': ['u-url'],
         'uid': ['u-uid'],
         'category': ['p-category'],
         'adr': ['p-adr', 'h-adr'],
