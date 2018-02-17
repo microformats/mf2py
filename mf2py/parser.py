@@ -134,15 +134,18 @@ class Parser(object):
             properties = self.dict_class()
             children = []
             self._default_date = None
+            # flag for processing implied name
+            do_implied_name = True
 
             # parse for properties and children
             for child in get_children(el):
-                child_props, child_children = parse_props(child)
+                child_props, child_children, child_stops_implied_name = parse_props(child)
                 for key, new_value in child_props.items():
                     prop_value = properties.get(key, [])
                     prop_value.extend(new_value)
                     properties[key] = prop_value
                 children.extend(child_children)
+                do_implied_name = do_implied_name and not child_stops_implied_name
 
             # complex h-* objects can take their "value" from the
             # first explicit property ("name" for p-* or "url" for u-*)
@@ -150,7 +153,9 @@ class Parser(object):
                 simple_value = properties[value_property][0]
 
             # if some properties not already found find in implied ways
-            if "name" not in properties:
+
+            # stop implied name if any p-*, e-*, h-* is already found
+            if "name" not in properties and do_implied_name:
                 properties["name"] = [text_type(prop)
                                       for prop
                                       in implied_properties.name(el)]
@@ -201,6 +206,8 @@ class Parser(object):
             """
             props = self.dict_class()
             children = []
+            # Does this element stop implied name?
+            stops_implied_name = False
 
             classes = el.get("class", [])
             # Is this element a microformat root?
@@ -212,13 +219,16 @@ class Parser(object):
             p_value = None
             for prop_name in mf2_classes.text(classes):
                 is_property_el = True
+                stops_implied_name = True
                 prop_value = props.setdefault(prop_name, [])
 
                 # if value has not been parsed then parse it
                 if p_value is None:
                     p_value = text_type(parse_property.text(el).strip())
 
+
                 if root_class_names:
+                    stops_implied_name = True
                     prop_value.append(handle_microformat(
                         root_class_names, el, value_property="name",
                         simple_value=p_value))
@@ -236,6 +246,7 @@ class Parser(object):
                     u_value = parse_property.url(el, base_url=self.__url__)
 
                 if root_class_names:
+                    stops_implied_name = True
                     prop_value.append(handle_microformat(
                         root_class_names, el, value_property="url",
                         simple_value=u_value))
@@ -257,6 +268,7 @@ class Parser(object):
                         self._default_date = new_date
 
                 if root_class_names:
+                    stops_implied_name = True
                     prop_value.append(handle_microformat(
                         root_class_names, el,
                         simple_value=text_type(dt_value)))
@@ -268,6 +280,7 @@ class Parser(object):
             e_value = None
             for prop_name in mf2_classes.embedded(classes):
                 is_property_el = True
+                stops_implied_name = True
                 prop_value = props.setdefault(prop_name, [])
 
                 # if value has not been parsed then parse it
@@ -275,6 +288,7 @@ class Parser(object):
                     e_value = parse_property.embedded(el)
 
                 if root_class_names:
+                    stops_implied_name = True
                     prop_value.append(handle_microformat(
                         root_class_names, el, simple_value=e_value))
                 else:
@@ -283,19 +297,21 @@ class Parser(object):
             # if this is not a property element, but it is a h-* microformat,
             # add it to our list of children
             if not is_property_el and root_class_names:
+                stops_implied_name = True
                 children.append(handle_microformat(root_class_names, el))
 
             # parse child tags, provided this isn't a microformat root-class
             if not root_class_names:
                 for child in get_children(el):
-                    child_properties, child_microformats = parse_props(child)
+                    child_properties, child_microformats, child_stops_implied_name = parse_props(child)
                     for prop_name in child_properties:
                         v = props.get(prop_name, [])
                         v.extend(child_properties[prop_name])
                         props[prop_name] = v
                     children.extend(child_microformats)
+                    stops_implied_name = stops_implied_name or child_stops_implied_name
 
-            return props, children
+            return props, children, stops_implied_name
 
         def parse_rels(el):
             """Parse an element for rel microformats
