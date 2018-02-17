@@ -1,4 +1,6 @@
 import sys
+import bs4
+
 if sys.version < '3':
     text_type = unicode
     binary_type = str
@@ -26,3 +28,17 @@ def get_attr(el, attr, check_name=None):
         return el.get(attr)
     if isinstance(check_name, (tuple, list)) and el.name in check_name:
         return el.get(attr)
+
+
+def get_children(node):
+    """An iterator over the immediate children tags of this tag"""
+    for child in node.contents:
+        if isinstance(child, bs4.Tag):
+            yield child
+
+
+def get_descendents(node):
+    for child in get_children(node):
+        yield child
+        for desc in get_descendents(child):
+            yield desc

@@ -4,7 +4,8 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 from mf2py import backcompat, mf2_classes, implied_properties, parse_property
 from mf2py import temp_fixes
-from mf2py.dom_helpers import get_attr
+from mf2py.version import __version__
+from mf2py.dom_helpers import get_attr, get_children, get_descendents
 import json
 import requests
 import sys
@@ -19,7 +20,7 @@ else:
     binary_type = bytes
 
 
-def parse(doc=None, url=None):
+def parse(doc=None, url=None, html_parser=None):
     """
     Parse a microformats2 document or url and return a json dictionary.
 
@@ -29,10 +30,13 @@ def parse(doc=None, url=None):
         given url
       url (string): url of the file to be processed. Optionally extracted from
         base-element of given doc
+      html_parser (string): optional, select a specific HTML parser. Valid
+        options from the BeautifulSoup documentation are:
+        "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
 
     Return: a json dict represented the structured data in this document.
     """
-    return Parser(doc=doc, url=url).to_dict()
+    return Parser(doc, url, html_parser).to_dict()
 
 
 class Parser(object):
@@ -45,38 +49,56 @@ class Parser(object):
         given url
       url (string): url of the file to be processed. Optionally extracted from
         base-element of given doc
+      html_parser (string): optional, select a specific HTML parser. Valid
+        options from the BeautifulSoup documentation are:
+        "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
 
     Attributes:
       useragent (string): the User-Agent string for the Parser
     """
 
-    useragent = 'mf2py - microformats2 parser for python'
+    ua_desc = 'mf2py - microformats2 parser for python'
+    ua_url = "https://github.com/tommorris/mf2py"
+    useragent = '{0} - version {1} - {2}'.format(ua_desc, __version__, ua_url)
 
-    def __init__(self, doc=None, url=None):
+    dict_class = dict
+
+    def __init__(self, doc=None, url=None, html_parser=None):
         self.__url__ = None
         self.__doc__ = None
-        self.__parsed__ = {"items": [], "rels": {}, "rel-urls": {}}
+        self.__parsed__ = self.dict_class([
+            ('items', []),
+            ('rels', self.dict_class()),
+            ('rel-urls', self.dict_class()),
+        ])
 
-        if doc:
+        if doc is not None:
             self.__doc__ = doc
-            if not ( isinstance(self.__doc__, BeautifulSoup) or isinstance(self.__doc__, Tag) ):
-                self.__doc__ = BeautifulSoup(self.__doc__)
+            if isinstance(doc, BeautifulSoup) or isinstance(doc, Tag):
+                self.__doc__ = doc
+            else:
+                self.__doc__ = BeautifulSoup(doc, features=html_parser)
 
-        if url:
+        if url is not None:
             self.__url__ = url
 
             if self.__doc__ is None:
-                data = requests.get(self.__url__)
+                data = requests.get(self.__url__, headers={
+                    'User-Agent': self.useragent,
+                })
 
                 # check for charater encodings and use 'correct' data
                 if 'charset' in data.headers.get('content-type', ''):
-                    self.__doc__ = BeautifulSoup(data.text)
+                    self.__doc__ = BeautifulSoup(data.text,
+                                                 features=html_parser)
                 else:
-                    self.__doc__ = BeautifulSoup(data.content)
+                    self.__doc__ = BeautifulSoup(data.content,
+                                                 features=html_parser)
 
         # check for <base> tag
         if self.__doc__:
-            poss_base = self.__doc__.find("base")
+            poss_base = next((el for el in get_descendents(self.__doc__)
+                              if el.name == 'base'), None)
             if poss_base:
                 poss_base_url = poss_base.get('href')  # try to get href
                 if poss_base_url:
@@ -98,17 +120,23 @@ class Parser(object):
         on initialization.
         """
         self._default_date = None
+        # _default_date exists to provide implementation for rules described
+        # in legacy value-class-pattern. basically, if you have two dt-
+        # properties and one does not have the full date, it can use the
+        # existing date as a template.
+        # see value-class-pattern#microformats2_parsers on wiki.
+        # see also the implied_relative_datetimes testcase.
 
         def handle_microformat(root_class_names, el, value_property=None,
                                simple_value=None):
             """Handles a (possibly nested) microformat, i.e. h-*
             """
-            properties = {}
+            properties = self.dict_class()
             children = []
             self._default_date = None
 
             # parse for properties and children
-            for child in el.find_all(True, recursive=False):
+            for child in get_children(el):
                 child_props, child_children = parse_props(child)
                 for key, new_value in child_props.items():
                     prop_value = properties.get(key, [])
@@ -123,7 +151,9 @@ class Parser(object):
 
             # if some properties not already found find in implied ways
             if "name" not in properties:
-                properties["name"] = [text_type(prop) for prop in implied_properties.name(el)]
+                properties["name"] = [text_type(prop)
+                                      for prop
+                                      in implied_properties.name(el)]
             if "photo" not in properties:
                 x = implied_properties.photo(el, base_url=self.__url__)
                 if x is not None:
@@ -135,8 +165,11 @@ class Parser(object):
                     properties["url"] = [text_type(u) for u in x]
 
             # build microformat with type and properties
-            microformat = {"type": [text_type(class_name) for class_name in root_class_names],
-                           "properties": properties}
+            microformat = self.dict_class([
+                ("type", [text_type(class_name)
+                          for class_name in root_class_names]),
+                ("properties", properties),
+            ])
             if str(el.name) == "area":
                 shape = get_attr(el, 'shape')
                 if shape is not None:
@@ -166,7 +199,7 @@ class Parser(object):
         def parse_props(el):
             """Parse the properties from a single element
             """
-            props = {}
+            props = self.dict_class()
             children = []
 
             classes = el.get("class", [])
@@ -225,7 +258,8 @@ class Parser(object):
 
                 if root_class_names:
                     prop_value.append(handle_microformat(
-                        root_class_names, el, simple_value=text_type(dt_value)))
+                        root_class_names, el,
+                        simple_value=text_type(dt_value)))
                 else:
                     if dt_value is not None:
                         prop_value.append(text_type(dt_value))
@@ -253,7 +287,7 @@ class Parser(object):
 
             # parse child tags, provided this isn't a microformat root-class
             if not root_class_names:
-                for child in el.find_all(True, recursive=False):
+                for child in get_children(el):
                     child_properties, child_microformats = parse_props(child)
                     for prop_name in child_properties:
                         v = props.get(prop_name, [])
@@ -271,12 +305,13 @@ class Parser(object):
             if rel_attrs is not None:
                 # find the url and normalise it
                 url = text_type(urljoin(self.__url__, el.get('href', '')))
-                value_dict = self.__parsed__["rel-urls"].get(url, {})
+                value_dict = self.__parsed__["rel-urls"].get(url,
+                                                             self.dict_class())
                 if "text" not in value_dict:
-                    value_dict["text"] = el.get_text().strip() #first one wins
-                url_rels = value_dict.get("rels",[])
+                    value_dict["text"] = el.get_text().strip()  # 1st one wins
+                url_rels = value_dict.get("rels", [])
                 value_dict["rels"] = url_rels
-                for knownattr in ("media","hreflang","type","title"):
+                for knownattr in ("media", "hreflang", "type", "title"):
                     x = get_attr(el, knownattr)
                     if x is not None:
                         value_dict[knownattr] = text_type(x)
@@ -290,7 +325,7 @@ class Parser(object):
                     self.__parsed__["rels"][rel_value] = value_list
                 if "alternate" in rel_attrs:
                     alternate_list = self.__parsed__.get("alternates", [])
-                    alternate_dict = {}
+                    alternate_dict = self.dict_class()
                     alternate_dict["url"] = url
                     x = " ".join(
                         [r for r in rel_attrs if not r == "alternate"])
@@ -325,7 +360,7 @@ class Parser(object):
                 ctx.append(result)
             else:
                 # parse child tags
-                for child in el.find_all(True, recursive=False):
+                for child in get_children(el):
                     parse_el(child, ctx)
 
         ctx = []
@@ -334,8 +369,9 @@ class Parser(object):
         self.__parsed__["items"] = ctx
 
         # parse for rel values
-        for el in self.__doc__.find_all(["a", "link"], attrs={'rel': True}):
-            parse_rels(el)
+        for el in get_descendents(self.__doc__):
+            if el.name in ('a', 'link') and el.has_attr('rel'):
+                parse_rels(el)
 
     def to_dict(self, filter_by_type=None):
         """Get a dictionary version of the parsed microformat document.
@@ -350,7 +386,8 @@ class Parser(object):
         if filter_by_type is None:
             return self.__parsed__
         else:
-            return [x for x in self.__parsed__['items'] if filter_by_type in x['type']]
+            return [x for x in self.__parsed__['items']
+                    if filter_by_type in x['type']]
 
     def to_json(self, pretty_print=False, filter_by_type=None):
         """Get a json-encoding string version of the parsed microformats document

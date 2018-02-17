@@ -1,5 +1,5 @@
-import nose
 from mf2py.parser import Parser
+
 
 def test_getElementsByClassName():
     p = Parser(doc=open("test/examples/person_with_url.html"))
