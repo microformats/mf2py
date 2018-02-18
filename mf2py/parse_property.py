@@ -39,40 +39,31 @@ def get_vcp_children(el):
 
 def text(el):
     """Process p-* properties"""
+
     # handle value-class-pattern
     value_els = get_vcp_children(el)
     if value_els:
         return ''.join(get_vcp_value(el) for el in value_els)
 
-    prop_value = get_attr(el, "title", check_name="abbr")
-    if prop_value is not None:
-        return prop_value
+    prop_value = get_attr(el, "title", check_name=("abbr", "link"))\
+        or get_attr(el, "value", check_name=("data", "input"))\
+        or get_attr(el, "alt", check_name=("img", "area"))\
+        or el.get_text()
 
-    prop_value = get_attr(el, "value", check_name=("data", "input"))
-    if prop_value is not None:
-        return prop_value
-
-    prop_value = get_attr(el, "alt", check_name=("img", "area"))
-    if prop_value is not None:
-        return prop_value
-
-    # see if get_text() replaces img with alts
-    # strip here?
-    return el.get_text()
+    # drop <script> and <style>
+    # replace nested <img> with alt or src
+    # strip here
+    return prop_value
 
 
 def url(el, base_url=''):
     """Process u-* properties"""
-    prop_value = get_attr(el, "href", check_name=("a", "area", "link"))
-    if prop_value is not None:
-        return urljoin(base_url, prop_value)  # make urls absolute
 
-    prop_value = get_attr(el, "src", check_name=("img", "audio", "video",
-                                                 "source"))
-    if prop_value is not None:
-        return urljoin(base_url, prop_value)
+    prop_value = get_attr(el, "href", check_name=("a", "area", "link"))\
+        or get_attr(el, "src", check_name=("img", "audio", "video", "source"))\
+        or get_attr(el, "poster", check_name="video")\
+        or get_attr(el, "data", check_name="object")
 
-    prop_value = get_attr(el, "data", check_name="object")
     if prop_value is not None:
         return urljoin(base_url, prop_value)
 
@@ -81,16 +72,13 @@ def url(el, base_url=''):
         return urljoin(base_url, ''.join(get_vcp_value(el)
                        for el in value_els))
 
-    prop_value = get_attr(el, "title", check_name="abbr")
-    if prop_value is not None:
-        return prop_value
+    prop_value = get_attr(el, "title", check_name="abbr")\
+        or get_attr(el, "value", check_name=("data", "input"))\
+        or el.get_text()
 
-    prop_value = get_attr(el, "value", check_name=("data", "input"))
-    if prop_value is not None:
-        return prop_value
-
+    # drop <script> and <style>
     # strip here?
-    return el.get_text()
+    return prop_value
 
 
 def datetime(el, default_date=None):
