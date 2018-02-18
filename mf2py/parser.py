@@ -1,6 +1,6 @@
 # coding: utf-8
 from __future__ import unicode_literals, print_function
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, FeatureNotFound
 from bs4.element import Tag
 from mf2py import backcompat, mf2_classes, implied_properties, parse_property
 from mf2py import temp_fixes
@@ -63,7 +63,7 @@ class Parser(object):
 
     dict_class = dict
 
-    def __init__(self, doc=None, url=None, html_parser=None):
+    def __init__(self, doc=None, url=None, html_parser='html5lib'):
         self.__url__ = None
         self.__doc__ = None
         self.__parsed__ = self.dict_class([
@@ -71,13 +71,6 @@ class Parser(object):
             ('rels', self.dict_class()),
             ('rel-urls', self.dict_class()),
         ])
-
-        if doc is not None:
-            self.__doc__ = doc
-            if isinstance(doc, BeautifulSoup) or isinstance(doc, Tag):
-                self.__doc__ = doc
-            else:
-                self.__doc__ = BeautifulSoup(doc, features=html_parser)
 
         if url is not None:
             self.__url__ = url
@@ -87,13 +80,27 @@ class Parser(object):
                     'User-Agent': self.useragent,
                 })
 
-                # check for charater encodings and use 'correct' data
+                # update to final URL after redirects
+                self.__url__ = data.url
+
+                # HACK: check for character encodings and use 'correct' data
                 if 'charset' in data.headers.get('content-type', ''):
-                    self.__doc__ = BeautifulSoup(data.text,
-                                                 features=html_parser)
+                    doc = data.text
                 else:
-                    self.__doc__ = BeautifulSoup(data.content,
-                                                 features=html_parser)
+                    doc = data.content
+
+        if doc is not None:
+            self.__doc__ = doc
+            if isinstance(doc, BeautifulSoup) or isinstance(doc, Tag):
+                self.__doc__ = doc
+            else:
+                try:
+                    # try the user-given html parser or default html5lib
+                    self.__doc__ = BeautifulSoup(doc, features=html_parser)
+                except FeatureNotFound:
+                    # else switch to default use
+                    self.__doc__ = BeautifulSoup(doc)
+
 
         # check for <base> tag
         if self.__doc__:
