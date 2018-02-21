@@ -98,6 +98,7 @@ class Parser(object):
                     # try the user-given html parser or default html5lib
                     self.__doc__ = BeautifulSoup(doc, features=html_parser)
                 except FeatureNotFound:
+                    # maybe raise a warning?
                     # else switch to default use
                     self.__doc__ = BeautifulSoup(doc)
 
