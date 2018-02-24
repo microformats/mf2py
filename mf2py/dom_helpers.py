@@ -16,7 +16,7 @@ def get_textContent(el, replace_img=False, base_url=''):
     """
 
     # copy el to avoid making direct changes
-    el_copy = copy.deepcopy(el)
+    el_copy = copy.copy(el)
 
     # drop all <style> and <script> elements
     drops = el_copy.find_all(['style', 'script'])
