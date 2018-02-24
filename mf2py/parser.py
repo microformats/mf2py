@@ -162,7 +162,7 @@ class Parser(object):
             if "name" not in properties:
                 properties["name"] = [text_type(prop)
                                       for prop
-                                      in implied_properties.name(el)]
+                                      in implied_properties.name(el, base_url=self.__url__)]
             if "photo" not in properties:
                 x = implied_properties.photo(el, base_url=self.__url__)
                 if x is not None:
@@ -225,7 +225,7 @@ class Parser(object):
 
                 # if value has not been parsed then parse it
                 if p_value is None:
-                    p_value = text_type(parse_property.text(el).strip())
+                    p_value = text_type(parse_property.text(el, base_url=self.__url__))
 
 
                 if root_class_names:
@@ -282,7 +282,7 @@ class Parser(object):
 
                 # if value has not been parsed then parse it
                 if e_value is None:
-                    e_value = parse_property.embedded(el)
+                    e_value = parse_property.embedded(el, base_url=self.__url__)
 
                 if root_class_names:
                     prop_value.append(handle_microformat(
