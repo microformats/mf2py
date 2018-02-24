@@ -1,7 +1,7 @@
 """functions to parse the properties of elements"""
 from __future__ import unicode_literals, print_function
 
-from .dom_helpers import get_attr, get_children
+from .dom_helpers import get_attr, get_children, get_textContent
 import sys
 import re
 
@@ -37,7 +37,7 @@ def get_vcp_children(el):
             and ('value' in c['class'] or 'value-title' in c['class'])]
 
 
-def text(el):
+def text(el, base_url=''):
     """Process p-* properties"""
 
     # handle value-class-pattern
@@ -48,11 +48,8 @@ def text(el):
     prop_value = get_attr(el, "title", check_name=("abbr", "link"))\
         or get_attr(el, "value", check_name=("data", "input"))\
         or get_attr(el, "alt", check_name=("img", "area"))\
-        or el.get_text()
+        or get_textContent(el, replace_img=True, base_url=base_url)
 
-    # drop <script> and <style>
-    # replace nested <img> with alt or src
-    # strip here
     return prop_value
 
 
@@ -74,10 +71,8 @@ def url(el, base_url=''):
 
     prop_value = get_attr(el, "title", check_name="abbr")\
         or get_attr(el, "value", check_name=("data", "input"))\
-        or el.get_text()
+        or get_textContent(el)
 
-    # drop <script> and <style>
-    # strip here?
     return prop_value
 
 
@@ -172,7 +167,7 @@ def datetime(el, default_date=None):
     prop_value = get_attr(el, "datetime", check_name=("time", "ins", "del"))\
         or get_attr(el, "title", check_name="abbr")\
         or get_attr(el, "value", check_name=("data", "input"))\
-        or el.get_text()  # strip here?
+        or get_textContent(el) 
 
     # if this is just a time, augment with default date
     match = re.match(TIME_RE + '$', prop_value)
@@ -186,9 +181,9 @@ def datetime(el, default_date=None):
             match and match.group('date'),)
 
 
-def embedded(el):
+def embedded(el, base_url=''):
     """Process e-* properties"""
     return {
         'html': el.decode_contents(),    # secret bs4 method to get innerHTML
-        'value': el.get_text()     # strip here?
+        'value': get_textContent(el, replace_img=True, base_url=base_url)
     }
