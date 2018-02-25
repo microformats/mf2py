@@ -45,10 +45,13 @@ def text(el, base_url=''):
     if value_els:
         return ''.join(get_vcp_value(el) for el in value_els)
 
-    prop_value = get_attr(el, "title", check_name=("abbr", "link"))\
-        or get_attr(el, "value", check_name=("data", "input"))\
-        or get_attr(el, "alt", check_name=("img", "area"))\
-        or get_textContent(el, replace_img=True, base_url=base_url)
+    prop_value = get_attr(el, "title", check_name=("abbr", "link"))
+    if prop_value is None:
+        prop_value = get_attr(el, "value", check_name=("data", "input"))
+    if prop_value is None:
+        prop_value = get_attr(el, "alt", check_name=("img", "area"))
+    if prop_value is None:
+        prop_value = get_textContent(el, replace_img=True, base_url=base_url)
 
     return prop_value
 
@@ -56,10 +59,13 @@ def text(el, base_url=''):
 def url(el, base_url=''):
     """Process u-* properties"""
 
-    prop_value = get_attr(el, "href", check_name=("a", "area", "link"))\
-        or get_attr(el, "src", check_name=("img", "audio", "video", "source"))\
-        or get_attr(el, "poster", check_name="video")\
-        or get_attr(el, "data", check_name="object")
+    prop_value = get_attr(el, "href", check_name=("a", "area", "link"))
+    if prop_value is None:
+        props_value = get_attr(el, "src", check_name=("img", "audio", "video", "source"))
+    if prop_value is None:
+        prop_value = get_attr(el, "poster", check_name="video")
+    if prop_value is None:
+        prop_value = get_attr(el, "data", check_name="object")
 
     if prop_value is not None:
         return urljoin(base_url, prop_value)
@@ -69,9 +75,11 @@ def url(el, base_url=''):
         return urljoin(base_url, ''.join(get_vcp_value(el)
                        for el in value_els))
 
-    prop_value = get_attr(el, "title", check_name="abbr")\
-        or get_attr(el, "value", check_name=("data", "input"))\
-        or get_textContent(el)
+    prop_value = get_attr(el, "title", check_name="abbr")
+    if prop_value is None:
+        prop_value = get_attr(el, "value", check_name=("data", "input"))
+    if prop_value is None:
+        prop_value = get_textContent(el)
 
     return prop_value
 
@@ -164,10 +172,13 @@ def datetime(el, default_date=None):
 
         return try_normalize(date_time_value), date_part
 
-    prop_value = get_attr(el, "datetime", check_name=("time", "ins", "del"))\
-        or get_attr(el, "title", check_name="abbr")\
-        or get_attr(el, "value", check_name=("data", "input"))\
-        or get_textContent(el) 
+    prop_value = get_attr(el, "datetime", check_name=("time", "ins", "del"))
+    if prop_value is None:
+        prop_value = get_attr(el, "title", check_name="abbr")
+    if prop_value is None:
+        prop_value = get_attr(el, "value", check_name=("data", "input"))
+    if prop_value is None:
+        prop_value = get_textContent(el) 
 
     # if this is just a time, augment with default date
     match = re.match(TIME_RE + '$', prop_value)
