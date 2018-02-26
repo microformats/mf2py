@@ -75,7 +75,7 @@ class Parser(object):
         if url is not None:
             self.__url__ = url
 
-            if self.__doc__ is None:
+            if doc is None:
                 data = requests.get(self.__url__, headers={
                     'User-Agent': self.useragent,
                 })
