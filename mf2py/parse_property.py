@@ -61,7 +61,7 @@ def url(el, base_url=''):
 
     prop_value = get_attr(el, "href", check_name=("a", "area", "link"))
     if prop_value is None:
-        props_value = get_attr(el, "src", check_name=("img", "audio", "video", "source"))
+        prop_value = get_attr(el, "src", check_name=("img", "audio", "video", "source"))
     if prop_value is None:
         prop_value = get_attr(el, "poster", check_name="video")
     if prop_value is None:
