@@ -195,6 +195,6 @@ def datetime(el, default_date=None):
 def embedded(el, base_url=''):
     """Process e-* properties"""
     return {
-        'html': el.decode_contents(),    # secret bs4 method to get innerHTML
+        'html': el.decode_contents().strip(),    # secret bs4 method to get innerHTML
         'value': get_textContent(el, replace_img=True, base_url=base_url)
     }

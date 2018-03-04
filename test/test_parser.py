@@ -224,8 +224,8 @@ def test_embedded_parsing():
     result = parse_fixture("embedded.html")
     assert_equal(
         result["items"][0]["properties"]["content"][0]["html"],
-        '\n   <p>Blah blah blah blah blah.</p>\n' +
-        '   <p>Blah.</p>\n   <p>Blah blah blah.</p>\n  ')
+        '<p>Blah blah blah blah blah.</p>\n' +
+        '   <p>Blah.</p>\n   <p>Blah blah blah.</p>')
     assert_equal(
         result["items"][0]["properties"]["content"][0]["value"],
         'Blah blah blah blah blah.\n   Blah.\n   Blah blah blah.')
