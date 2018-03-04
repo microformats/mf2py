@@ -1,14 +1,45 @@
 import sys
 import bs4
+import copy
 
 if sys.version < '3':
+    from urlparse import urljoin
     text_type = unicode
     binary_type = str
 else:
+    from urllib.parse import urljoin
     text_type = str
     binary_type = bytes
-    basestring = str
 
+def get_textContent(el, replace_img=False, base_url=''):
+    """ Get the text content of an element, replacing images by alt or src
+    """
+
+    # copy el to avoid making direct changes
+    el_copy = copy.copy(el)
+
+    # drop all <style> and <script> elements
+    drops = el_copy.find_all(['style', 'script'])
+    for drop in drops:
+        drop.decompose()
+
+    # replace <img> with alt or src
+    if replace_img:
+        imgs = el_copy.find_all('img')
+
+        for img in imgs:
+            replacement = img.get('alt')
+            if replacement is None:
+                replacement = img.get('src')
+                if replacement is not None:
+                    replacement = ' ' + urljoin(base_url, replacement) + ' '
+
+            if replacement is None:
+                replacement = ''
+
+            img.replace_with(replacement)
+
+    return el_copy.get_text().strip()
 
 def get_attr(el, attr, check_name=None):
     """Get the attribute of an element if it exists and is not empty.

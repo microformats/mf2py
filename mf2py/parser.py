@@ -1,6 +1,6 @@
 # coding: utf-8
 from __future__ import unicode_literals, print_function
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, FeatureNotFound
 from bs4.element import Tag
 from mf2py import backcompat, mf2_classes, implied_properties, parse_property
 from mf2py import temp_fixes
@@ -63,7 +63,7 @@ class Parser(object):
 
     dict_class = dict
 
-    def __init__(self, doc=None, url=None, html_parser=None):
+    def __init__(self, doc=None, url=None, html_parser='html5lib'):
         self.__url__ = None
         self.__doc__ = None
         self.__parsed__ = self.dict_class([
@@ -72,28 +72,36 @@ class Parser(object):
             ('rel-urls', self.dict_class()),
         ])
 
+        if url is not None:
+            self.__url__ = url
+
+            if doc is None:
+                data = requests.get(self.__url__, headers={
+                    'User-Agent': self.useragent,
+                })
+
+                # update to final URL after redirects
+                self.__url__ = data.url
+
+                # HACK: check for character encodings and use 'correct' data
+                if 'charset' in data.headers.get('content-type', ''):
+                    doc = data.text
+                else:
+                    doc = data.content
+
         if doc is not None:
             self.__doc__ = doc
             if isinstance(doc, BeautifulSoup) or isinstance(doc, Tag):
                 self.__doc__ = doc
             else:
-                self.__doc__ = BeautifulSoup(doc, features=html_parser)
+                try:
+                    # try the user-given html parser or default html5lib
+                    self.__doc__ = BeautifulSoup(doc, features=html_parser)
+                except FeatureNotFound:
+                    # maybe raise a warning?
+                    # else switch to default use
+                    self.__doc__ = BeautifulSoup(doc)
 
-        if url is not None:
-            self.__url__ = url
-
-            if self.__doc__ is None:
-                data = requests.get(self.__url__, headers={
-                    'User-Agent': self.useragent,
-                })
-
-                # check for charater encodings and use 'correct' data
-                if 'charset' in data.headers.get('content-type', ''):
-                    self.__doc__ = BeautifulSoup(data.text,
-                                                 features=html_parser)
-                else:
-                    self.__doc__ = BeautifulSoup(data.content,
-                                                 features=html_parser)
 
         # check for <base> tag
         if self.__doc__:
@@ -150,10 +158,11 @@ class Parser(object):
                 simple_value = properties[value_property][0]
 
             # if some properties not already found find in implied ways
+
             if "name" not in properties:
                 properties["name"] = [text_type(prop)
                                       for prop
-                                      in implied_properties.name(el)]
+                                      in implied_properties.name(el, base_url=self.__url__)]
             if "photo" not in properties:
                 x = implied_properties.photo(el, base_url=self.__url__)
                 if x is not None:
@@ -216,7 +225,8 @@ class Parser(object):
 
                 # if value has not been parsed then parse it
                 if p_value is None:
-                    p_value = text_type(parse_property.text(el).strip())
+                    p_value = text_type(parse_property.text(el, base_url=self.__url__))
+
 
                 if root_class_names:
                     prop_value.append(handle_microformat(
@@ -272,7 +282,7 @@ class Parser(object):
 
                 # if value has not been parsed then parse it
                 if e_value is None:
-                    e_value = parse_property.embedded(el)
+                    e_value = parse_property.embedded(el, base_url=self.__url__)
 
                 if root_class_names:
                     prop_value.append(handle_microformat(

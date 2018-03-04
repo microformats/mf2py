@@ -2,6 +2,7 @@
 *.swp
 *.pyc
 .idea/
+.eggs/
 build/
 dist/
 mf2py.egg-info/

@@ -1,7 +1,7 @@
 """functions to parse the properties of elements"""
 from __future__ import unicode_literals, print_function
 
-from .dom_helpers import get_attr, get_children
+from .dom_helpers import get_attr, get_children, get_textContent
 import sys
 import re
 
@@ -37,42 +37,36 @@ def get_vcp_children(el):
             and ('value' in c['class'] or 'value-title' in c['class'])]
 
 
-def text(el):
+def text(el, base_url=''):
     """Process p-* properties"""
+
     # handle value-class-pattern
     value_els = get_vcp_children(el)
     if value_els:
         return ''.join(get_vcp_value(el) for el in value_els)
 
-    prop_value = get_attr(el, "title", check_name="abbr")
-    if prop_value is not None:
-        return prop_value
+    prop_value = get_attr(el, "title", check_name=("abbr", "link"))
+    if prop_value is None:
+        prop_value = get_attr(el, "value", check_name=("data", "input"))
+    if prop_value is None:
+        prop_value = get_attr(el, "alt", check_name=("img", "area"))
+    if prop_value is None:
+        prop_value = get_textContent(el, replace_img=True, base_url=base_url)
 
-    prop_value = get_attr(el, "value", check_name=("data", "input"))
-    if prop_value is not None:
-        return prop_value
-
-    prop_value = get_attr(el, "alt", check_name=("img", "area"))
-    if prop_value is not None:
-        return prop_value
-
-    # see if get_text() replaces img with alts
-    # strip here?
-    return el.get_text()
+    return prop_value
 
 
 def url(el, base_url=''):
     """Process u-* properties"""
+
     prop_value = get_attr(el, "href", check_name=("a", "area", "link"))
-    if prop_value is not None:
-        return urljoin(base_url, prop_value)  # make urls absolute
+    if prop_value is None:
+        prop_value = get_attr(el, "src", check_name=("img", "audio", "video", "source"))
+    if prop_value is None:
+        prop_value = get_attr(el, "poster", check_name="video")
+    if prop_value is None:
+        prop_value = get_attr(el, "data", check_name="object")
 
-    prop_value = get_attr(el, "src", check_name=("img", "audio", "video",
-                                                 "source"))
-    if prop_value is not None:
-        return urljoin(base_url, prop_value)
-
-    prop_value = get_attr(el, "data", check_name="object")
     if prop_value is not None:
         return urljoin(base_url, prop_value)
 
@@ -82,15 +76,12 @@ def url(el, base_url=''):
                        for el in value_els))
 
     prop_value = get_attr(el, "title", check_name="abbr")
-    if prop_value is not None:
-        return prop_value
+    if prop_value is None:
+        prop_value = get_attr(el, "value", check_name=("data", "input"))
+    if prop_value is None:
+        prop_value = get_textContent(el)
 
-    prop_value = get_attr(el, "value", check_name=("data", "input"))
-    if prop_value is not None:
-        return prop_value
-
-    # strip here?
-    return el.get_text()
+    return prop_value
 
 
 def datetime(el, default_date=None):
@@ -181,10 +172,13 @@ def datetime(el, default_date=None):
 
         return try_normalize(date_time_value), date_part
 
-    prop_value = get_attr(el, "datetime", check_name=("time", "ins", "del"))\
-        or get_attr(el, "title", check_name="abbr")\
-        or get_attr(el, "value", check_name=("data", "input"))\
-        or el.get_text()  # strip here?
+    prop_value = get_attr(el, "datetime", check_name=("time", "ins", "del"))
+    if prop_value is None:
+        prop_value = get_attr(el, "title", check_name="abbr")
+    if prop_value is None:
+        prop_value = get_attr(el, "value", check_name=("data", "input"))
+    if prop_value is None:
+        prop_value = get_textContent(el) 
 
     # if this is just a time, augment with default date
     match = re.match(TIME_RE + '$', prop_value)
@@ -198,9 +192,9 @@ def datetime(el, default_date=None):
             match and match.group('date'),)
 
 
-def embedded(el):
+def embedded(el, base_url=''):
     """Process e-* properties"""
     return {
-        'html': el.decode_contents(),    # secret bs4 method to get innerHTML
-        'value': el.get_text()     # strip here?
+        'html': el.decode_contents().strip(),    # secret bs4 method to get innerHTML
+        'value': get_textContent(el, replace_img=True, base_url=base_url)
     }
