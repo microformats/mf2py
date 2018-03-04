@@ -10,6 +10,7 @@ else:
     from urllib.parse import urljoin
     text_type = str
     binary_type = bytes
+    basestring = str
 
 def get_textContent(el, replace_img=False, base_url=''):
     """ Get the text content of an element, replacing images by alt or src
