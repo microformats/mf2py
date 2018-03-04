@@ -1,6 +1,6 @@
 from __future__ import unicode_literals, print_function
 from . import mf2_classes
-from .dom_helpers import get_attr, get_children
+from .dom_helpers import get_attr, get_children, get_textContent
 import sys
 
 if sys.version < '3':
@@ -9,7 +9,7 @@ else:
     from urllib.parse import urljoin
 
 
-def name(el):
+def name(el, base_url=''):
     """Find an implied name property
 
     Args:
@@ -60,7 +60,7 @@ def name(el):
                 return [prop_value]
 
     # use text if all else fails
-    return [el.get_text().strip()]
+    return [get_textContent(el, replace_img=True, base_url=base_url)]
 
 
 def photo(el, base_url=''):
