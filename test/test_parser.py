@@ -228,7 +228,7 @@ def test_embedded_parsing():
         '   <p>Blah.</p>\n   <p>Blah blah blah.</p>\n  ')
     assert_equal(
         result["items"][0]["properties"]["content"][0]["value"],
-        '\n   Blah blah blah blah blah.\n   Blah.\n   Blah blah blah.\n  ')
+        'Blah blah blah blah blah.\n   Blah.\n   Blah blah blah.')
 
 
 def test_backcompat():
