@@ -73,8 +73,7 @@ def test_simple_parse():
 
 
 def test_simple_person_reference_implied():
-    p = Parser(doc=open("test/examples/simple_person_reference_implied.html"))
-    result = p.to_dict()
+    result = parse_fixture("simple_person_reference_implied.html")
     assert_equal(result["items"][0]["properties"],
                  {'name': ['Frances Berriman']})
 
@@ -86,8 +85,7 @@ def test_simple_person_reference_same_element():
 
 
 def test_person_with_url():
-    p = Parser(doc=open("test/examples/person_with_url.html"))
-    result = p.to_dict()
+    result = parse_fixture("person_with_url.html")
     assert_equal(result["items"][0]["properties"]["name"],
                  ['Tom Morris'])
     assert_equal(result["items"][0]["properties"]["url"],
@@ -263,7 +261,6 @@ def test_hoisting_nested_hcard():
                             'value': 'KP'
                         }
                     ],
-                    'name': ['KP\n    KP1']
                 },
                 'type': ['h-entry']
             }
@@ -271,7 +268,6 @@ def test_hoisting_nested_hcard():
         'rels': {},
         'rel-urls': {}
     }
-    assert_equal(['KP\n    KP1'], result['items'][0]['properties']['name'])
     assert_equal(expected, result)
 
 
@@ -417,8 +413,7 @@ def test_complex_e_content():
     into the parsed microformat object, instead of nesting it under an
     unnecessary second layer of "value":
     """
-    result = Parser(doc="""<!DOCTYPE html><div class="h-entry">
-<div class="h-card e-content"><p>Hello</p></div></div>""").to_dict()
+    result = parse_fixture("complex_e_content.html")
 
     assert_equal({
         "type": ["h-entry"],
@@ -433,7 +428,6 @@ def test_complex_e_content():
                 "html": "<p>Hello</p>",
                 "value": "Hello"
             }],
-            "name": ["Hello"]
         }
     }, result["items"][0])
 
@@ -475,13 +469,9 @@ def test_implied_name_empty_alt():
     """An empty alt text should not prevent us from including other
     children in the implied name.
     """
-    p = Parser(doc="""
-<a class="h-card" href="https://twitter.com/kylewmahan">
-  <img src="https://example.org/test.jpg" alt="">
-  @kylewmahan
-</a>""").to_dict()
 
-    hcard = p['items'][0]
+    result = parse_fixture("implied_name_empty_alt.html")
+    hcard = result['items'][0]
 
     assert_equal({
         'type': ['h-card'],
@@ -497,15 +487,34 @@ def test_implied_properties_silo_pub():
     result = parse_fixture('silopub.html')
     item = result['items'][0]
 
-    implied_name = item['properties']['name'][0]
-    implied_name = re.sub('\s+', ' ', implied_name).strip()
-    assert_equal('@kylewmahan on Twitter', implied_name)
+    #implied_name = item['properties']['name'][0]
+    #implied_name = re.sub('\s+', ' ', implied_name).strip()
+    #assert_equal('@kylewmahan on Twitter', implied_name)
 
+    # no implied name expected under new rules
+
+    assert_true('name' not in
+                 item[u'properties'])
 
 def test_relative_datetime():
     result = parse_fixture("implied_relative_datetimes.html")
     assert_equal('2015-01-02T05:06:00',
                  result[u'items'][0][u'properties'][u'updated'][0])
+
+def test_stop_implied_name_nested_h():
+    result = parse_fixture("stop_implied_name_nested_h.html")
+    assert_true('name' not in
+                 result[u'items'][0][u'properties'])
+
+def test_stop_implied_name_e_content():
+    result = parse_fixture("stop_implied_name_e_content.html")
+    assert_true('name' not in
+                 result[u'items'][0][u'properties'])
+
+def test_stop_implied_name_p_content():
+    result = parse_fixture("stop_implied_name_p_content.html")
+    assert_true('name' not in
+                 result[u'items'][0][u'properties'])
 
 
 def assert_unicode_everywhere(obj):
