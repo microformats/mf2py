@@ -5,7 +5,7 @@ microformats2 names. Ported and adapted from php-mf2.
 
 from __future__ import unicode_literals, print_function
 from .dom_helpers import get_descendents
-import mf2_classes
+from . import mf2_classes
 import bs4
 import copy
 
