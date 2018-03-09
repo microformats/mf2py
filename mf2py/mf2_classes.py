@@ -36,3 +36,9 @@ def embedded(classes):
     """get embedded property (e-*) names
     """
     return [c.partition("-")[2] for c in classes if c.startswith("e-")]
+
+def property_classes(classes):
+    """get all property (p-*, u-*, e-*, dt-*) classnames with prefix
+    """
+    return [c for c in classes if c.startswith("p-")
+            or c.startswith("u-") or c.startswith("e-") or c.startswith("dt-")]

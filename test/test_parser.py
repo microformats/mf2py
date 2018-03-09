@@ -308,8 +308,6 @@ def test_backcompat_hproduct():
 def test_backcompat_hproduct_nested_hreview():
     result = parse_fixture("backcompat_hproduct_hreview_nested.html")
     assert result["items"][0]["children"][0]['type'] == ['h-review']
-    assert type(result["items"][0]["children"][0]
-                ['properties']['name'][0]) == text_type
 
 
 def test_backcompat_rel_bookmark():
@@ -335,6 +333,69 @@ def test_backcompat_rel_tag():
     assert result['items'][0]['properties']['category'] == ['cat', 'dog',
                                                             'mountain lion']
 
+def test_backcompat_ignore_mf1_root_if_mf2_present():
+    """Confirm that mf1 root class is ignored if another mf2 root class is present.
+    """
+    result = parse_fixture('backcompat_ignore_mf1_root_if_mf2_present.html')
+    assert_true('h-entry' not in result['items'][0]['type'])
+    assert_true('h-event' in result['items'][0]['type'])
+
+def test_backcompat_no_implied_properties_mf1_root():
+    """Confirm that mf1 root class does not have implied properties
+    """
+    result = parse_fixture('backcompat_ignore_mf1_root_if_mf2_present.html')
+    assert_true('h-entry' not in result['items'][0]['properties'])
+    assert_true('name' not in result['items'][0]['type'])
+    assert_true('url' not in result['items'][0]['properties'])
+    assert_true('photo' not in result['items'][0]['properties'])
+
+def test_backcompat_ignore_mf2_properties_in_mf1_root():
+    """Confirm that mf2 properties are ignored in mf1 root class
+    """
+    result = parse_fixture('backcompat_ignore_mf2_properties_in_mf1_root.html')
+    assert_equal('Correct name', result['items'][0]['properties']['name'][0])
+    assert_equal('Correct summary', result['items'][0]['properties']['summary'][0])
+
+def test_backcompat_ignore_mf1_properties_in_mf2_root():
+    """Confirm that mf1 properties are ignored in mf2 root class
+    """
+    result = parse_fixture('backcompat_ignore_mf1_properties_in_mf2_root.html')
+    assert_equal('Correct name', result['items'][0]['properties']['name'][0])
+    assert_equal('Correct summary', result['items'][0]['properties']['summary'][0])
+
+def test_backcompat_nested_mf2_in_mf1():
+    """Confirm that mf2 roots nested inside mf1 root are parsed
+    """
+    result = parse_fixture('backcompat_nested_mf2_in_mf1.html')
+    assert_equal('h-feed', result['items'][0]['type'][0])
+    assert_equal('h-entry', result['items'][0]['children'][0]['type'][0])
+    assert_equal('Correct name', result['items'][0]['children'][0]['properties']['name'][0])
+    assert_equal('Correct summary', result['items'][0]['children'][0]['properties']['summary'][0])
+
+def test_backcompat_nested_mf1_in_mf2():
+    """Confirm that mf1 roots nested inside mf2 root are parsed
+    """
+    result = parse_fixture('backcompat_nested_mf1_in_mf2.html')
+    assert_equal('h-feed', result['items'][0]['type'][0])
+    assert_equal('h-entry', result['items'][0]['children'][0]['type'][0])
+    assert_equal('Correct name', result['items'][0]['children'][0]['properties']['name'][0])
+    assert_equal('Correct summary', result['items'][0]['children'][0]['properties']['summary'][0])
+
+def test_backcompat_nested_mf1_in_mf2_e_content():
+    """Confirm that mf1 roots nested inside mf2 root e-content are parsed as authored
+    """
+    result = parse_fixture('backcompat_nested_mf1_in_mf2_e_content.html')
+
+    mf2_entry = result['items'][0]
+    mf1_entry = mf2_entry['children'][0]
+
+    assert_equal('<div class="hentry">\n<span class="entry-title">Correct name</span>\n\n<span class="entry-summary">Correct summary</span>\n</div>', mf2_entry['properties']['content'][0]['html'])
+
+    assert_equal('Correct name\n\nCorrect summary', mf2_entry['properties']['content'][0]['value'])
+
+    assert_equal('h-entry', mf1_entry['type'][0])
+    assert_equal('Correct name', mf1_entry['properties']['name'][0])
+    assert_equal('Correct summary', mf1_entry['properties']['summary'][0])
 
 def test_area_uparsing():
     result = parse_fixture("area.html")
