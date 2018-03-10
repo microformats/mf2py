@@ -125,7 +125,7 @@ CLASSIC_PROPERTY_MAP = {
         'photo': ['u-photo'],
         # of the item being reviewed (p-item h-item u-url)
         'url': ['u-url'],
-        'reviewer': ['p-reviewer', 'p-author', 'h-card'],
+        'reviewer': ['p-author', 'h-card'],
         'dtreviewed': ['dt-reviewed'],
         'rating': ['p-rating'],
         'best': ['p-best'],
