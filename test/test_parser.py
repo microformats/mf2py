@@ -197,6 +197,10 @@ def test_datetime_vcp_parsing():
                  "9999-01-14T11:52+08:00")
     assert_equal(result["items"][5]["properties"]["published"][0],
                  "2014-06-01 12:30-06:00")
+    assert_equal(result["items"][8]["properties"]["start"][0],
+                 "2014-06-01 12:30-06:00")
+    assert_equal(result["items"][9]["properties"]["start"][0],
+                 "2014-06-01 12:30-06:00")
 
 
 def test_dt_end_implied_date():
@@ -216,6 +220,7 @@ def test_dt_end_implied_date():
                  "2014-06-01 12:30-06:00")
     assert_equal(event_w_tz["properties"]["end"][0],
                  "2014-06-01 19:30-06:00")
+
 
 
 def test_embedded_parsing():
