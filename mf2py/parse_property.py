@@ -153,8 +153,8 @@ def datetime(el, default_date=None):
                 if val:
                     date_parts.append(val.strip())
 
-        date_part = default_date
-        time_part = None
+        date_part = time_part = tz_part = None
+
         for part in date_parts:
             match = re.match(DATETIME_RE + '$', part)
             if match:
@@ -163,16 +163,26 @@ def datetime(el, default_date=None):
                 time_part = match.group('time')
                 return try_normalize(part, match=match), date_part
 
-            if re.match(TIME_RE + '$', part):
+            # only use first found value
+            if re.match(TIME_RE + '$', part) and time_part is None:
                 time_part = part
-            elif re.match(DATE_RE + '$', part):
+            elif re.match(DATE_RE + '$', part) and date_part is None:
                 date_part = part
+            elif re.match(TIMEZONE_RE + '$', part) and tz_part is None:
+                tz_part = part
+
+        # use default date
+        if date_part is None:
+            date_part = default_date
 
         if date_part and time_part:
             date_time_value = '%s %s' % (date_part,
                                          time_part)
         else:
             date_time_value = date_part or time_part
+
+        if tz_part:
+            date_time_value += tz_part
 
         return try_normalize(date_time_value), date_part
 
