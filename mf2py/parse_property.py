@@ -105,15 +105,19 @@ def datetime(el, default_date=None):
             datestr = match.group('date')
             hourstr = match.group('hour')
             minutestr = match.group('minute') or '00'
-            secondstr = match.group('second') or '00'
+            secondstr = match.group('second')
             ampmstr = match.group('ampm')
             separator = match.group('separator')
             if ampmstr:
                 hourstr = match.group('hour')
                 if ampmstr.startswith('p'):
                     hourstr = str(int(hourstr) + 12)
-            dtstr = '%s%s%s:%s:%s' % (
-                datestr, separator, hourstr, minutestr, secondstr)
+            dtstr = '%s%s%s:%s' % (
+                datestr, separator, hourstr, minutestr)
+
+            if secondstr:
+                dtstr += ':'+secondstr
+
             tzstr = match.group('tz')
             if tzstr:
                 dtstr += tzstr
