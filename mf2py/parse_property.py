@@ -165,7 +165,7 @@ def datetime(el, default_date=None):
                 date_part = part
 
         if date_part and time_part:
-            date_time_value = '%sT%s' % (date_part,
+            date_time_value = '%s %s' % (date_part,
                                          time_part)
         else:
             date_time_value = date_part or time_part
@@ -183,7 +183,7 @@ def datetime(el, default_date=None):
     # if this is just a time, augment with default date
     match = re.match(TIME_RE + '$', prop_value)
     if match and default_date:
-        prop_value = '%sT%s' % (default_date, prop_value)
+        prop_value = '%s %s' % (default_date, prop_value)
         return try_normalize(prop_value), default_date
 
     # otherwise, treat it as a full date

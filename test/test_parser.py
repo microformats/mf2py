@@ -188,15 +188,15 @@ def test_datetime_parsing():
 def test_datetime_vcp_parsing():
     result = parse_fixture("datetimes.html")
     assert_equal(result["items"][1]["properties"]["published"][0],
-                 "3014-01-01T01:21:00Z")
+                 "3014-01-01 01:21:00Z")
     assert_equal(result["items"][2]["properties"]["updated"][0],
                  "2014-03-11 09:55:00")
     assert_equal(result["items"][3]["properties"]["published"][0],
-                 "2014-01-30T15:28:00")
+                 "2014-01-30 15:28:00")
     assert_equal(result["items"][4]["properties"]["published"][0],
                  "9999-01-14T11:52:00+08:00")
     assert_equal(result["items"][5]["properties"]["published"][0],
-                 "2014-06-01T12:30:00-06:00")
+                 "2014-06-01 12:30:00-06:00")
 
 
 def test_dt_end_implied_date():
@@ -207,15 +207,15 @@ def test_dt_end_implied_date():
 
     event_wo_tz = result["items"][6]
     assert_equal(event_wo_tz["properties"]["start"][0],
-                 "2014-05-21T18:30:00")
+                 "2014-05-21 18:30:00")
     assert_equal(event_wo_tz["properties"]["end"][0],
-                 "2014-05-21T19:30:00")
+                 "2014-05-21 19:30:00")
 
     event_w_tz = result["items"][7]
     assert_equal(event_w_tz["properties"]["start"][0],
-                 "2014-06-01T12:30:00-06:00")
+                 "2014-06-01 12:30:00-06:00")
     assert_equal(event_w_tz["properties"]["end"][0],
-                 "2014-06-01T19:30:00-06:00")
+                 "2014-06-01 19:30:00-06:00")
 
 
 def test_embedded_parsing():
@@ -559,8 +559,8 @@ def test_implied_properties_silo_pub():
 
 def test_relative_datetime():
     result = parse_fixture("implied_relative_datetimes.html")
-    assert_equal('2015-01-02T05:06:00',
-                 result[u'items'][0][u'properties'][u'updated'][0])
+    assert_equal(result[u'items'][0][u'properties'][u'updated'][0],
+                 '2015-01-02 05:06:00')
 
 def test_stop_implied_name_nested_h():
     result = parse_fixture("stop_implied_name_nested_h.html")
