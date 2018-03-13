@@ -73,8 +73,7 @@ def test_simple_parse():
 
 
 def test_simple_person_reference_implied():
-    p = Parser(doc=open("test/examples/simple_person_reference_implied.html"))
-    result = p.to_dict()
+    result = parse_fixture("simple_person_reference_implied.html")
     assert_equal(result["items"][0]["properties"],
                  {'name': ['Frances Berriman']})
 
@@ -86,8 +85,7 @@ def test_simple_person_reference_same_element():
 
 
 def test_person_with_url():
-    p = Parser(doc=open("test/examples/person_with_url.html"))
-    result = p.to_dict()
+    result = parse_fixture("person_with_url.html")
     assert_equal(result["items"][0]["properties"]["name"],
                  ['Tom Morris'])
     assert_equal(result["items"][0]["properties"]["url"],
@@ -263,7 +261,6 @@ def test_hoisting_nested_hcard():
                             'value': 'KP'
                         }
                     ],
-                    'name': ['KP\n    KP1']
                 },
                 'type': ['h-entry']
             }
@@ -271,7 +268,6 @@ def test_hoisting_nested_hcard():
         'rels': {},
         'rel-urls': {}
     }
-    assert_equal(['KP\n    KP1'], result['items'][0]['properties']['name'])
     assert_equal(expected, result)
 
 
@@ -312,8 +308,6 @@ def test_backcompat_hproduct():
 def test_backcompat_hproduct_nested_hreview():
     result = parse_fixture("backcompat_hproduct_hreview_nested.html")
     assert result["items"][0]["children"][0]['type'] == ['h-review']
-    assert type(result["items"][0]["children"][0]
-                ['properties']['name'][0]) == text_type
 
 
 def test_backcompat_rel_bookmark():
@@ -339,6 +333,69 @@ def test_backcompat_rel_tag():
     assert result['items'][0]['properties']['category'] == ['cat', 'dog',
                                                             'mountain lion']
 
+def test_backcompat_ignore_mf1_root_if_mf2_present():
+    """Confirm that mf1 root class is ignored if another mf2 root class is present.
+    """
+    result = parse_fixture('backcompat_ignore_mf1_root_if_mf2_present.html')
+    assert_true('h-entry' not in result['items'][0]['type'])
+    assert_true('h-event' in result['items'][0]['type'])
+
+def test_backcompat_no_implied_properties_mf1_root():
+    """Confirm that mf1 root class does not have implied properties
+    """
+    result = parse_fixture('backcompat_ignore_mf1_root_if_mf2_present.html')
+    assert_true('h-entry' not in result['items'][0]['properties'])
+    assert_true('name' not in result['items'][0]['type'])
+    assert_true('url' not in result['items'][0]['properties'])
+    assert_true('photo' not in result['items'][0]['properties'])
+
+def test_backcompat_ignore_mf2_properties_in_mf1_root():
+    """Confirm that mf2 properties are ignored in mf1 root class
+    """
+    result = parse_fixture('backcompat_ignore_mf2_properties_in_mf1_root.html')
+    assert_equal('Correct name', result['items'][0]['properties']['name'][0])
+    assert_equal('Correct summary', result['items'][0]['properties']['summary'][0])
+
+def test_backcompat_ignore_mf1_properties_in_mf2_root():
+    """Confirm that mf1 properties are ignored in mf2 root class
+    """
+    result = parse_fixture('backcompat_ignore_mf1_properties_in_mf2_root.html')
+    assert_equal('Correct name', result['items'][0]['properties']['name'][0])
+    assert_equal('Correct summary', result['items'][0]['properties']['summary'][0])
+
+def test_backcompat_nested_mf2_in_mf1():
+    """Confirm that mf2 roots nested inside mf1 root are parsed
+    """
+    result = parse_fixture('backcompat_nested_mf2_in_mf1.html')
+    assert_equal('h-feed', result['items'][0]['type'][0])
+    assert_equal('h-entry', result['items'][0]['children'][0]['type'][0])
+    assert_equal('Correct name', result['items'][0]['children'][0]['properties']['name'][0])
+    assert_equal('Correct summary', result['items'][0]['children'][0]['properties']['summary'][0])
+
+def test_backcompat_nested_mf1_in_mf2():
+    """Confirm that mf1 roots nested inside mf2 root are parsed
+    """
+    result = parse_fixture('backcompat_nested_mf1_in_mf2.html')
+    assert_equal('h-feed', result['items'][0]['type'][0])
+    assert_equal('h-entry', result['items'][0]['children'][0]['type'][0])
+    assert_equal('Correct name', result['items'][0]['children'][0]['properties']['name'][0])
+    assert_equal('Correct summary', result['items'][0]['children'][0]['properties']['summary'][0])
+
+def test_backcompat_nested_mf1_in_mf2_e_content():
+    """Confirm that mf1 roots nested inside mf2 root e-content are parsed as authored
+    """
+    result = parse_fixture('backcompat_nested_mf1_in_mf2_e_content.html')
+
+    mf2_entry = result['items'][0]
+    mf1_entry = mf2_entry['children'][0]
+
+    assert_equal('<div class="hentry">\n<span class="entry-title">Correct name</span>\n\n<span class="entry-summary">Correct summary</span>\n</div>', mf2_entry['properties']['content'][0]['html'])
+
+    assert_equal('Correct name\n\nCorrect summary', mf2_entry['properties']['content'][0]['value'])
+
+    assert_equal('h-entry', mf1_entry['type'][0])
+    assert_equal('Correct name', mf1_entry['properties']['name'][0])
+    assert_equal('Correct summary', mf1_entry['properties']['summary'][0])
 
 def test_area_uparsing():
     result = parse_fixture("area.html")
@@ -417,8 +474,7 @@ def test_complex_e_content():
     into the parsed microformat object, instead of nesting it under an
     unnecessary second layer of "value":
     """
-    result = Parser(doc="""<!DOCTYPE html><div class="h-entry">
-<div class="h-card e-content"><p>Hello</p></div></div>""").to_dict()
+    result = parse_fixture("complex_e_content.html")
 
     assert_equal({
         "type": ["h-entry"],
@@ -433,7 +489,6 @@ def test_complex_e_content():
                 "html": "<p>Hello</p>",
                 "value": "Hello"
             }],
-            "name": ["Hello"]
         }
     }, result["items"][0])
 
@@ -475,13 +530,9 @@ def test_implied_name_empty_alt():
     """An empty alt text should not prevent us from including other
     children in the implied name.
     """
-    p = Parser(doc="""
-<a class="h-card" href="https://twitter.com/kylewmahan">
-  <img src="https://example.org/test.jpg" alt="">
-  @kylewmahan
-</a>""").to_dict()
 
-    hcard = p['items'][0]
+    result = parse_fixture("implied_name_empty_alt.html")
+    hcard = result['items'][0]
 
     assert_equal({
         'type': ['h-card'],
@@ -497,15 +548,34 @@ def test_implied_properties_silo_pub():
     result = parse_fixture('silopub.html')
     item = result['items'][0]
 
-    implied_name = item['properties']['name'][0]
-    implied_name = re.sub('\s+', ' ', implied_name).strip()
-    assert_equal('@kylewmahan on Twitter', implied_name)
+    #implied_name = item['properties']['name'][0]
+    #implied_name = re.sub('\s+', ' ', implied_name).strip()
+    #assert_equal('@kylewmahan on Twitter', implied_name)
 
+    # no implied name expected under new rules
+
+    assert_true('name' not in
+                 item[u'properties'])
 
 def test_relative_datetime():
     result = parse_fixture("implied_relative_datetimes.html")
     assert_equal('2015-01-02T05:06:00',
                  result[u'items'][0][u'properties'][u'updated'][0])
+
+def test_stop_implied_name_nested_h():
+    result = parse_fixture("stop_implied_name_nested_h.html")
+    assert_true('name' not in
+                 result[u'items'][0][u'properties'])
+
+def test_stop_implied_name_e_content():
+    result = parse_fixture("stop_implied_name_e_content.html")
+    assert_true('name' not in
+                 result[u'items'][0][u'properties'])
+
+def test_stop_implied_name_p_content():
+    result = parse_fixture("stop_implied_name_p_content.html")
+    assert_true('name' not in
+                 result[u'items'][0][u'properties'])
 
 
 def assert_unicode_everywhere(obj):

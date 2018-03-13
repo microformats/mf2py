@@ -120,7 +120,6 @@ class Parser(object):
         if self.__doc__ is not None:
             # parse!
             temp_fixes.apply_rules(self.__doc__)
-            backcompat.apply_rules(self.__doc__)
             self.parse()
 
     def parse(self):
@@ -136,42 +135,52 @@ class Parser(object):
         # see also the implied_relative_datetimes testcase.
 
         def handle_microformat(root_class_names, el, value_property=None,
-                               simple_value=None):
+                               simple_value=None, backcompat_mode=False):
             """Handles a (possibly nested) microformat, i.e. h-*
             """
             properties = self.dict_class()
             children = []
             self._default_date = None
+            # flag for processing implied name
+            do_implied_name = True
+
+            if backcompat_mode:
+                el = backcompat.apply_rules(el)
+                root_class_names = mf2_classes.root(el.get('class',[]))
 
             # parse for properties and children
             for child in get_children(el):
-                child_props, child_children = parse_props(child)
+                child_props, child_children, child_stops_implied_name = parse_props(child)
                 for key, new_value in child_props.items():
                     prop_value = properties.get(key, [])
                     prop_value.extend(new_value)
                     properties[key] = prop_value
                 children.extend(child_children)
+                do_implied_name = do_implied_name and not child_stops_implied_name
 
             # complex h-* objects can take their "value" from the
             # first explicit property ("name" for p-* or "url" for u-*)
             if value_property and value_property in properties:
                 simple_value = properties[value_property][0]
 
-            # if some properties not already found find in implied ways
+            # if some properties not already found find in implied ways unless in backcompat mode
+            if not backcompat_mode:
+                # stop implied name if any p-*, e-*, h-* is already found
+                if "name" not in properties and do_implied_name:
 
-            if "name" not in properties:
-                properties["name"] = [text_type(prop)
-                                      for prop
-                                      in implied_properties.name(el, base_url=self.__url__)]
-            if "photo" not in properties:
-                x = implied_properties.photo(el, base_url=self.__url__)
-                if x is not None:
-                    properties["photo"] = [text_type(u) for u in x]
+                    properties["name"] = [text_type(prop)
+                                          for prop
+                                          in implied_properties.name(el, base_url=self.__url__)]
 
-            if "url" not in properties:
-                x = implied_properties.url(el, base_url=self.__url__)
-                if x is not None:
-                    properties["url"] = [text_type(u) for u in x]
+                if "photo" not in properties:
+                    x = implied_properties.photo(el, base_url=self.__url__)
+                    if x is not None:
+                        properties["photo"] = [text_type(u) for u in x]
+
+                if "url" not in properties:
+                    x = implied_properties.url(el, base_url=self.__url__)
+                    if x is not None:
+                        properties["url"] = [text_type(u) for u in x]
 
             # build microformat with type and properties
             microformat = self.dict_class([
@@ -210,10 +219,19 @@ class Parser(object):
             """
             props = self.dict_class()
             children = []
+            # Does this element stop implied name?
+            stops_implied_name = False
 
             classes = el.get("class", [])
-            # Is this element a microformat root?
+            # Is this element a microformat2 root?
             root_class_names = mf2_classes.root(classes)
+            backcompat_mode = False
+
+            # Is this element a microformat1 root?
+            if not root_class_names:
+                root_class_names = backcompat.root(classes)
+                backcompat_mode = True
+
             # Is this a property element (p-*, u-*, etc.)
             is_property_el = False
 
@@ -221,6 +239,7 @@ class Parser(object):
             p_value = None
             for prop_name in mf2_classes.text(classes):
                 is_property_el = True
+                stops_implied_name = True
                 prop_value = props.setdefault(prop_name, [])
 
                 # if value has not been parsed then parse it
@@ -229,9 +248,10 @@ class Parser(object):
 
 
                 if root_class_names:
+                    stops_implied_name = True
                     prop_value.append(handle_microformat(
                         root_class_names, el, value_property="name",
-                        simple_value=p_value))
+                        simple_value=p_value, backcompat_mode=backcompat_mode))
                 else:
                     prop_value.append(p_value)
 
@@ -246,9 +266,10 @@ class Parser(object):
                     u_value = parse_property.url(el, base_url=self.__url__)
 
                 if root_class_names:
+                    stops_implied_name = True
                     prop_value.append(handle_microformat(
                         root_class_names, el, value_property="url",
-                        simple_value=u_value))
+                        simple_value=u_value, backcompat_mode=backcompat_mode))
                 else:
                     prop_value.append(text_type(u_value))
 
@@ -267,9 +288,10 @@ class Parser(object):
                         self._default_date = new_date
 
                 if root_class_names:
+                    stops_implied_name = True
                     prop_value.append(handle_microformat(
                         root_class_names, el,
-                        simple_value=text_type(dt_value)))
+                        simple_value=text_type(dt_value), backcompat_mode=backcompat_mode))
                 else:
                     if dt_value is not None:
                         prop_value.append(text_type(dt_value))
@@ -278,6 +300,7 @@ class Parser(object):
             e_value = None
             for prop_name in mf2_classes.embedded(classes):
                 is_property_el = True
+                stops_implied_name = True
                 prop_value = props.setdefault(prop_name, [])
 
                 # if value has not been parsed then parse it
@@ -285,27 +308,30 @@ class Parser(object):
                     e_value = parse_property.embedded(el, base_url=self.__url__)
 
                 if root_class_names:
+                    stops_implied_name = True
                     prop_value.append(handle_microformat(
-                        root_class_names, el, simple_value=e_value))
+                        root_class_names, el, simple_value=e_value, backcompat_mode=backcompat_mode))
                 else:
                     prop_value.append(e_value)
 
             # if this is not a property element, but it is a h-* microformat,
             # add it to our list of children
             if not is_property_el and root_class_names:
-                children.append(handle_microformat(root_class_names, el))
+                stops_implied_name = True
+                children.append(handle_microformat(root_class_names, el, backcompat_mode=backcompat_mode))
 
             # parse child tags, provided this isn't a microformat root-class
             if not root_class_names:
                 for child in get_children(el):
-                    child_properties, child_microformats = parse_props(child)
+                    child_properties, child_microformats, child_stops_implied_name = parse_props(child)
                     for prop_name in child_properties:
                         v = props.get(prop_name, [])
                         v.extend(child_properties[prop_name])
                         props[prop_name] = v
                     children.extend(child_microformats)
+                    stops_implied_name = stops_implied_name or child_stops_implied_name
 
-            return props, children
+            return props, children, stops_implied_name
 
         def parse_rels(el):
             """Parse an element for rel microformats
@@ -349,7 +375,7 @@ class Parser(object):
                     alternate_list.append(alternate_dict)
                     self.__parsed__["alternates"] = alternate_list
 
-        def parse_el(el, ctx, top_level=False):
+        def parse_el(el, ctx):
             """Parse an element for microformats
             """
             classes = el.get("class", [])
@@ -358,6 +384,7 @@ class Parser(object):
             # prevents it from recognizing multi-valued
             # attrs on the <html> element
             # https://bugs.launchpad.net/beautifulsoup/+bug/1296481
+            # don't need anymore remove?
             if el.name == 'html' and not isinstance(classes, list):
                 classes = classes.split()
 
@@ -369,18 +396,24 @@ class Parser(object):
                 result = handle_microformat(potential_microformats, el)
                 ctx.append(result)
             else:
-                # parse child tags
-                for child in get_children(el):
-                    parse_el(child, ctx)
+                # find backcompat root classnames
+                potential_microformats = backcompat.root(classes)
+                if potential_microformats:
+                    result = handle_microformat(potential_microformats, el, backcompat_mode=True)
+                    ctx.append(result)
+                else:
+                    # parse child tags
+                    for child in get_children(el):
+                        parse_el(child, ctx)
 
         ctx = []
         # start parsing at root element of the document
-        parse_el(self.__doc__, ctx, True)
+        parse_el(self.__doc__, ctx)
         self.__parsed__["items"] = ctx
 
         # parse for rel values
         for el in get_descendents(self.__doc__):
-            if el.name in ('a', 'link') and el.has_attr('rel'):
+            if el.name in ('a', 'area', 'link') and el.has_attr('rel'):
                 parse_rels(el)
 
     def to_dict(self, filter_by_type=None):
