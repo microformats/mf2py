@@ -2,6 +2,9 @@
 from __future__ import unicode_literals, print_function
 
 from .dom_helpers import get_attr, get_children, get_textContent
+from .datetime_helpers import normalize_datetime, DATETIME_RE, TIME_RE
+from . import value_class_pattern
+
 import sys
 import re
 
@@ -14,36 +17,13 @@ else:
     text_type = str
     binary_type = bytes
 
-
-DATE_RE = r'\d{4}-\d{2}-\d{2}'
-SEC_RE = r'(:(?P<second>\d{2})(\.\d+)?)'
-RAWTIME_RE = r'(?P<hour>\d{1,2})(:(?P<minute>\d{2})%s?)?' % (SEC_RE)
-AMPM_RE = 'am|pm|a\.m\.|p\.m\.'
-TIMEZONE_RE = r'Z|[+-]\d{2}:?\d{2}?'
-TIME_RE = (r'(?P<rawtime>%s)( ?(?P<ampm>%s))?( ?(?P<tz>%s))?' %
-           (RAWTIME_RE, AMPM_RE, TIMEZONE_RE))
-DATETIME_RE = (r'(?P<date>%s)(?P<separator>[T ])(?P<time>%s)'
-               % (DATE_RE, TIME_RE))
-
-
-def get_vcp_value(el):
-    if 'value-title' in el.get('class', []):
-        return el.get('title')
-    return el.get_text()
-
-
-def get_vcp_children(el):
-    return [c for c in get_children(el) if c.has_attr('class')
-            and ('value' in c['class'] or 'value-title' in c['class'])]
-
-
 def text(el, base_url=''):
     """Process p-* properties"""
 
     # handle value-class-pattern
-    value_els = get_vcp_children(el)
-    if value_els:
-        return ''.join(get_vcp_value(el) for el in value_els)
+    prop_value = value_class_pattern.text(el)
+    if prop_value is not None:
+        return prop_value
 
     prop_value = get_attr(el, "title", check_name=("abbr", "link"))
     if prop_value is None:
@@ -70,10 +50,10 @@ def url(el, base_url=''):
     if prop_value is not None:
         return urljoin(base_url, prop_value)
 
-    value_els = get_vcp_children(el)
-    if value_els:
-        return urljoin(base_url, ''.join(get_vcp_value(el)
-                       for el in value_els))
+    # handle value-class-pattern
+    prop_value = value_class_pattern.text(el)
+    if prop_value is not None:
+        return prop_value
 
     prop_value = get_attr(el, "title", check_name="abbr")
     if prop_value is None:
@@ -93,98 +73,11 @@ def datetime(el, default_date=None):
     Returns:
       a tuple (string string): a tuple of two strings, (datetime, date)
     """
-    def try_normalize(dtstr, match=None):
-        """Try to normalize a datetime string.
-        <strike>1. Use 'T' as the date/time separator.</strike>
-        2. Convert 12-hour time to 24-hour time
-
-        pass match in if we have already calculated it to avoid rework
-        """
-        match = match or (dtstr and re.match(DATETIME_RE + '$', dtstr))
-        if match:
-            datestr = match.group('date')
-            hourstr = match.group('hour')
-            minutestr = match.group('minute') or '00'
-            secondstr = match.group('second')
-            ampmstr = match.group('ampm')
-            separator = match.group('separator')
-            if ampmstr:
-                hourstr = match.group('hour')
-                if ampmstr.startswith('p'):
-                    hourstr = str(int(hourstr) + 12)
-            dtstr = '%s%s%s:%s' % (
-                datestr, separator, hourstr, minutestr)
-
-            if secondstr:
-                dtstr += ':'+secondstr
-
-            tzstr = match.group('tz')
-            if tzstr:
-                dtstr += tzstr
-        return dtstr
 
     # handle value-class-pattern
-    value_els = get_vcp_children(el)
-    if value_els:
-        date_parts = []
-        for value_el in value_els:
-            if 'value-title' in value_el.get('class', []):
-                title = el.get('title')
-                if title:
-                    date_parts.append(title.strip())
-            elif value_el.name in ('img', 'area'):
-                alt = value_el.get('alt') or value_el.get_text()
-                if alt:
-                    date_parts.append(alt.strip())
-            elif value_el.name == 'data':
-                val = value_el.get('value') or value_el.get_text()
-                if val:
-                    date_parts.append(val.strip())
-            elif value_el.name == 'abbr':
-                title = value_el.get('title') or value_el.get_text()
-                if title:
-                    date_parts.append(title.strip())
-            elif value_el.name in ('del', 'ins', 'time'):
-                dt = value_el.get('datetime') or value_el.get_text()
-                if dt:
-                    date_parts.append(dt.strip())
-            else:
-                val = value_el.get_text()
-                if val:
-                    date_parts.append(val.strip())
-
-        date_part = time_part = tz_part = None
-
-        for part in date_parts:
-            match = re.match(DATETIME_RE + '$', part)
-            if match:
-                # if it's a full datetime, then we're done
-                date_part = match.group('date')
-                time_part = match.group('time')
-                return try_normalize(part, match=match), date_part
-
-            # only use first found value
-            if re.match(TIME_RE + '$', part) and time_part is None:
-                time_part = part
-            elif re.match(DATE_RE + '$', part) and date_part is None:
-                date_part = part
-            elif re.match(TIMEZONE_RE + '$', part) and tz_part is None:
-                tz_part = part
-
-        # use default date
-        if date_part is None:
-            date_part = default_date
-
-        if date_part and time_part:
-            date_time_value = '%s %s' % (date_part,
-                                         time_part)
-        else:
-            date_time_value = date_part or time_part
-
-        if tz_part:
-            date_time_value += tz_part
-
-        return try_normalize(date_time_value), date_part
+    prop_value = value_class_pattern.datetime(el, default_date)
+    if prop_value is not None:
+        return prop_value
 
     prop_value = get_attr(el, "datetime", check_name=("time", "ins", "del"))
     if prop_value is None:
@@ -198,11 +91,11 @@ def datetime(el, default_date=None):
     match = re.match(TIME_RE + '$', prop_value)
     if match and default_date:
         prop_value = '%s %s' % (default_date, prop_value)
-        return try_normalize(prop_value), default_date
+        return normalize_datetime(prop_value), default_date
 
     # otherwise, treat it as a full date
     match = re.match(DATETIME_RE + '$', prop_value)
-    return (try_normalize(prop_value, match=match),
+    return (normalize_datetime(prop_value, match=match),
             match and match.group('date'),)
 
 
