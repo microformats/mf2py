@@ -1,6 +1,34 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 1.1.0 - 2018-03-16
+
+- bump version to 1.1.0 since it is a "major" change 
+- added tests for new implied name rules
+- modified earlier tests to accommodate new rules
+- use space separator instead of "T"
+- Don't add "00" seconds unless authored
+- use TZ authored in separate `value` element
+- only use first found `value` of a particular type `date`, `time`, or `timezone`.
+- move backcompat rules into JSON files
+- reorganise value class pattern parsing into new files
+- add datetime_helpers to organise datetime parsing rules
+- reorganise tests
+- remove Heroku frontend, point to mf2py-web and python.microformats.io instead in README.
+- remove Flask and gunicorn requirements
+
+## 1.0.6 - 2018-03-04
+
+- strip leading/trailing white space for `e-*[html]`. update the corresponding tests
+- blank values explicitly authored are allowed as property values 
+- include `alt` or `src` from `<img>` in parsing for `p-*` and `e-*[value]`
+- parse `title` from `<link>` for `p-*` resolves #84 
+- and `poster` from `<video>` for `u-*` resolves #76 
+- use `html5lib` as default parser
+- use the final redirect URL resolves #62 
+- update requirements to use BS4 v4.6.0 and html5lib v1.0.1
+- drop support for Python 2.6 as html5lib dropped support
+
 ## 1.0.5 - 2016-05-09
 
 - Implied property checks now ignore alt="", treating it the same as
