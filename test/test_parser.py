@@ -1,6 +1,6 @@
 from __future__ import unicode_literals, print_function
 
-import os.path
+import os
 import re
 import sys
 
@@ -19,9 +19,10 @@ else:
     text_type = str
     binary_type = bytes
 
+TEST_DIR = 'test/examples/'
 
 def parse_fixture(path, url=None):
-    with open(os.path.join("test/examples/", path)) as f:
+    with open(os.path.join(TEST_DIR, path)) as f:
         p = Parser(doc=f, url=url, html_parser='html5lib')
         return p.to_dict()
 
@@ -33,7 +34,9 @@ def test_empty():
 
 
 def test_open_file():
-    p = Parser(doc=open("test/examples/empty.html"))
+    with open(os.path.join(TEST_DIR, 'empty.html')) as f:
+        p = Parser(doc=f)
+
     assert_true(p.__doc__ is not None)
     assert_true(type(p) is not None)
     assert_true(type(p.to_dict()) is dict)
@@ -62,18 +65,14 @@ def test_user_agent(getter):
 
 
 def test_base():
-    p = Parser(doc=open("test/examples/base.html"))
+    with open(os.path.join(TEST_DIR, 'base.html')) as f:
+        p = Parser(doc=f)
+
     assert_equal(p.__url__, "http://tantek.com/")
 
 
 def test_simple_parse():
     result = parse_fixture("simple_person_reference.html")
-    assert_equal(result["items"][0]["properties"],
-                 {'name': ['Frances Berriman']})
-
-
-def test_simple_person_reference_implied():
-    result = parse_fixture("simple_person_reference_implied.html")
     assert_equal(result["items"][0]["properties"],
                  {'name': ['Frances Berriman']})
 
@@ -132,43 +131,6 @@ def test_plain_child_microformat():
     assert_equal(
         result["items"][0]["children"][0]["properties"]["name"][0],
         "Some Citation")
-
-
-def test_implied_name():
-    result = parse_fixture("implied_properties.html")
-    for i in range(6):
-        assert_equal(result["items"][i]["properties"]["name"][0], "Tom Morris")
-
-
-def test_implied_url():
-    result = parse_fixture("implied_properties.html", url="http://foo.com/")
-    assert_equal(
-        result["items"][1]["properties"]["url"][0], "http://tommorris.org/")
-    # img should not have a "url" property
-    assert_true("url" not in result["items"][4]["properties"])
-    # href="" is relative to the base url
-    assert_equal(result["items"][5]["properties"]["url"][0], "http://foo.com/")
-
-
-def test_implied_nested_photo():
-    result = parse_fixture("implied_properties.html", url="http://bar.org")
-    assert_equal(result["items"][2]["properties"]["photo"][0],
-                 "http://tommorris.org/photo.png")
-    # src="" is relative to the base url
-    assert_equal(result["items"][5]["properties"]["photo"][0],
-                 "http://bar.org")
-
-
-def test_implied_nested_photo_alt_name():
-    result = parse_fixture("implied_properties.html")
-    assert_equal(result["items"][3]["properties"]["name"][0], "Tom Morris")
-
-
-def test_implied_image():
-    result = parse_fixture("implied_properties.html")
-    assert_equal(result["items"][4]["properties"]["photo"][0],
-                 "http://tommorris.org/photo.png")
-    assert_equal(result["items"][4]["properties"]["name"][0], "Tom Morris")
 
 
 def test_datetime_parsing():
@@ -234,18 +196,6 @@ def test_embedded_parsing():
         'Blah blah blah blah blah.\n   Blah.\n   Blah blah blah.')
 
 
-def test_backcompat():
-    result = parse_fixture("backcompat.html")
-    assert_true('h-entry' in result['items'][0]['type'])
-    assert_equal('Tom Morris',
-                 result['items'][0]['properties']
-                 ['author'][0]['properties']['name'][0])
-    assert_equal('A Title',
-                 result['items'][0]['properties']['name'][0])
-    assert_equal('Some Content',
-                 result['items'][0]['properties']['content'][0]['value'])
-
-
 def test_hoisting_nested_hcard():
     result = parse_fixture("nested_hcards.html")
     expected = {
@@ -288,144 +238,38 @@ def test_html_tag_class():
 
 def test_string_strip():
     result = parse_fixture("string_stripping.html")
-    assert result["items"][0]["properties"]["name"][0] == "Tom Morris"
+    assert_equal('Tom Morris', result["items"][0]["properties"]["name"][0])
 
 
 def test_template_parse():
     result = parse_fixture("template_tag.html")
-    assert len(result["items"]) == 0
+    assert_equal(0, len(result["items"]))
 
-
-def test_backcompat_hproduct():
-    result = parse_fixture("backcompat_hproduct.html")
-    assert len(result["items"]) == 1
-    assert result["items"][0]["type"] == ["h-product"]
-    assert result["items"][0]["properties"]["category"] == ['bullshit']
-    expect1 = ['Quacktastic Products']
-    assert result["items"][0]["properties"]["brand"] == expect1
-    assert result["items"][0]["properties"]["identifier"] == ['#BULLSHIT-001']
-    expect2 = "Magical tasty sugar pills that don't do anything."
-    assert result["items"][0]["properties"]['description'][0] == expect2
-    expect3 = ["Tom's Magical Quack Tincture"]
-    assert result["items"][0]["properties"]["name"] == expect3
-
-
-def test_backcompat_hproduct_nested_hreview():
-    result = parse_fixture("backcompat_hproduct_hreview_nested.html")
-    assert result["items"][0]["children"][0]['type'] == ['h-review']
-
-
-def test_backcompat_rel_bookmark():
-    """Confirm that rel=bookmark inside of an h-entry is converted
-    to u-url.
-    """
-    result = parse_fixture('backcompat_feed_with_rel_bookmark.html')
-    for ii, url in enumerate((
-            '/2014/11/24/jump-rope',
-            '/2014/11/23/graffiti',
-            '/2014/11/21/earth',
-            '/2014/11/19/labor',
-    )):
-        assert result['items'][ii]['type'] == ['h-entry']
-        assert result['items'][ii]['properties']['url'] == [url]
-
-
-def test_backcompat_rel_tag():
-    """Confirm that rel=tag inside of an h-entry is converted
-    to a p-category and the last path segment of the href is used.
-    """
-    result = parse_fixture('backcompat_hentry_with_rel_tag.html')
-    assert result['items'][0]['properties']['category'] == ['cat', 'dog',
-                                                            'mountain lion']
-
-def test_backcompat_ignore_mf1_root_if_mf2_present():
-    """Confirm that mf1 root class is ignored if another mf2 root class is present.
-    """
-    result = parse_fixture('backcompat_ignore_mf1_root_if_mf2_present.html')
-    assert_true('h-entry' not in result['items'][0]['type'])
-    assert_true('h-event' in result['items'][0]['type'])
-
-def test_backcompat_no_implied_properties_mf1_root():
-    """Confirm that mf1 root class does not have implied properties
-    """
-    result = parse_fixture('backcompat_ignore_mf1_root_if_mf2_present.html')
-    assert_true('h-entry' not in result['items'][0]['properties'])
-    assert_true('name' not in result['items'][0]['type'])
-    assert_true('url' not in result['items'][0]['properties'])
-    assert_true('photo' not in result['items'][0]['properties'])
-
-def test_backcompat_ignore_mf2_properties_in_mf1_root():
-    """Confirm that mf2 properties are ignored in mf1 root class
-    """
-    result = parse_fixture('backcompat_ignore_mf2_properties_in_mf1_root.html')
-    assert_equal('Correct name', result['items'][0]['properties']['name'][0])
-    assert_equal('Correct summary', result['items'][0]['properties']['summary'][0])
-
-def test_backcompat_ignore_mf1_properties_in_mf2_root():
-    """Confirm that mf1 properties are ignored in mf2 root class
-    """
-    result = parse_fixture('backcompat_ignore_mf1_properties_in_mf2_root.html')
-    assert_equal('Correct name', result['items'][0]['properties']['name'][0])
-    assert_equal('Correct summary', result['items'][0]['properties']['summary'][0])
-
-def test_backcompat_nested_mf2_in_mf1():
-    """Confirm that mf2 roots nested inside mf1 root are parsed
-    """
-    result = parse_fixture('backcompat_nested_mf2_in_mf1.html')
-    assert_equal('h-feed', result['items'][0]['type'][0])
-    assert_equal('h-entry', result['items'][0]['children'][0]['type'][0])
-    assert_equal('Correct name', result['items'][0]['children'][0]['properties']['name'][0])
-    assert_equal('Correct summary', result['items'][0]['children'][0]['properties']['summary'][0])
-
-def test_backcompat_nested_mf1_in_mf2():
-    """Confirm that mf1 roots nested inside mf2 root are parsed
-    """
-    result = parse_fixture('backcompat_nested_mf1_in_mf2.html')
-    assert_equal('h-feed', result['items'][0]['type'][0])
-    assert_equal('h-entry', result['items'][0]['children'][0]['type'][0])
-    assert_equal('Correct name', result['items'][0]['children'][0]['properties']['name'][0])
-    assert_equal('Correct summary', result['items'][0]['children'][0]['properties']['summary'][0])
-
-def test_backcompat_nested_mf1_in_mf2_e_content():
-    """Confirm that mf1 roots nested inside mf2 root e-content are parsed as authored
-    """
-    result = parse_fixture('backcompat_nested_mf1_in_mf2_e_content.html')
-
-    mf2_entry = result['items'][0]
-    mf1_entry = mf2_entry['children'][0]
-
-    assert_equal('<div class="hentry">\n<span class="entry-title">Correct name</span>\n\n<span class="entry-summary">Correct summary</span>\n</div>', mf2_entry['properties']['content'][0]['html'])
-
-    assert_equal('Correct name\n\nCorrect summary', mf2_entry['properties']['content'][0]['value'])
-
-    assert_equal('h-entry', mf1_entry['type'][0])
-    assert_equal('Correct name', mf1_entry['properties']['name'][0])
-    assert_equal('Correct summary', mf1_entry['properties']['summary'][0])
 
 def test_area_uparsing():
     result = parse_fixture("area.html")
-    assert result["items"][0]["properties"] == {
-        'url': ['http://suda.co.uk'], 'name': ['Brian Suda']}
-    assert 'shape' in result["items"][0].keys()
-    assert 'coords' in result["items"][0].keys()
+    assert_equal({
+        'url': ['http://suda.co.uk'], 'name': ['Brian Suda']}, result["items"][0]["properties"])
+    assert 'shape' in result["items"][0]
+    assert 'coords' in result["items"][0]
 
 
 def test_src_equiv():
     result = parse_fixture("test_src_equiv.html")
     for item in result["items"]:
-        assert 'x-example' in item['properties'].keys()
-        assert 'http://example.org/' == item['properties']['x-example'][0]
+        assert 'x-example' in item['properties']
+        assert_equal('http://example.org/', item['properties']['x-example'][0])
 
 
 def test_rels():
     result = parse_fixture("rel.html")
-    assert result['rels'] == {
+    assert_equal({
         u'in-reply-to': [u'http://example.com/1', u'http://example.com/2'],
         u'author': [u'http://example.com/a', u'http://example.com/b'],
         u'alternate': [u'http://example.com/fr'],
         u'home': [u'http://example.com/fr'],
-    }
-    assert result['rel-urls'] == {
+    }, result['rels'])
+    assert_equal({
         u'http://example.com/1': {'text': u"post 1", "rels": [u'in-reply-to']},
         u'http://example.com/2': {'text': u"post 2", "rels": [u'in-reply-to']},
         u'http://example.com/a': {'text': u"author a", "rels": [u'author']},
@@ -434,33 +278,33 @@ def test_rels():
                                    u'media': u'handheld',
                                    u'rels': [u'alternate', u'home'],
                                    u'hreflang': u'fr'}
-    }
+    }, result['rel-urls'])
 
 
 def test_alternates():
     result = parse_fixture("rel.html")
-    assert result['alternates'] == [{
+    assert_equal([{
         'url': 'http://example.com/fr', 'media': 'handheld',
         'text': 'French mobile homepage',
         'rel': 'home', 'hreflang': 'fr'
-    }]
+    }], result['alternates'])
 
 
 def test_enclosures():
     result = parse_fixture("rel_enclosure.html")
-    assert result['rels'] == {'enclosure': ['http://example.com/movie.mp4']}
-    assert result['rel-urls'] == {'http://example.com/movie.mp4': {
+    assert_equal({'enclosure': ['http://example.com/movie.mp4']}, result['rels'])
+    assert_equal({'http://example.com/movie.mp4': {
         'rels': ['enclosure'],
         'text': 'my movie',
         'type': 'video/mpeg'}
-    }
+    }, result['rel-urls'])
 
 
 def test_empty_href():
     result = parse_fixture("hcard_with_empty_url.html", "http://foo.com")
 
     for hcard in result['items']:
-        assert hcard['properties'].get('url') == ['http://foo.com']
+        assert_equal(['http://foo.com'], hcard['properties']['url'])
 
 
 def test_link_with_u_url():
@@ -531,12 +375,50 @@ def test_nested_values():
     }, entry["children"][0])
 
 
+# implied properties tests
+
+def test_implied_name():
+    result = parse_fixture("implied_properties/implied_properties.html")
+    for i in range(6):
+        assert_equal(result["items"][i]["properties"]["name"][0], "Tom Morris")
+
+
+def test_implied_url():
+    result = parse_fixture("implied_properties/implied_properties.html", url="http://foo.com/")
+    assert_equal(
+        result["items"][1]["properties"]["url"][0], "http://tommorris.org/")
+    # img should not have a "url" property
+    assert_true("url" not in result["items"][4]["properties"])
+    # href="" is relative to the base url
+    assert_equal(result["items"][5]["properties"]["url"][0], "http://foo.com/")
+
+
+def test_implied_nested_photo():
+    result = parse_fixture("implied_properties/implied_properties.html", url="http://bar.org")
+    assert_equal(result["items"][2]["properties"]["photo"][0],
+                 "http://tommorris.org/photo.png")
+    # src="" is relative to the base url
+    assert_equal(result["items"][5]["properties"]["photo"][0],
+                 "http://bar.org")
+
+
+def test_implied_nested_photo_alt_name():
+    result = parse_fixture("implied_properties/implied_properties.html")
+    assert_equal(result["items"][3]["properties"]["name"][0], "Tom Morris")
+
+
+def test_implied_image():
+    result = parse_fixture("implied_properties/implied_properties.html")
+    assert_equal(result["items"][4]["properties"]["photo"][0],
+                 "http://tommorris.org/photo.png")
+    assert_equal(result["items"][4]["properties"]["name"][0], "Tom Morris")
+
 def test_implied_name_empty_alt():
     """An empty alt text should not prevent us from including other
     children in the implied name.
     """
 
-    result = parse_fixture("implied_name_empty_alt.html")
+    result = parse_fixture("implied_properties/implied_name_empty_alt.html")
     hcard = result['items'][0]
 
     assert_equal({
@@ -548,9 +430,28 @@ def test_implied_name_empty_alt():
         },
     }, hcard)
 
+def test_relative_datetime():
+    result = parse_fixture("implied_properties/implied_relative_datetimes.html")
+    assert_equal(result[u'items'][0][u'properties'][u'updated'][0],
+                 '2015-01-02 05:06')
+
+def test_stop_implied_name_nested_h():
+    result = parse_fixture("implied_properties/stop_implied_name_nested_h.html")
+    assert_true('name' not in
+                 result[u'items'][0][u'properties'])
+
+def test_stop_implied_name_e_content():
+    result = parse_fixture("implied_properties/stop_implied_name_e_content.html")
+    assert_true('name' not in
+                 result[u'items'][0][u'properties'])
+
+def test_stop_implied_name_p_content():
+    result = parse_fixture("implied_properties/stop_implied_name_p_content.html")
+    assert_true('name' not in
+                 result[u'items'][0][u'properties'])
 
 def test_implied_properties_silo_pub():
-    result = parse_fixture('silopub.html')
+    result = parse_fixture('implied_properties/implied_properties_silo_pub.html')
     item = result['items'][0]
 
     #implied_name = item['properties']['name'][0]
@@ -562,26 +463,139 @@ def test_implied_properties_silo_pub():
     assert_true('name' not in
                  item[u'properties'])
 
-def test_relative_datetime():
-    result = parse_fixture("implied_relative_datetimes.html")
-    assert_equal(result[u'items'][0][u'properties'][u'updated'][0],
-                 '2015-01-02 05:06')
+def test_simple_person_reference_implied():
+    result = parse_fixture("implied_properties/simple_person_reference_implied.html")
+    assert_equal(result["items"][0]["properties"],
+                 {'name': ['Frances Berriman']})
 
-def test_stop_implied_name_nested_h():
-    result = parse_fixture("stop_implied_name_nested_h.html")
-    assert_true('name' not in
-                 result[u'items'][0][u'properties'])
 
-def test_stop_implied_name_e_content():
-    result = parse_fixture("stop_implied_name_e_content.html")
-    assert_true('name' not in
-                 result[u'items'][0][u'properties'])
+# backcompat tests
 
-def test_stop_implied_name_p_content():
-    result = parse_fixture("stop_implied_name_p_content.html")
-    assert_true('name' not in
-                 result[u'items'][0][u'properties'])
+def test_backcompat_hentry():
+    result = parse_fixture("backcompat/hentry.html")
+    assert_true('h-entry' in result['items'][0]['type'])
+    assert_equal('Tom Morris',
+                 result['items'][0]['properties']
+                 ['author'][0]['properties']['name'][0])
+    assert_equal('A Title',
+                 result['items'][0]['properties']['name'][0])
+    assert_equal('Some Content',
+                 result['items'][0]['properties']['content'][0]['value'])
 
+def test_backcompat_hproduct():
+    result = parse_fixture("backcompat/hproduct.html")
+    assert_equal(1, len(result["items"]))
+    assert_equal(["h-product"], result["items"][0]["type"])
+    assert_equal(['bullshit'], result["items"][0]["properties"]["category"])
+    assert_equal(['Quacktastic Products'], result["items"][0]["properties"]["brand"])
+    assert_equal(['#BULLSHIT-001'], result["items"][0]["properties"]["identifier"])
+    assert_equal("Magical tasty sugar pills that don't do anything.", result["items"][0]["properties"]['description'][0]) 
+    assert_equal(["Tom's Magical Quack Tincture"], result["items"][0]["properties"]["name"])
+
+
+def test_backcompat_hproduct_nested_hreview():
+    result = parse_fixture("backcompat/hproduct_hreview_nested.html")
+    assert_equal(['h-review'], result["items"][0]["children"][0]['type'])
+
+
+def test_backcompat_rel_bookmark():
+    """Confirm that rel=bookmark inside of an h-entry is converted
+    to u-url.
+    """
+    result = parse_fixture('backcompat/feed_with_rel_bookmark.html')
+    for ii, url in enumerate((
+            '/2014/11/24/jump-rope',
+            '/2014/11/23/graffiti',
+            '/2014/11/21/earth',
+            '/2014/11/19/labor',
+    )):
+        assert_equal(['h-entry'], result['items'][ii]['type'])
+        assert_equal([url], result['items'][ii]['properties']['url'])
+
+
+def test_backcompat_rel_tag():
+    """Confirm that rel=tag inside of an h-entry is converted
+    to a p-category and the last path segment of the href is used.
+    """
+    result = parse_fixture('backcompat/hentry_with_rel_tag.html')
+    assert_equal(['cat', 'dog', 'mountain lion'], result['items'][0]['properties']['category'])
+
+def test_backcompat_ignore_mf1_root_if_mf2_present():
+    """Confirm that mf1 root class is ignored if another mf2 root class is present.
+    """
+    result = parse_fixture('backcompat/ignore_mf1_root_if_mf2_present.html')
+    assert_true('h-entry' not in result['items'][0]['type'])
+    assert_true('h-event' in result['items'][0]['type'])
+
+def test_backcompat_no_implied_properties_mf1_root():
+    """Confirm that mf1 root class does not have implied properties
+    """
+    result = parse_fixture('backcompat/ignore_mf1_root_if_mf2_present.html')
+    assert_true('h-entry' not in result['items'][0]['properties'])
+    assert_true('name' not in result['items'][0]['type'])
+    assert_true('url' not in result['items'][0]['properties'])
+    assert_true('photo' not in result['items'][0]['properties'])
+
+def test_backcompat_ignore_mf2_properties_in_mf1_root():
+    """Confirm that mf2 properties are ignored in mf1 root class
+    """
+    result = parse_fixture('backcompat/ignore_mf2_properties_in_mf1_root.html')
+    assert_equal('Correct name', result['items'][0]['properties']['name'][0])
+    assert_equal('Correct summary', result['items'][0]['properties']['summary'][0])
+
+def test_backcompat_ignore_mf1_properties_in_mf2_root():
+    """Confirm that mf1 properties are ignored in mf2 root class
+    """
+    result = parse_fixture('backcompat/ignore_mf1_properties_in_mf2_root.html')
+    assert_equal('Correct name', result['items'][0]['properties']['name'][0])
+    assert_equal('Correct summary', result['items'][0]['properties']['summary'][0])
+
+def test_backcompat_nested_mf2_in_mf1():
+    """Confirm that mf2 roots nested inside mf1 root are parsed
+    """
+    result = parse_fixture('backcompat/nested_mf2_in_mf1.html')
+    assert_equal('h-feed', result['items'][0]['type'][0])
+    assert_equal('h-entry', result['items'][0]['children'][0]['type'][0])
+    assert_equal('Correct name', result['items'][0]['children'][0]['properties']['name'][0])
+    assert_equal('Correct summary', result['items'][0]['children'][0]['properties']['summary'][0])
+
+def test_backcompat_nested_mf1_in_mf2():
+    """Confirm that mf1 roots nested inside mf2 root are parsed
+    """
+    result = parse_fixture('backcompat/nested_mf1_in_mf2.html')
+    assert_equal('h-feed', result['items'][0]['type'][0])
+    assert_equal('h-entry', result['items'][0]['children'][0]['type'][0])
+    assert_equal('Correct name', result['items'][0]['children'][0]['properties']['name'][0])
+    assert_equal('Correct summary', result['items'][0]['children'][0]['properties']['summary'][0])
+
+def test_backcompat_nested_mf1_in_mf2_e_content():
+    """Confirm that mf1 roots nested inside mf2 root e-content are parsed as authored
+    """
+    result = parse_fixture('backcompat/nested_mf1_in_mf2_e_content.html')
+
+    mf2_entry = result['items'][0]
+    mf1_entry = mf2_entry['children'][0]
+
+    assert_equal('<div class="hentry">\n<span class="entry-title">Correct name</span>\n\n<span class="entry-summary">Correct summary</span>\n</div>', mf2_entry['properties']['content'][0]['html'])
+
+    assert_equal('Correct name\n\nCorrect summary', mf2_entry['properties']['content'][0]['value'])
+
+    assert_equal('h-entry', mf1_entry['type'][0])
+    assert_equal('Correct name', mf1_entry['properties']['name'][0])
+    assert_equal('Correct summary', mf1_entry['properties']['summary'][0])
+
+# unicode tests
+
+def get_all_files():
+
+    all_files = []
+
+    for dir_, _, files in os.walk(TEST_DIR):
+        for filename in files:
+            rel_dir = os.path.relpath(dir_, TEST_DIR)
+            all_files.append( os.path.join(rel_dir, filename))
+
+    return all_files
 
 def assert_unicode_everywhere(obj):
     if isinstance(obj, dict):
@@ -602,6 +616,8 @@ def check_unicode(filename, jsonblob):
 
 
 def test_unicode_everywhere():
-    for h in os.listdir("test/examples"):
+    """ make sure everything is unicode """
+
+    for h in get_all_files()  :
         result = parse_fixture(h)
         yield check_unicode, h, result
