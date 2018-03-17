@@ -18,11 +18,8 @@ if sys.version < '3':
 else:
     from urllib.parse import unquote
 
-# Classic Root Classname map
-CLASSIC_ROOT_MAP = {}
-
-# Classic Root properties map
-CLASSIC_PROPERTY_MAP = {}
+# Classic map
+_CLASSIC_MAP = {}
 
 # populate backcompat rules from JSON files
 
@@ -34,74 +31,65 @@ for filename in os.listdir(_RULES_LOC):
     with codecs.open(file_path, 'r', 'utf-8') as f:
         rules = json.load(f)
 
-    CLASSIC_ROOT_MAP[root] = rules['type'][0]
-    CLASSIC_PROPERTY_MAP[root] = rules['properties']
+    _CLASSIC_MAP[root] = rules 
 
 
-
-def root(classes):
-    """get all backcompat root classnames
-    """
-    return [c for c in classes if c in CLASSIC_ROOT_MAP]
-
-
-def make_classes_rule(old_class, new_classes):
+def _make_classes_rule(old_class, new_classes):
     """Builds a rule for augmenting an mf1 class with its mf2
     equivalent(s).
     """
     def f(child, **kwargs):
         child_classes = child.get('class', [])
         if old_class in child_classes:
-            child_classes += [c for c in new_classes
-                              if c not in child_classes]
+            child_classes.extend(new_classes)
             child['class'] = child_classes
     return f
 
-
-# The RULES map has a list of rules for each root class type.
-# We'll build the vast majority of it from the CLASSIC_PROPERTY_MAP
-RULES = dict(
-    (old_root, [make_classes_rule(old_class, new_classes)
-                for old_class, new_classes in properties.items()])
-    for old_root, properties in CLASSIC_PROPERTY_MAP.items())
-
-
-def rel_bookmark_to_url_rule(child, **kwargs):
-    """rel=bookmark gets augmented with class="u-url
-    """
-    child_classes = child.get('class', [])
-    if ('bookmark' in child.get('rel', [])
-            and 'u-url' not in child_classes):
-        child_classes.append('u-url')
-        child['class'] = child_classes
-
-
-def rel_tag_to_category_rule(child, **kwargs):
+def _rel_tag_to_category_rule(child, **kwargs):
     """rel=tag converts to p-category using a special transformation (the
-    category becomes the tag href's last path segment). This rule adds a new
-    data tag so that
-    <a rel="tag" href="http://example.com/tags/cat"></a> gets augmented with
+    category becomes the tag href's last path segment). This rule adds a new data tag so that
+    <a rel="tag" href="http://example.com/tags/cat"></a> gets replaced with
     <data class="p-category" value="cat"></data>
     """
-    rels = child.get('rel', [])
-    classes = child.get('class', [])
-    if ('tag' in rels and child.get('href')
-            and 'p-category' not in classes
-            and 'u-category' not in classes):
-        segments = [seg for seg in child.get('href').split('/') if seg]
+
+    href = child.get('href', '')
+    if 'tag' in child.get('rel', []) and href:
+        segments = [seg for seg in href.split('/') if seg]
         if segments:
-            data = bs4.BeautifulSoup('<data></data>').data
-            # use mf1 class here so it doesn't get removed later
-            data['class'] = ['category']
+            data = bs4.BeautifulSoup('').new_tag('data')
+            # this does not use what's given in the JSON
+            data['class'] = ['p-category']
             data['value'] = unquote(segments[-1])
-            child.parent.append(data)
+            child.replace_with(data)
 
 
-# Augment with special rules
-RULES['hentry'] += [
-    rel_bookmark_to_url_rule,
-    rel_tag_to_category_rule,
-]
+def _make_rels_rule(old_rel, new_classes):
+    """Builds a rule for augmenting an mf1 rel with its mf2 class equivalent(s).
+    """
+
+    # need to special case rel=tag as it operates differently
+
+    def f(child, **kwargs):
+        child_rels = child.get('rel', [])
+        child_classes = child.get('class', [])
+        if old_rel in child_rels:
+            if old_rel == 'tag':
+                _rel_tag_to_category_rule(child, **kwargs)
+            else:
+                child_classes.extend(new_classes)
+                child['class'] = child_classes
+    return f
+
+
+def _get_rules(old_root):
+    """ for given mf1 root get the rules as a list of functions to act on children """
+
+    class_rules = [_make_classes_rule(old_class, new_classes)
+                for old_class, new_classes in _CLASSIC_MAP[old_root].get('properties', {}).items()]
+    rel_rules = [_make_rels_rule(old_rel, new_classes)
+                for old_rel, new_classes in _CLASSIC_MAP[old_root].get('rels', {}).items()]
+
+    return class_rules + rel_rules
 
 def apply_rules(el):
     """add modern classnames for older mf1 classnames
@@ -132,16 +120,21 @@ def apply_rules(el):
     classes = el_copy.get('class', [])
     old_roots = root(classes)
     for old_root in old_roots:
-        new_root = CLASSIC_ROOT_MAP[old_root]
-        if new_root not in classes:
-            el_copy['class'].append(new_root)
+        new_roots = _CLASSIC_MAP[old_root]['type']
+        classes.extend(new_roots)
+    el_copy['class'] = classes
 
 
     # add mf2 prop equivalent to descendents and remove existing mf2 props
     rules = []
     for old_root in old_roots:
-        rules.extend(RULES.get(old_root,[]))
+        rules.extend(_get_rules(old_root))
 
     apply_prop_rules_to_children(el_copy, rules)
 
     return el_copy
+
+def root(classes):
+    """get all backcompat root classnames
+    """
+    return [c for c in classes if c in _CLASSIC_MAP]

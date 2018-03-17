@@ -35,5 +35,13 @@
         "longitude": [
             "p-longitude"
         ]
+    },
+    "rels": {
+        "bookmark": [
+            "u-url"
+        ],
+        "tag": [
+            "p-category"
+        ]
     }
 }

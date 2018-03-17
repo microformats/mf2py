@@ -36,5 +36,13 @@
         "summary": [
             "p-name"
         ]
+    },
+    "rels": {
+        "bookmark": [
+            "u-url"
+        ],
+        "tag": [
+            "p-category"
+        ]
     }
 }

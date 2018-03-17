@@ -18,5 +18,10 @@
         "title": [
             "p-name"
         ]
+    },
+    "rels": {
+        "tag": [
+            "p-category"
+        ]
     }
 }

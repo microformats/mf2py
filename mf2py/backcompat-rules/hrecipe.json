@@ -31,5 +31,10 @@
         "ingredient": [
             "p-ingredient"
         ]
+    },
+    "rels": {
+        "tag": [
+            "p-category"
+        ]
     }
 }
