@@ -58,7 +58,7 @@ class Parser(object):
     """
 
     ua_desc = 'mf2py - microformats2 parser for python'
-    ua_url = "https://github.com/tommorris/mf2py"
+    ua_url = "https://github.com/microformats/mf2py"
     useragent = '{0} - version {1} - {2}'.format(ua_desc, __version__, ua_url)
 
     dict_class = dict
@@ -70,6 +70,11 @@ class Parser(object):
             ('items', []),
             ('rels', self.dict_class()),
             ('rel-urls', self.dict_class()),
+            ('debug', self.dict_class([
+                ('description', self.ua_desc),
+                ('source', self.ua_url),
+                ('version', text_type(__version__))
+            ]))
         ])
 
         if url is not None:
@@ -207,7 +212,7 @@ class Parser(object):
                     # for e-* properties, the simple value will be
                     # {"html":..., "value":...}  which we should fold
                     # into the microformat object
-                    # details: https://github.com/tommorris/mf2py/issues/35
+                    # details: https://github.com/microformats/mf2py/issues/35
                     microformat.update(simple_value)
                 else:
                     microformat["value"] = text_type(simple_value)
@@ -415,6 +420,10 @@ class Parser(object):
         for el in get_descendents(self.__doc__):
             if el.name in ('a', 'area', 'link') and el.has_attr('rel'):
                 parse_rels(el)
+
+        # add actual parser used to debug
+        # uses builder.NAME from BeautifulSoup
+        self.__parsed__["debug"]["markup parser"] = text_type(self.__doc__.builder.NAME)
 
     def to_dict(self, filter_by_type=None):
         """Get a dictionary version of the parsed microformat document.

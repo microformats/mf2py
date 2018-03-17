@@ -198,8 +198,7 @@ def test_embedded_parsing():
 
 def test_hoisting_nested_hcard():
     result = parse_fixture("nested_hcards.html")
-    expected = {
-        'items': [
+    expected = [
             {
                 'properties': {
                     'author': [
@@ -219,11 +218,8 @@ def test_hoisting_nested_hcard():
                 },
                 'type': ['h-entry']
             }
-        ],
-        'rels': {},
-        'rel-urls': {}
-    }
-    assert_equal(expected, result)
+        ]
+    assert_equal(expected, result['items'])
 
 
 def test_html_tag_class():
