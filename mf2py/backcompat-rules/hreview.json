@@ -17,9 +17,13 @@
             "h-card"
         ], 
         "url": [
+            "p-item", 
+            "h-item", 
             "u-url"
         ], 
         "photo": [
+            "p-item", 
+            "h-item", 
             "u-photo"
         ], 
         "best": [
