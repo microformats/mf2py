@@ -41,7 +41,7 @@ def _make_classes_rule(old_class, new_classes):
     def f(child, **kwargs):
         child_classes = child.get('class', [])
         if old_class in child_classes:
-            child_classes.extend(new_classes)
+            child_classes.extend([cl for cl in new_classes if cl not in child_classes])
             child['class'] = child_classes
     return f
 
@@ -53,14 +53,18 @@ def _rel_tag_to_category_rule(child, **kwargs):
     """
 
     href = child.get('href', '')
-    if 'tag' in child.get('rel', []) and href:
+    rels = child.get('rel', [])
+    if 'tag' in rels and href:
         segments = [seg for seg in href.split('/') if seg]
         if segments:
             data = bs4.BeautifulSoup('').new_tag('data')
             # this does not use what's given in the JSON
+            # but that is not a problem currently
             data['class'] = ['p-category']
             data['value'] = unquote(segments[-1])
             child.replace_with(data)
+            # remove tag from rels to avoid repeat
+            child['rel'] = [r for r in rels if r != 'tag']
 
 
 def _make_rels_rule(old_rel, new_classes):
@@ -76,7 +80,7 @@ def _make_rels_rule(old_rel, new_classes):
             if old_rel == 'tag':
                 _rel_tag_to_category_rule(child, **kwargs)
             else:
-                child_classes.extend(new_classes)
+                child_classes.extend([cl for cl in new_classes if cl not in child_classes])
                 child['class'] = child_classes
     return f
 
@@ -90,6 +94,11 @@ def _get_rules(old_root):
                 for old_rel, new_classes in _CLASSIC_MAP[old_root].get('rels', {}).items()]
 
     return class_rules + rel_rules
+
+def root(classes):
+    """get all backcompat root classnames
+    """
+    return [c for c in classes if c in _CLASSIC_MAP]
 
 def apply_rules(el):
     """add modern classnames for older mf1 classnames
@@ -133,8 +142,3 @@ def apply_rules(el):
     apply_prop_rules_to_children(el_copy, rules)
 
     return el_copy
-
-def root(classes):
-    """get all backcompat root classnames
-    """
-    return [c for c in classes if c in _CLASSIC_MAP]

@@ -97,6 +97,12 @@
         ], 
         "organization-name": [
             "p-organization-name"
+        ],
+        "title": [
+            "p-job-title"
+        ],
+        "role": [
+            "p-role"
         ]
     }
 }

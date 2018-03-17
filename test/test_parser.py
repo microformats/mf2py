@@ -521,7 +521,7 @@ def test_backcompat_rel_bookmark():
         assert_equal(['https://example.com/bookmark', 'https://example.com/bookmark-url'], result['items'][0]['properties']['url'])
 
 def test_backcompat_rel_tag():
-    """Confirm that rel=tag inside of an h-entry is converted
+    """Confirm that rel=tag inside of an hentry is converted
     to a p-category and the last path segment of the href is used.
     """
 
@@ -530,6 +530,18 @@ def test_backcompat_rel_tag():
     results = [parse_fixture(x) for x in tests]
     for result in results:
         assert_equal(['cat', 'dog', 'mountain lion', 'mouse', 'meerkat'], result['items'][0]['properties']['category'])
+
+def test_backcompat_rel_multiple_root():
+    """Confirm that rel=tag and rel=bookmark inside of an hentry+hreview is parsed correctly"""
+
+    result = parse_fixture('backcompat/hreview_hentry_with_rel_tag_bookmark.html')
+
+    assert_equal(len(result['items']), 1)
+    assert_true('h-entry' in result['items'][0]['type'])
+    assert_true('h-review' in result['items'][0]['type'])
+
+    assert_equal(['cat', 'dog', 'mountain lion', 'mouse', 'meerkat'], result['items'][0]['properties']['category'])
+    assert_equal(['https://example.com/bookmark', 'https://example.com/bookmark-url'], result['items'][0]['properties']['url'])
 
 def test_backcompat_ignore_mf1_root_if_mf2_present():
     """Confirm that mf1 root class is ignored if another mf2 root class is present.

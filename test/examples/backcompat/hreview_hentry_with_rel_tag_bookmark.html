@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Backcompat rel=tag and rel=bookmark on hreview and hentry</title>
+  </head>
+  <body>
+    <article class="hreview hentry">
+      <a rel="tag" href="https://example.com/tags/cat">rhinoceros</a>
+      <a rel="tag" href="https://example.com/tags/dog/">giraffe</a>
+      <a rel="tag" href="https://example.com/tags/mountain%20lion/">hyena</a>
+      <!-- throw some bad input at the parser -->
+      <a rel="tag"></a>
+      <a rel="tag" href=""></a>
+      <!-- throw some mf2 at the parser to ignore -->
+      <a rel="tag" class="p-category" href="https://example.com/tags/mouse">elephant</a>
+      <a rel="tag" class="u-category" href="https://example.com/tags/meerkat">dinosaur</a>
+      <a rel="bookmark" href="https://example.com/bookmark">rhinoceros</a>
+      <a rel="bookmark u-url" href="https://example.com/bookmark-url">rhinoceros</a>
+      <a rel="u-url" href="https://example.com/url">rhinoceros</a>
+    </article>
+  </body>
+</html>

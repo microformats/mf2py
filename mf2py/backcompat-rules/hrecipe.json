@@ -30,6 +30,9 @@
         ], 
         "ingredient": [
             "p-ingredient"
+        ],
+        "category": [
+            "p-category"
         ]
     },
     "rels": {
