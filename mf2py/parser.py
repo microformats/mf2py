@@ -237,7 +237,8 @@ class Parser(object):
                 root_class_names = backcompat.root(classes)
                 backcompat_mode = True
 
-            # Is this a property element (p-*, u-*, etc.)
+            # Is this a property element (p-*, u-*, etc.) flag
+            # False is default
             is_property_el = False
 
             # Parse plaintext p-* properties.

@@ -34,13 +34,13 @@ for filename in os.listdir(_RULES_LOC):
     _CLASSIC_MAP[root] = rules 
 
 
-def _make_classes_rule(old_class, new_classes):
+def _make_classes_rule(old_classes, new_classes):
     """Builds a rule for augmenting an mf1 class with its mf2
     equivalent(s).
     """
     def f(child, **kwargs):
         child_classes = child.get('class', [])
-        if old_class in child_classes:
+        if all(cl in child_classes for cl in old_classes):
             child_classes.extend([cl for cl in new_classes if cl not in child_classes])
             child['class'] = child_classes
     return f
@@ -67,7 +67,7 @@ def _rel_tag_to_category_rule(child, **kwargs):
             child['rel'] = [r for r in rels if r != 'tag']
 
 
-def _make_rels_rule(old_rel, new_classes):
+def _make_rels_rule(old_rels, new_classes):
     """Builds a rule for augmenting an mf1 rel with its mf2 class equivalent(s).
     """
 
@@ -76,8 +76,8 @@ def _make_rels_rule(old_rel, new_classes):
     def f(child, **kwargs):
         child_rels = child.get('rel', [])
         child_classes = child.get('class', [])
-        if old_rel in child_rels:
-            if old_rel == 'tag':
+        if all(r in child_rels for r in old_rels):
+            if old_rels == ['tag']:
                 _rel_tag_to_category_rule(child, **kwargs)
             else:
                 child_classes.extend([cl for cl in new_classes if cl not in child_classes])
@@ -88,10 +88,10 @@ def _make_rels_rule(old_rel, new_classes):
 def _get_rules(old_root):
     """ for given mf1 root get the rules as a list of functions to act on children """
 
-    class_rules = [_make_classes_rule(old_class, new_classes)
-                for old_class, new_classes in _CLASSIC_MAP[old_root].get('properties', {}).items()]
-    rel_rules = [_make_rels_rule(old_rel, new_classes)
-                for old_rel, new_classes in _CLASSIC_MAP[old_root].get('rels', {}).items()]
+    class_rules = [_make_classes_rule(old_classes.split(), new_classes)
+                for old_classes, new_classes in _CLASSIC_MAP[old_root].get('properties', {}).items()]
+    rel_rules = [_make_rels_rule(old_rels.split(), new_classes)
+                for old_rels, new_classes in _CLASSIC_MAP[old_root].get('rels', {}).items()]
 
     return class_rules + rel_rules
 

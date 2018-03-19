@@ -39,10 +39,22 @@
         ], 
         "summary": [
             "p-name"
+        ],
+        "item vcard": [
+            "p-item",
+            "vcard"
+        ],
+        "item vevent": [
+            "p-item",
+            "vevent"
+        ],
+        "item hproduct": [
+            "p-item",
+            "hproduct"
         ]
     },
     "rels": {
-        "bookmark": [
+        "self bookmark": [
             "u-url"
         ],
         "tag": [

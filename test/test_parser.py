@@ -493,6 +493,27 @@ def test_backcompat_hproduct_nested_hreview():
     result = parse_fixture("backcompat/hproduct_hreview_nested.html")
     assert_equal(['h-review'], result["items"][0]["children"][0]['type'])
 
+def test_backcompat_hreview_nested_card_event_product():
+    result = parse_fixture("backcompat/hreview_nested_card_event_product.html")
+    assert_equal(['h-review'], result["items"][0]['type'])
+    items = result["items"][0]["properties"]['item']
+    assert_equal(3, len(items))
+
+    event = items[0]
+    assert_equal(['h-event'], event['type'])
+    assert_equal(['http://example.com/event-url'], event['properties']['url'])
+    assert_equal(['event name'], event['properties']['name'])
+
+    card = items[1]
+    assert_equal(['h-card'], card['type'])
+    assert_equal(['http://example.com/card-url'], card['properties']['url'])
+    assert_equal(['card name'], card['properties']['name'])
+
+    product = items[2]
+    assert_equal(['h-product'], product['type'])
+    assert_equal(['http://example.com/product-url'], product['properties']['url'])
+    assert_equal(['product name'], product['properties']['name'])
+
 
 def test_backcompat_rel_bookmark():
     """Confirm that rel=bookmark inside of an h-entry is converted
