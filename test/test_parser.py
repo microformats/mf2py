@@ -251,6 +251,19 @@ def test_ordering_dedup():
     assert_equal(['name', 'URL name'], item['properties']['name'])
     assert_equal(['author', 'boodongle'], result['rel-urls']['example.com/rel']['rels'])
 
+def test_class_names_pattern():
+    ''' test that only classes with letters and possibly numbers in the vendor prefix part are used '''
+
+    result = parse_fixture("class_names_pattern.html")
+    item = result['items'][0]
+    assert_equal(['h-feed', 'h-p3k-entry', 'h-x-test'], item['type'])
+    assert 'url' in item['properties']
+    assert 'p3k-url' in item['properties']
+    assert 'Url' not in item['properties']
+
+    assert 'name' in item['properties']
+    assert 'p3k-name' in item['properties']
+    assert 'nAme' not in item['properties']
 
 def test_area_uparsing():
     result = parse_fixture("area.html")
