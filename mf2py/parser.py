@@ -1,11 +1,15 @@
 # coding: utf-8
 from __future__ import unicode_literals, print_function
+
 from bs4 import BeautifulSoup, FeatureNotFound
 from bs4.element import Tag
-from mf2py import backcompat, mf2_classes, implied_properties, parse_property
-from mf2py import temp_fixes
-from mf2py.version import __version__
-from mf2py.dom_helpers import get_attr, get_children, get_descendents
+
+from . import backcompat, mf2_classes, implied_properties, parse_property
+from . import temp_fixes
+from .version import __version__
+from .dom_helpers import get_attr, get_children, get_descendents
+from .mf_helpers import unordered_list
+
 import json
 import requests
 import sys
@@ -342,7 +346,7 @@ class Parser(object):
         def parse_rels(el):
             """Parse an element for rel microformats
             """
-            rel_attrs = [text_type(rel) for rel in get_attr(el, 'rel')]
+            rel_attrs = unordered_list([text_type(rel) for rel in get_attr(el, 'rel')])
             # if rel attributes exist
             if rel_attrs is not None:
                 # find the url and normalise it

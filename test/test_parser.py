@@ -241,6 +241,16 @@ def test_template_parse():
     result = parse_fixture("template_tag.html")
     assert_equal(0, len(result["items"]))
 
+def test_ordering_dedup():
+    ''' test that classes are dedeuped and alphabetically ordered '''
+
+    result = parse_fixture("ordering_dedup.html")
+    item = result['items'][0]
+    assert_equal(['h-entry', 'h-feed', 'h-product', 'h-x-test'], item['type'])
+    assert_equal(['example.com', 'example.com/2'], item['properties']['url'])
+    assert_equal(['name', 'URL name'], item['properties']['name'])
+    assert_equal(['author', 'boodongle'], result['rel-urls']['example.com/rel']['rels'])
+
 
 def test_area_uparsing():
     result = parse_fixture("area.html")

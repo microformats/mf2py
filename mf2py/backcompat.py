@@ -5,6 +5,7 @@ microformats2 names. Ported and adapted from php-mf2.
 
 from __future__ import unicode_literals, print_function
 from .dom_helpers import get_descendents
+from .mf_helpers import unordered_list
 from . import mf2_classes
 import bs4
 import copy
@@ -98,7 +99,7 @@ def _get_rules(old_root):
 def root(classes):
     """get all backcompat root classnames
     """
-    return [c for c in classes if c in _CLASSIC_MAP]
+    return unordered_list([c for c in classes if c in _CLASSIC_MAP])
 
 def apply_rules(el):
     """add modern classnames for older mf1 classnames
