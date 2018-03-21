@@ -346,7 +346,7 @@ class Parser(object):
         def parse_rels(el):
             """Parse an element for rel microformats
             """
-            rel_attrs = unordered_list([text_type(rel) for rel in get_attr(el, 'rel')])
+            rel_attrs = [text_type(rel) for rel in get_attr(el, 'rel')]
             # if rel attributes exist
             if rel_attrs is not None:
                 # find the url and normalise it
@@ -373,7 +373,7 @@ class Parser(object):
                         value_list.append(url)
                     if rel_value not in url_rels:
                         url_rels.append(rel_value)
-                        value_dict["rels"] = unordered_list(url_rels)
+
                     self.__parsed__["rels"][rel_value] = value_list
                 if "alternate" in rel_attrs:
                     alternate_list = self.__parsed__.get("alternates", [])
@@ -431,6 +431,12 @@ class Parser(object):
         for el in get_descendents(self.__doc__):
             if el.name in ('a', 'area', 'link') and el.has_attr('rel'):
                 parse_rels(el)
+
+        # sort the rels array in rel-urls since this should be unordered set
+        for url in self.__parsed__["rel-urls"]:
+            if 'rels' in self.__parsed__["rel-urls"][url]:
+                rels = self.__parsed__["rel-urls"][url]['rels']
+                self.__parsed__["rel-urls"][url]['rels'] =  unordered_list(rels)
 
         # add actual parser used to debug
         # uses builder.NAME from BeautifulSoup
