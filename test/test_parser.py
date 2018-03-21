@@ -260,10 +260,14 @@ def test_class_names_format():
     assert 'url' in item['properties']
     assert 'p3k-url' in item['properties']
     assert 'Url' not in item['properties']
+    assert '-url' not in item['properties']
+    assert 'url-' not in item['properties']
 
     assert 'name' in item['properties']
     assert 'p3k-name' in item['properties']
     assert 'nAme' not in item['properties']
+    assert '-name' not in item['properties']
+    assert 'name-' not in item['properties']
 
 def test_area_uparsing():
     result = parse_fixture("area.html")
