@@ -249,7 +249,7 @@ def test_ordering_dedup():
     assert_equal(['h-entry', 'h-feed', 'h-product', 'h-x-test'], item['type'])
     assert_equal(['example.com', 'example.com/2'], item['properties']['url'])
     assert_equal(['name', 'URL name'], item['properties']['name'])
-    assert_equal(['author', 'boodongle'], result['rel-urls']['example.com/rel']['rels'])
+    assert_equal(['author', 'bookmark', 'me'], result['rel-urls']['example.com/rel']['rels'])
 
 def test_class_names_format():
     ''' test that only classes with letters and possibly numbers in the vendor prefix part are used '''
