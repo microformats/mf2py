@@ -61,9 +61,10 @@ def _rel_tag_to_category_rule(child, **kwargs):
             data = bs4.BeautifulSoup('').new_tag('data')
             # this does not use what's given in the JSON
             # but that is not a problem currently
+            # use mf1 class so it doesn't get removed later
             data['class'] = ['p-category']
             data['value'] = unquote(segments[-1])
-            child.replace_with(data)
+            child.insert_before(data)
             # remove tag from rels to avoid repeat
             child['rel'] = [r for r in rels if r != 'tag']
 

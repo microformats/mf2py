@@ -579,6 +579,14 @@ def test_backcompat_rel_tag():
     for result in results:
         assert_equal(['cat', 'dog', 'mountain lion', 'mouse', 'meerkat'], result['items'][0]['properties']['category'])
 
+def test_backcompat_rel_tag_entry_title():
+    """Confirm that other backcompat properties on a rel=tag are parsed
+    """
+
+    result = parse_fixture('backcompat/hentry_with_rel_tag_entry_title.html')
+    assert_equal(['cat'], result['items'][0]['properties']['category'])
+    assert_equal(['rhinoceros'], result['items'][0]['properties']['name'])
+
 def test_backcompat_rel_multiple_root():
     """Confirm that rel=tag and rel=bookmark inside of an hentry+hreview is parsed correctly"""
 
