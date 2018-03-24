@@ -67,7 +67,7 @@ class Parser(object):
 
     dict_class = dict
 
-    def __init__(self, doc=None, url=None, html_parser='html5lib'):
+    def __init__(self, doc=None, url=None, html_parser=None):
         self.__url__ = None
         self.__doc__ = None
         self.__parsed__ = self.dict_class([
@@ -80,6 +80,10 @@ class Parser(object):
                 ('version', text_type(__version__))
             ]))
         ])
+
+        # use default parser if none specified
+        if html_parser is None:
+            html_parser = 'html5lib'
 
         if url is not None:
             self.__url__ = url
@@ -354,15 +358,17 @@ class Parser(object):
                 value_dict = self.__parsed__["rel-urls"].get(url,
                                                              self.dict_class())
 
+                # 1st one wins
                 if "text" not in value_dict:
-                    value_dict["text"] = el.get_text().strip()  # 1st one wins
+                    value_dict["text"] = el.get_text().strip()  
 
                 url_rels = value_dict.get("rels", [])
                 value_dict["rels"] = url_rels
 
                 for knownattr in ("media", "hreflang", "type", "title"):
                     x = get_attr(el, knownattr)
-                    if x is not None:
+                    # 1st one wins
+                    if x is not None and knownattr not in value_dict:
                         value_dict[knownattr] = text_type(x)
 
                 self.__parsed__["rel-urls"][url] = value_dict
