@@ -163,6 +163,10 @@ def test_datetime_vcp_parsing():
                  "2014-06-01 12:30-06:00")
     assert_equal(result["items"][9]["properties"]["start"][0],
                  "2014-06-01 12:30-06:00")
+    assert_equal(result["items"][10]["properties"]["start"][0],
+                 "2014-06-01 00:30-06:00")
+    assert_equal(result["items"][10]["properties"]["end"][0],
+                 "2014-06-01 12:15")
 
 
 def test_dt_end_implied_date():

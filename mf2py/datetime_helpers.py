@@ -8,7 +8,7 @@ import re
 DATE_RE = r'\d{4}-\d{2}-\d{2}'
 SEC_RE = r'(:(?P<second>\d{2})(\.\d+)?)'
 RAWTIME_RE = r'(?P<hour>\d{1,2})(:(?P<minute>\d{2})%s?)?' % (SEC_RE)
-AMPM_RE = 'am|pm|a\.m\.|p\.m\.'
+AMPM_RE = r'am|pm|a\.m\.|p\.m\.'
 TIMEZONE_RE = r'Z|[+-]\d{2}:?\d{2}?'
 TIME_RE = (r'(?P<rawtime>%s)( ?(?P<ampm>%s))?( ?(?P<tz>%s))?' %
            (RAWTIME_RE, AMPM_RE, TIMEZONE_RE))
@@ -29,10 +29,19 @@ def normalize_datetime(dtstr, match=None):
             secondstr = match.group('second')
             ampmstr = match.group('ampm')
             separator = match.group('separator')
+
+            # 12 to 24 time conversion
             if ampmstr:
                 hourstr = match.group('hour')
-                if ampmstr.startswith('p'):
-                    hourstr = str(int(hourstr) + 12)
+                hourint = int(hourstr)
+
+                if ampmstr.startswith('a') and hourint == 12:
+                    hourstr = '00'
+
+                if ampmstr.startswith('p') and hourint < 12:
+                    hourstr = str(hourint + 12)
+
+
             dtstr = '%s%s%s:%s' % (
                 datestr, separator, hourstr, minutestr)
 
@@ -43,4 +52,3 @@ def normalize_datetime(dtstr, match=None):
             if tzstr:
                 dtstr += tzstr
         return dtstr
-
