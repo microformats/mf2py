@@ -5,10 +5,10 @@ import re
 
 # REGEX!
 
-DATE_RE = r'\d{4}-\d{2}-\d{2}'
+DATE_RE = r'(\d{4}-\d{2}-\d{2})|(\d{4}-\d{3})'
 SEC_RE = r'(:(?P<second>\d{2})(\.\d+)?)'
 RAWTIME_RE = r'(?P<hour>\d{1,2})(:(?P<minute>\d{2})%s?)?' % (SEC_RE)
-AMPM_RE = r'am|pm|a\.m\.|p\.m\.'
+AMPM_RE = r'am|pm|a\.m\.|p\.m\.|AM|PM|A\.M\.|P\.M\.'
 TIMEZONE_RE = r'Z|[+-]\d{2}:?\d{2}?'
 TIME_RE = (r'(?P<rawtime>%s)( ?(?P<ampm>%s))?( ?(?P<tz>%s))?' %
            (RAWTIME_RE, AMPM_RE, TIMEZONE_RE))
@@ -35,10 +35,10 @@ def normalize_datetime(dtstr, match=None):
                 hourstr = match.group('hour')
                 hourint = int(hourstr)
 
-                if ampmstr.startswith('a') and hourint == 12:
+                if (ampmstr.startswith('a') or ampmstr.startswith('A')) and hourint == 12:
                     hourstr = '00'
 
-                if ampmstr.startswith('p') and hourint < 12:
+                if (ampmstr.startswith('p') or ampmstr.startswith('P')) and hourint < 12:
                     hourstr = str(hourint + 12)
 
 

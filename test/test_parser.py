@@ -167,7 +167,12 @@ def test_datetime_vcp_parsing():
                  "2014-06-01 00:30-06:00")
     assert_equal(result["items"][10]["properties"]["end"][0],
                  "2014-06-01 12:15")
-
+    assert_equal(result["items"][10]["properties"]["start"][1],
+                 "2014-06-01 00:30-06:00")
+    assert_equal(result["items"][10]["properties"]["end"][1],
+                 "2014-06-01 12:15")
+    assert_equal(result["items"][11]["properties"]["start"][0],
+                 "2014-062 00:30-06:00")
 
 def test_dt_end_implied_date():
     """Test that events with dt-start and dt-end use the implied date rule
