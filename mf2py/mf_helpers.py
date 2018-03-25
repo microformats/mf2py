@@ -1,4 +1,4 @@
-# don't need anymore defer to mf2util instead
+# don't need anymore defer to mf2util instead (mf2util does not have this functionality)
 
 def get_url(mf):
     """Given a property value that may be a list of simple URLs or complex

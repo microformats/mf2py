@@ -56,6 +56,7 @@ class Parser(object):
       html_parser (string): optional, select a specific HTML parser. Valid
         options from the BeautifulSoup documentation are:
         "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
+        defaults to "html5lib"
 
     Attributes:
       useragent (string): the User-Agent string for the Parser
@@ -401,14 +402,6 @@ class Parser(object):
             """Parse an element for microformats
             """
             classes = el.get("class", [])
-
-            # Workaround for bs4+html5lib bug that
-            # prevents it from recognizing multi-valued
-            # attrs on the <html> element
-            # https://bugs.launchpad.net/beautifulsoup/+bug/1296481
-            # don't need anymore remove?
-            if el.name == 'html' and not isinstance(classes, list):
-                classes = classes.split()
 
             # find potential microformats in root classnames h-*
             potential_microformats = mf2_classes.root(classes)
