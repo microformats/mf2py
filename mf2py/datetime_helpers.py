@@ -2,6 +2,7 @@
 from __future__ import unicode_literals, print_function
 
 import re
+from datetime import datetime
 
 # REGEX!
 
@@ -29,6 +30,13 @@ def normalize_datetime(dtstr, match=None):
             secondstr = match.group('second')
             ampmstr = match.group('ampm')
             separator = match.group('separator')
+
+            # convert ordinal date YYYY-DDD to YYYY-MM-DD
+            try:
+                datestr = datetime.strptime(datestr, '%Y-%j').strftime('%Y-%m-%d')
+            except ValueError:
+                # datestr was not in YYYY-DDD format
+                pass
 
             # 12 to 24 time conversion
             if ampmstr:
