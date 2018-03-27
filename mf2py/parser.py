@@ -423,7 +423,10 @@ class Parser(object):
 
         # add actual parser used to debug
         # uses builder.NAME from BeautifulSoup
-        self.__parsed__["debug"]["markup parser"] = text_type(self.__doc__.builder.NAME)
+        if isinstance(self.__doc__, BeautifulSoup):
+            self.__parsed__["debug"]["markup parser"] = text_type(self.__doc__.builder.NAME)
+        else:
+            self.__parsed__["debug"]["markup parser"] = text_type('unknown')
 
     def to_dict(self, filter_by_type=None):
         """Get a dictionary version of the parsed microformat document.

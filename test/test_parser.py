@@ -7,6 +7,7 @@ import sys
 import mock
 from nose.tools import assert_equal, assert_true, assert_false
 from mf2py import Parser
+from bs4 import BeautifulSoup
 from unittest import TestCase
 
 TestCase.maxDiff = None
@@ -41,6 +42,16 @@ def test_open_file():
     assert_true(type(p) is not None)
     assert_true(type(p.to_dict()) is dict)
 
+def test_doc_tag():
+    # test that strings, BS doc and BS tags are all parsed
+    doc = '''<article class="h-entry"></article>'''
+    soup = BeautifulSoup(doc)
+    parse_string = Parser(doc).to_dict()
+    assert 'h-entry' in parse_string['items'][0]['type']
+    parse_doc = Parser(soup).to_dict()
+    assert 'h-entry' in parse_doc['items'][0]['type']
+    parse_tag = Parser(soup.article).to_dict()
+    assert 'h-entry' in parse_tag['items'][0]['type']
 
 @mock.patch('requests.get')
 def test_user_agent(getter):
@@ -617,3 +628,4 @@ def test_unicode_everywhere():
     for h in get_all_files()  :
         result = parse_fixture(h)
         yield check_unicode, h, result
+
