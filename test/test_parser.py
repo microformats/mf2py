@@ -513,6 +513,20 @@ def test_simple_person_reference_implied():
                  {'name': ['Frances Berriman']})
 
 
+def test_value_name_whitespace():
+    result = parse_fixture("value_name_whitespace.html")
+
+    for i in range(3):
+        assert_equal(result["items"][i]["properties"]["content"][0]["value"], "Hello World")
+        assert_equal(result["items"][i]["properties"]["name"][0], "Hello World")
+
+    for i in range(3, 8):
+        assert_equal(result["items"][i]["properties"]["content"][0]["value"], "Hello\nWorld")
+        assert_equal(result["items"][i]["properties"]["name"][0], "Hello\nWorld")
+
+    assert_equal(result["items"][8]["properties"]["content"][0]["value"], "One\nTwo\nThree")
+    assert_equal(result["items"][8]["properties"]["name"][0], "One\nTwo\nThree")
+
 # backcompat tests
 
 def test_backcompat_hentry():
