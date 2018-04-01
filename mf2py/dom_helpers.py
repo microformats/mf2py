@@ -1,6 +1,7 @@
 import sys
 import bs4
 import copy
+import re
 
 if sys.version < '3':
     from urlparse import urljoin
@@ -12,9 +13,33 @@ else:
     binary_type = bytes
     basestring = str
 
-def get_textContent(el, replace_img=False, base_url=''):
+def get_textContent(el, replace_img=False, fix_whitespace=False, base_url=''):
     """ Get the text content of an element, replacing images by alt or src
     """
+
+    def whitespacer(el):
+        """ helper function to deal with whitespace
+        """
+
+        # replace \t \n \r by <space> in all strings
+        for s in el.find_all(text=True):
+            new_s = re.sub(r'\t|\n|\r', ' ', unicode(s))
+            s.replace_with(new_s)
+
+        # replace <br> by \n
+        for br in el.find_all('br'):
+            br.replace_with('\n')
+
+        # add \n before a <p>
+        for p in el.find_all('p'):
+            p.insert_before('\n')
+
+        text = el.get_text()
+        # remove spaces before and after \n
+        text = re.sub(r'[ ]{0,}\n[ ]{0,}', '\n', text)
+        text = re.sub(r'[ ]{1,}', ' ', text)
+
+        return text.strip()
 
     # copy el to avoid making direct changes
     el_copy = copy.copy(el)
@@ -40,7 +65,10 @@ def get_textContent(el, replace_img=False, base_url=''):
 
             img.replace_with(replacement)
 
-    return el_copy.get_text().strip()
+    if fix_whitespace:
+        return whitespacer(el_copy)
+    else:
+        return el_copy.get_text().strip()
 
 def get_attr(el, attr, check_name=None):
     """Get the attribute of an element if it exists and is not empty.

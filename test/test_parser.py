@@ -213,7 +213,7 @@ def test_embedded_parsing():
         '   <p>Blah.</p>\n   <p>Blah blah blah.</p>')
     assert_equal(
         result["items"][0]["properties"]["content"][0]["value"],
-        'Blah blah blah blah blah.\n   Blah.\n   Blah blah blah.')
+        'Blah blah blah blah blah.\nBlah.\nBlah blah blah.')
 
 
 def test_hoisting_nested_hcard():
@@ -678,7 +678,7 @@ def test_backcompat_nested_mf1_in_mf2_e_content():
 
     assert_equal('<div class="hentry">\n<span class="entry-title">Correct name</span>\n\n<span class="entry-summary">Correct summary</span>\n</div>', mf2_entry['properties']['content'][0]['html'])
 
-    assert_equal('Correct name\n\nCorrect summary', mf2_entry['properties']['content'][0]['value'])
+    assert_equal('Correct name Correct summary', mf2_entry['properties']['content'][0]['value'])
 
     assert_equal('h-entry', mf1_entry['type'][0])
     assert_equal('Correct name', mf1_entry['properties']['name'][0])
