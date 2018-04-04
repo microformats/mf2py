@@ -1,7 +1,11 @@
+from __future__ import unicode_literals
+
 import sys
 import bs4
 import copy
 import re
+
+from bs4.element import Tag, NavigableString
 
 if sys.version < '3':
     from urlparse import urljoin
@@ -12,63 +16,6 @@ else:
     text_type = str
     binary_type = bytes
     basestring = str
-
-def get_textContent(el, replace_img=False, fix_whitespace=False, base_url=''):
-    """ Get the text content of an element, replacing images by alt or src
-    """
-
-    def whitespacer(el):
-        """ helper function to deal with whitespace
-        """
-
-        # replace \t \n \r by <space> in all strings
-        for s in el.find_all(text=True):
-            new_s = re.sub(r'\t|\n|\r', ' ', unicode(s))
-            s.replace_with(new_s)
-
-        # replace <br> by \n
-        for br in el.find_all('br'):
-            br.replace_with('\n')
-
-        # add \n before a <p>
-        for p in el.find_all('p'):
-            p.insert_before('\n')
-
-        text = el.get_text()
-        # remove spaces before and after \n
-        text = re.sub(r'[ ]{0,}\n[ ]{0,}', '\n', text)
-        text = re.sub(r'[ ]{1,}', ' ', text)
-
-        return text.strip()
-
-    # copy el to avoid making direct changes
-    el_copy = copy.copy(el)
-
-    # drop all <style> and <script> elements
-    drops = el_copy.find_all(['style', 'script'])
-    for drop in drops:
-        drop.decompose()
-
-    # replace <img> with alt or src
-    if replace_img:
-        imgs = el_copy.find_all('img')
-
-        for img in imgs:
-            replacement = img.get('alt')
-            if replacement is None:
-                replacement = img.get('src')
-                if replacement is not None:
-                    replacement = ' ' + urljoin(base_url, replacement) + ' '
-
-            if replacement is None:
-                replacement = ''
-
-            img.replace_with(replacement)
-
-    if fix_whitespace:
-        return whitespacer(el_copy)
-    else:
-        return el_copy.get_text().strip()
 
 def get_attr(el, attr, check_name=None):
     """Get the attribute of an element if it exists and is not empty.
@@ -102,3 +49,110 @@ def get_descendents(node):
         yield child
         for desc in get_descendents(child):
             yield desc
+
+def get_textContent(el, replace_img=False, fix_whitespace=False, base_url=''):
+    """ Get the text content of an element, replacing images by alt or src
+    """
+
+    DROP_TAGS = ('script', 'style')
+    PRE_TAGS = ('pre',)
+    P_BREAK_BEFORE = 1
+    P_BREAK_AFTER = 0
+
+    def text_collection(el, replace_img=False, base_url=''):
+        # returns array of strings or integers
+
+        items = []
+
+        if el.name in DROP_TAGS:
+            items = []
+
+        elif isinstance(el, NavigableString):
+            value = text_type(el)
+            # replace \t \n \r by space
+            value = re.sub(r'\t|\n|\r', ' ', value)
+            # replace multiple spaces with one space
+            value = re.sub(r'[ ]{1,}', ' ', value)
+
+            value = value.strip() or value
+            items = [value]
+
+        elif el.name in PRE_TAGS:
+            # note this removes the comment tag markers from HTML comments but keeps the comment text :|
+            value = ''.join([text_type(c) for c in el.contents])
+            items = [value]
+
+        elif el.name == 'img' and replace_img:
+            value = el.get('alt')
+            if value is None:
+                value = el.get('src')
+                if value is not None:
+                    value = urljoin(base_url, value)
+
+            if value is not None:
+                items = [' ', text_type(value), ' ']
+
+        elif el.name == 'br':
+            items = ['\n']
+
+        else:
+            for child in el.children:
+
+                child_items = text_collection(child, replace_img, base_url)
+                items.extend(child_items)
+
+            if el.name == 'p':
+                items = [P_BREAK_BEFORE] + items
+                items.append(P_BREAK_AFTER)
+
+
+        return items
+
+    if fix_whitespace:
+
+        results = [t for t in text_collection(el, replace_img, base_url) if t is not '']
+
+        if results:
+            # remove <space> if it is first and last or if it is preceded by a <space> or <int> or followed by a <int>
+            # done by replacing it with 0
+            length = len(results)
+            for i  in xrange(0, length):
+                if (results[i] == ' ' and
+                        (i == 0 or
+                        i == length - 1 or
+                        results[i-1] == ' ' or
+                        isinstance(results[i-1], int) or
+                        results[i+1] == ' ' or
+                        isinstance(results[i+1], int)
+                        )
+                    ):
+                    results[i] = 0
+
+        if results:
+            # remove leading \n and <int> i.e. next lines
+            while results[0] == '\n' or isinstance(results[0], int):
+                results.pop(0)
+                if not results:
+                    break
+        if results:
+            # remove trailing \n and <int> i.e. next lines
+            while results[-1] == '\n' or isinstance(results[-1], int):
+                results.pop(-1)
+                if not results:
+                    break
+
+
+        # create final string by concatenating replacing consecutive sequence of <int> by largest value number of \n
+        text = ''
+        count = 0
+        for t in results:
+            if isinstance(t, int):
+                count = max(t, count)
+            else:
+                text = ''.join([text, '\n'*count , t])
+                count = 0
+
+        return text
+
+    else:
+        return el.get_text()

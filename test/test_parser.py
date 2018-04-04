@@ -423,6 +423,7 @@ def test_nested_values():
 
 def test_implied_name():
     result = parse_fixture("implied_properties/implied_properties.html")
+
     for i in range(6):
         assert_equal(result["items"][i]["properties"]["name"][0], "Tom Morris")
 
