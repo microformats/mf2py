@@ -8,6 +8,9 @@ from .dom_helpers import get_descendents
 from . import mf2_classes
 import bs4
 import copy
+import os
+import codecs
+import json
 
 import sys
 if sys.version < '3':
@@ -15,165 +18,26 @@ if sys.version < '3':
 else:
     from urllib.parse import unquote
 
-
 # Classic Root Classname map
-CLASSIC_ROOT_MAP = {
-    'vcard': 'h-card',
-    'hfeed': 'h-feed',
-    'hentry': 'h-entry',
-    'hrecipe': 'h-recipe',
-    'hresume': 'h-resume',
-    'vevent': 'h-event',
-    'hreview': 'h-review',
-    'hproduct': 'h-product',
-    'hreview-aggregate': 'h-review-aggregate',
-    'geo': 'h-geo',
-    'adr': 'h-adr',
-}
+CLASSIC_ROOT_MAP = {}
 
-CLASSIC_PROPERTY_MAP = {
-    'vcard': {
-        'fn': ['p-name'],
-        'url': ['u-url'],
-        'honorific-prefix': ['p-honorific-prefix'],
-        'given-name': ['p-given-name'],
-        'additional-name': ['p-additional-name'],
-        'family-name': ['p-family-name'],
-        'honorific-suffix': ['p-honorific-suffix'],
-        'nickname': ['p-nickname'],
-        'email': ['u-email'],
-        'logo': ['u-logo'],
-        'photo': ['u-photo'],
-        'uid': ['u-uid'],
-        'category': ['p-category'],
-        'adr': ['p-adr', 'h-adr'],
-        'extended-address': ['p-extended-address'],
-        'street-address': ['p-street-address'],
-        'locality': ['p-locality'],
-        'region': ['p-region'],
-        'postal-code': ['p-postal-code'],
-        'country-name': ['p-country-name'],
-        'label': ['p-label'],
-        'geo': ['p-geo', 'h-geo'],
-        'latitude': ['p-latitude'],
-        'longitude': ['p-longitude'],
-        'tel': ['p-tel'],
-        'note': ['p-note'],
-        'bday': ['dt-bday'],
-        'key': ['u-key'],
-        'org': ['p-org'],
-        'organization-name': ['p-organization-name'],
-        'organization-unit': ['p-organization-unit'],
-    },
-    'hfeed': {
-        'title': ['p-name'], #for blogger, if they move hfeed to the right place
-        'description': ['p-summary'],  #for blogger, if they move hfeed to the right place
-        'site-title': ['p-name'], #for wordpress defaults
-        'site-description': ['p-summary'],  #for wordpress defaults
-        'category': ['p-category'],
-    },
-    'hentry': {
-        'entry-title': ['p-name'],
-        'entry-summary': ['p-summary'],
-        'entry-content': ['e-content'],
-        'published': ['dt-published'],
-        'updated': ['dt-updated'],
-        'author': ['p-author', 'h-card'],
-        'category': ['p-category'],
-        'geo': ['p-geo', 'h-geo'],
-        'latitude': ['p-latitude'],
-        'longitude': ['p-longitude'],
-    },
-    'hrecipe': {
-        'fn': ['p-name'],
-        'ingredient': ['p-ingredient'],
-        'yield': ['p-yield'],
-        'instructions': ['e-instructions'],
-        'duration': ['dt-duration'],
-        'nutrition': ['p-nutrition'],
-        'photo': ['u-photo'],
-        'summary': ['p-summary'],
-        'author': ['p-author', 'h-card'],
-    },
-    'hresume': {
-        'summary': ['p-summary'],
-        'contact': ['h-card', 'p-contact'],
-        'education': ['h-event', 'p-education'],
-        'experience': ['h-event', 'p-experience'],
-        'skill': ['p-skill'],
-        'affiliation': ['p-affiliation', 'h-card'],
-    },
-    'vevent': {
-        'dtstart': ['dt-start'],
-        'dtend': ['dt-end'],
-        'duration': ['dt-duration'],
-        'description': ['p-description'],
-        'summary': ['p-name'],
-        'url': ['u-url'],
-        'category': ['p-category'],
-        'location': ['p-location'],
-        'geo': ['p-location h-geo'],
-        'attendee': ['p-attendee'],
-        'contact': ['p-contact'],
-        'organizer': ['p-organizer'],
-    },
-    'hreview': {
-        'summary': ['p-name'],
-        # doesn't work properly, see spec
-        'fn': ['p-item', 'h-item', 'p-name'],
-        # of the item being reviewed (p-item h-item u-photo)
-        'photo': ['u-photo'],
-        # of the item being reviewed (p-item h-item u-url)
-        'url': ['u-url'],
-        'reviewer': ['p-author', 'h-card'],
-        'dtreviewed': ['dt-reviewed'],
-        'rating': ['p-rating'],
-        'best': ['p-best'],
-        'worst': ['p-worst'],
-        'description': ['p-description'],
-    },
-    'hproduct': {
-        'fn': ['p-name'],
-        'photo': ['u-photo'],
-        'brand': ['p-brand'],
-        'category': ['p-category'],
-        'description': ['p-description'],
-        'identifier': ['u-identifier'],
-        'url': ['u-url'],
-        'review': ['p-review', 'h-review', 'e-description'],
-        'price': ['p-price'],
-    },
-    'hreview-aggregate': {
-        'summary': ['p-name'],
-        # doesn't work properly, see spec
-        'fn': ['p-item', 'h-item', 'p-name'],
-        # of the item being reviewed (p-item h-item u-photo)
-        'photo': ['u-photo'],
-        # of the item being reviewed (p-item h-item u-url)
-        'url': ['u-url'],
-        'reviewer': ['p-reviewer', 'p-author', 'h-card'],
-        'dtreviewed': ['dt-reviewed'],
-        'rating': ['p-rating'],
-        'best': ['p-best'],
-        'worst': ['p-worst'],
-        'description': ['p-description'],
-        'count': ['p-count'],
-        'votes': ['p-votes']
-    },
-    'geo': {
-        'latitude': ['p-latitude'],
-        'longitude': ['p-longitude'],
-    },
-    'adr': {
-        'post-office-box': ['p-post-office-box'],
-        'extended-address': ['p-extended-address'],
-        'street-address': ['p-street-address'],
-        'locality': ['p-locality'],
-        'region': ['p-region'],
-        'postal-code': ['p-postal-code'],
-        'country-name': ['p-country-name'],
-    },
-}
+# Classic Root properties map
+CLASSIC_PROPERTY_MAP = {}
+
+# populate backcompat rules from JSON files
+
+_RULES_LOC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'backcompat-rules')
+
+for filename in os.listdir(_RULES_LOC):
+    file_path = os.path.join(_RULES_LOC, filename)
+    root = os.path.splitext(filename)[0]
+    with codecs.open(file_path, 'r', 'utf-8') as f:
+        rules = json.load(f)
+
+    CLASSIC_ROOT_MAP[root] = rules['type'][0]
+    CLASSIC_PROPERTY_MAP[root] = rules['properties']
+
+
 
 def root(classes):
     """get all backcompat root classnames

@@ -1,0 +1,40 @@
+{
+    "type": [
+        "h-review"
+    ], 
+    "properties": {
+        "rating": [
+            "p-rating"
+        ], 
+        "worst": [
+            "p-worst"
+        ], 
+        "dtreviewed": [
+            "dt-reviewed"
+        ], 
+        "reviewer": [
+            "p-author", 
+            "h-card"
+        ], 
+        "url": [
+            "u-url"
+        ], 
+        "photo": [
+            "u-photo"
+        ], 
+        "best": [
+            "p-best"
+        ], 
+        "description": [
+            "p-description"
+        ], 
+        "fn": [
+            "p-item", 
+            "h-item", 
+            "p-name"
+        ], 
+        "summary": [
+            "p-name"
+        ]
+    }
+}
