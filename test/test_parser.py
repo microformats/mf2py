@@ -699,6 +699,28 @@ def test_backcompat_nested_mf1_in_mf2_e_content():
     assert_equal('Correct name', mf1_entry['properties']['name'][0])
     assert_equal('Correct summary', mf1_entry['properties']['summary'][0])
 
+# experimental features tests
+
+def test_photo_with_alt():
+    """Confirm that alt text in photo is parsed with feature flag
+    """
+
+    path = 'photo_with_alt.html'
+
+    result = parse_fixture(path)
+
+    entry = result['items'][0]
+
+    assert_equal('/photo.jpg', entry['properties']['photo'][0])
+
+    # experimental alt_in_photo
+    with open(os.path.join(TEST_DIR, path)) as f:
+        exp_result = Parser(doc=f, html_parser='html5lib', alt_in_photo=True).to_dict()
+
+    exp_entry = exp_result['items'][0]
+    assert_equal('/photo.jpg', exp_entry['properties']['photo'][0]['value'])
+    assert_equal('alt text', exp_entry['properties']['photo'][0]['alt'])
+
 # unicode tests
 
 def get_all_files():

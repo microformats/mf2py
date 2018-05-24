@@ -24,7 +24,7 @@ else:
     binary_type = bytes
 
 
-def parse(doc=None, url=None, html_parser=None):
+def parse(doc=None, url=None, html_parser=None, alt_in_photo=False):
     """
     Parse a microformats2 document or url and return a json dictionary.
 
@@ -40,7 +40,7 @@ def parse(doc=None, url=None, html_parser=None):
 
     Return: a json dict represented the structured data in this document.
     """
-    return Parser(doc, url, html_parser).to_dict()
+    return Parser(doc, url, html_parser, alt_in_photo).to_dict()
 
 
 class Parser(object):
@@ -68,7 +68,7 @@ class Parser(object):
 
     dict_class = dict
 
-    def __init__(self, doc=None, url=None, html_parser=None):
+    def __init__(self, doc=None, url=None, html_parser=None, alt_in_photo=False):
         self.__url__ = None
         self.__doc__ = None
         self.__parsed__ = self.dict_class([
@@ -81,6 +81,7 @@ class Parser(object):
                 ('version', text_type(__version__))
             ]))
         ])
+        self.__alt_in_photo__ = alt_in_photo
 
         # use default parser if none specified
         if html_parser is None:
@@ -286,7 +287,14 @@ class Parser(object):
                         root_class_names, el, value_property="url",
                         simple_value=u_value, backcompat_mode=backcompat_mode))
                 else:
-                    prop_value.append(text_type(u_value))
+                    if prop_name == "photo" and self.__alt_in_photo__ and el.name == "img" and el.get("alt") is not None:
+                        u_value = self.dict_class([
+                        ('value', u_value),
+                        ('alt', el.get("alt"))
+                        ])
+                        prop_value.append(u_value)
+                    else:
+                        prop_value.append(text_type(u_value))
 
             # Parse datetime dt-* properties.
             dt_value = None

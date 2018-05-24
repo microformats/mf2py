@@ -39,15 +39,15 @@ def get_attr(el, attr, check_name=None):
 
 def get_children(node):
     """An iterator over the immediate children tags of this tag"""
-    for child in node.contents:
+    for child in node.children:
         if isinstance(child, bs4.Tag):
             yield child
 
 
 def get_descendents(node):
-    for child in get_children(node):
-        yield child
-        for desc in get_descendents(child):
+    """An iterator over the all children tags (descendants) of this tag"""
+    for desc in node.descendants:
+        if isinstance(desc, bs4.Tag):
             yield desc
 
 def get_textContent(el, replace_img=False, fix_whitespace=False, base_url=''):
@@ -116,7 +116,7 @@ def get_textContent(el, replace_img=False, fix_whitespace=False, base_url=''):
             # remove <space> if it is first and last or if it is preceded by a <space> or <int> or followed by a <int>
             # done by replacing it with 0
             length = len(results)
-            for i  in xrange(0, length):
+            for i  in range(0, length):
                 if (results[i] == ' ' and
                         (i == 0 or
                         i == length - 1 or
