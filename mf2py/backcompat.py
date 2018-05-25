@@ -4,7 +4,7 @@ microformats2 names. Ported and adapted from php-mf2.
 """
 
 from __future__ import unicode_literals, print_function
-from .dom_helpers import get_descendents
+from .dom_helpers import get_children
 from .mf_helpers import unordered_list
 from . import mf2_classes
 import bs4
@@ -40,10 +40,15 @@ def _make_classes_rule(old_classes, new_classes):
     equivalent(s).
     """
     def f(child, **kwargs):
+        child_original = child.original or copy.copy(child)
         child_classes = child.get('class', [])
         if all(cl in child_classes for cl in old_classes):
             child_classes.extend([cl for cl in new_classes if cl not in child_classes])
             child['class'] = child_classes
+
+            # if any new class is e-* attach original to parse originally authored HTML
+            if mf2_classes.embedded(child_classes) and child.original is None:
+                child.original = child_original
     return f
 
 def _rel_tag_to_category_rule(child, **kwargs):
@@ -112,7 +117,7 @@ def apply_rules(el):
 
     def apply_prop_rules_to_children(parent, rules):
 
-        for child in (c for c in parent.children if isinstance(c, bs4.Tag)):
+        for child in get_children(parent):
             classes = child.get('class',[])
             # find existing mf2 properties if any and delete them
             mf2_props = mf2_classes.property_classes(classes)

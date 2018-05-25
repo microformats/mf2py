@@ -328,7 +328,11 @@ class Parser(object):
 
                 # if value has not been parsed then parse it
                 if e_value is None:
-                    e_value = parse_property.embedded(el, base_url=self.__url__)
+                    # send original element for parsing backcompat
+                    if el.original is None:
+                        e_value = parse_property.embedded(el, base_url=self.__url__)
+                    else:
+                        e_value = parse_property.embedded(el.original, base_url=self.__url__)
 
                 if root_class_names:
                     stops_implied_name = True

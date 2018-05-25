@@ -699,6 +699,16 @@ def test_backcompat_nested_mf1_in_mf2_e_content():
     assert_equal('Correct name', mf1_entry['properties']['name'][0])
     assert_equal('Correct summary', mf1_entry['properties']['summary'][0])
 
+def test_backcompat_hentry_content_html():
+    """Confirm that mf1 entry-content html is parsed as authored without mf2 replacements
+    """
+    result = parse_fixture('backcompat/hentry_content_html.html')
+
+    entry = result['items'][0]
+
+    assert_equal('<p class="entry-summary">This is a summary</p> \n        <p>This is <a href="/tags/mytag" rel="tag">mytag</a> inside content. </p>', entry['properties']['content'][0]['html'])
+
+
 # experimental features tests
 
 def test_photo_with_alt():
