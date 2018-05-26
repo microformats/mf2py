@@ -5,7 +5,7 @@ import bs4
 import copy
 import re
 
-from bs4.element import Tag, NavigableString
+from bs4.element import Tag, NavigableString, Comment
 
 if sys.version < '3':
     from urlparse import urljoin
@@ -64,7 +64,8 @@ def get_textContent(el, replace_img=False, fix_whitespace=False, base_url=''):
 
         items = []
 
-        if el.name in DROP_TAGS:
+        # drops the tags defined above and comments
+        if el.name in DROP_TAGS or isinstance(el, Comment):
             items = []
 
         elif isinstance(el, NavigableString):
@@ -77,10 +78,9 @@ def get_textContent(el, replace_img=False, fix_whitespace=False, base_url=''):
             value = value.strip() or value
             items = [value]
 
+        # don't do anything special for PRE-formatted tags defined above
         elif el.name in PRE_TAGS:
-            # note this removes the comment tag markers from HTML comments but keeps the comment text :|
-            value = ''.join([text_type(c) for c in el.contents])
-            items = [value]
+            items = [el.get_text()]
 
         elif el.name == 'img' and replace_img:
             value = el.get('alt')
