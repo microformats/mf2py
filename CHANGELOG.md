@@ -1,20 +1,23 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## 1.1.1 - 2018-03-25
+## 1.1.1 - 2018-05-25
 
 - streamline backcompat to use JSON only.
 - fix multiple mf1 root rel-tag parsing 
 - correct url and photo for hreview.
 - add rules for nested hreview. update backcompat to use multiple matches in old properties.
-- make classes and rels into alphabetically (alphabetically) ordered deduped arrays.
+- fix `rel-tag` to `p-category` conversion so that other classes are not lost.
+- use original authored html for `e-*` parsing in backcompat
+- make classes and rels into unordered (alphabetically ordered) deduped arrays.
 - only use class names for mf2 which follow the naming rules
-- fix rel-tag to p-category conversion so that other classes are not lost.
 - fix `parse` method to use default html parser.
 - always use the first value for attributes for rels.
 - correct AM/PM conversion in datetime value class pattern.
  - add ordinal date parsing to datetimes value class pattern. ordinal date is normalised to YYYY-MM-DD
 - remove hack for html tag classes since that is fixed in new BS
+- better whitespace algorithm for `name` and `html.value` parsing
+- experimental flag for including `alt` in `u-photo` parsing
 - bump version to 1.1.1 
 
 ## 1.1.0 - 2018-03-16
