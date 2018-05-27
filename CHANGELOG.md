@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## 1.1.1 - 2018-05-25
+## 1.1.1 - 2018-05-27
 
 - streamline backcompat to use JSON only.
 - fix multiple mf1 root rel-tag parsing 
@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - remove hack for html tag classes since that is fixed in new BS
 - better whitespace algorithm for `name` and `html.value` parsing
 - experimental flag for including `alt` in `u-photo` parsing
+- make a copy of the BeautifulSoup given by user to work on for parsing to prevent changes to original doc
 - bump version to 1.1.1 
 
 ## 1.1.0 - 2018-03-16

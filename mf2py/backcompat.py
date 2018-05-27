@@ -109,11 +109,7 @@ def root(classes):
 
 def apply_rules(el):
     """add modern classnames for older mf1 classnames
-
-    returns a copy of el and does not modify the original
     """
-
-    el_copy = copy.copy(el)
 
     def apply_prop_rules_to_children(parent, rules):
 
@@ -133,12 +129,12 @@ def apply_rules(el):
 
 
     # add mf2 root equivalent
-    classes = el_copy.get('class', [])
+    classes = el.get('class', [])
     old_roots = root(classes)
     for old_root in old_roots:
         new_roots = _CLASSIC_MAP[old_root]['type']
         classes.extend(new_roots)
-    el_copy['class'] = classes
+    el['class'] = classes
 
 
     # add mf2 prop equivalent to descendents and remove existing mf2 props
@@ -146,6 +142,6 @@ def apply_rules(el):
     for old_root in old_roots:
         rules.extend(_get_rules(old_root))
 
-    apply_prop_rules_to_children(el_copy, rules)
+    apply_prop_rules_to_children(el, rules)
 
-    return el_copy
+    return el
