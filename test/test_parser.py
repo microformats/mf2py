@@ -744,24 +744,28 @@ def test_backcompat_hentry_content_html():
 # experimental features tests
 
 def test_photo_with_alt():
-    """Confirm that alt text in photo is parsed with feature flag
+    """Confirm that alt text in photo is parsed with feature flag alt_in_photo
     """
 
     path = 'photo_with_alt.html'
 
+    # without flag
     result = parse_fixture(path)
 
-    entry = result['items'][0]
+    for i in range(3):
+        assert_equal('/photo.jpg', result['items'][i]['properties']['photo'][0])
 
-    assert_equal('/photo.jpg', entry['properties']['photo'][0])
-
-    # experimental alt_in_photo
+    # experimental alt_in_photo=True
     with open(os.path.join(TEST_DIR, path)) as f:
         exp_result = Parser(doc=f, html_parser='html5lib', alt_in_photo=True).to_dict()
 
-    exp_entry = exp_result['items'][0]
-    assert_equal('/photo.jpg', exp_entry['properties']['photo'][0]['value'])
-    assert_equal('alt text', exp_entry['properties']['photo'][0]['alt'])
+    assert_equal('/photo.jpg', exp_result['items'][0]['properties']['photo'][0])
+
+    assert_equal('/photo.jpg', exp_result['items'][1]['properties']['photo'][0]['value'])
+    assert_equal('alt text', exp_result['items'][1]['properties']['photo'][0]['alt'])
+
+    assert_equal('/photo.jpg', exp_result['items'][2]['properties']['photo'][0]['value'])
+    assert_equal('', exp_result['items'][2]['properties']['photo'][0]['alt'])
 
 # unicode tests
 
