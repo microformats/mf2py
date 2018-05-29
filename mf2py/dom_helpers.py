@@ -18,7 +18,7 @@ else:
     basestring = str
 
 def get_attr(el, attr, check_name=None):
-    """Get the attribute of an element if it exists and is not empty.
+    """Get the attribute of an element if it exists.
 
     Args:
       el (bs4.element.Tag): a DOM element
@@ -36,6 +36,25 @@ def get_attr(el, attr, check_name=None):
     if isinstance(check_name, (tuple, list)) and el.name in check_name:
         return el.get(attr)
 
+
+def get_img_src_alt(img, dict_class, img_with_alt, base_url=''):
+    """given a img element, returns both src and alt attributes as a list of tuples if alt exists, else returns the src as a string
+    use for alt parsing with img
+    """
+
+    alt = get_attr(img, "alt", check_name="img")
+    src = get_attr(img, "src", check_name="img")
+
+    if src is not None:
+        src = urljoin(base_url, src)
+
+        if alt is None or not img_with_alt:
+            return text_type(src)
+        else:
+            return dict_class([
+                                ("value", text_type(src)),
+                                ("alt", text_type(alt))
+                            ])
 
 def get_children(node):
     """An iterator over the immediate children tags of this tag"""

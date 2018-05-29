@@ -744,28 +744,62 @@ def test_backcompat_hentry_content_html():
 # experimental features tests
 
 def test_photo_with_alt():
-    """Confirm that alt text in photo is parsed with feature flag alt_in_photo
+    """Confirm that alt text in img is parsed with feature flag img_with_alt under as a u-* property and implied photo
     """
 
-    path = 'photo_with_alt.html'
+    path = 'experimental/img_with_alt.html'
 
     # without flag
     result = parse_fixture(path)
 
-    for i in range(3):
-        assert_equal('/photo.jpg', result['items'][i]['properties']['photo'][0])
-
-    # experimental alt_in_photo=True
+    # experimental img_with_alt=True
     with open(os.path.join(TEST_DIR, path)) as f:
-        exp_result = Parser(doc=f, html_parser='html5lib', alt_in_photo=True).to_dict()
+        exp_result = Parser(doc=f, html_parser='html5lib', img_with_alt=True).to_dict()
 
+    # simple img with u-*
+    assert_equal('/photo.jpg', result['items'][0]['properties']['photo'][0])
     assert_equal('/photo.jpg', exp_result['items'][0]['properties']['photo'][0])
 
-    assert_equal('/photo.jpg', exp_result['items'][1]['properties']['photo'][0]['value'])
-    assert_equal('alt text', exp_result['items'][1]['properties']['photo'][0]['alt'])
+    assert_equal('/photo.jpg', result['items'][1]['properties']['url'][0])
+    assert_equal('/photo.jpg', exp_result['items'][1]['properties']['url'][0]['value'])
+    assert_equal('alt text', exp_result['items'][1]['properties']['url'][0]['alt'])
 
-    assert_equal('/photo.jpg', exp_result['items'][2]['properties']['photo'][0]['value'])
-    assert_equal('', exp_result['items'][2]['properties']['photo'][0]['alt'])
+    assert_equal('/photo.jpg', result['items'][2]['properties']['in-reply-to'][0])
+    assert_equal('/photo.jpg', exp_result['items'][2]['properties']['in-reply-to'][0]['value'])
+    assert_equal('', exp_result['items'][2]['properties']['in-reply-to'][0]['alt'])
+
+    # img with u-* and h-* example
+    assert_true('h-cite' in result['items'][3]['properties']['in-reply-to'][0]['type'])
+    assert_equal('/photo.jpg', result['items'][3]['properties']['in-reply-to'][0]['properties']['photo'][0])
+    assert_equal('/photo.jpg', result['items'][3]['properties']['in-reply-to'][0]['value'])
+    assert_false('alt' in result['items'][3]['properties']['in-reply-to'][0])
+
+    assert_true('h-cite' in exp_result['items'][3]['properties']['in-reply-to'][0]['type'])
+    assert_equal('/photo.jpg', exp_result['items'][3]['properties']['in-reply-to'][0]['properties']['photo'][0])
+    assert_equal('/photo.jpg', exp_result['items'][3]['properties']['in-reply-to'][0]['value'])
+    assert_false('alt' in exp_result['items'][3]['properties']['in-reply-to'][0])
+
+    assert_true('h-cite' in result['items'][4]['properties']['in-reply-to'][0]['type'])
+    assert_equal('/photo.jpg', result['items'][4]['properties']['in-reply-to'][0]['properties']['photo'][0])
+    assert_equal('/photo.jpg', result['items'][4]['properties']['in-reply-to'][0]['value'])
+    assert_false('alt' in result['items'][4]['properties']['in-reply-to'][0])
+
+    assert_true('h-cite' in exp_result['items'][4]['properties']['in-reply-to'][0]['type'])
+    assert_equal('/photo.jpg', exp_result['items'][4]['properties']['in-reply-to'][0]['properties']['photo'][0]['value'])
+    assert_equal('/photo.jpg', exp_result['items'][4]['properties']['in-reply-to'][0]['value'])
+    assert_equal('alt text', exp_result['items'][4]['properties']['in-reply-to'][0]['properties']['photo'][0]['alt'])
+    assert_equal('alt text', exp_result['items'][4]['properties']['in-reply-to'][0]['alt'])
+
+    assert_true('h-cite' in result['items'][5]['properties']['in-reply-to'][0]['type'])
+    assert_equal('/photo.jpg', result['items'][5]['properties']['in-reply-to'][0]['properties']['photo'][0])
+    assert_equal('/photo.jpg', result['items'][5]['properties']['in-reply-to'][0]['value'])
+    assert_false('alt' in result['items'][5]['properties']['in-reply-to'][0])
+
+    assert_true('h-cite' in exp_result['items'][5]['properties']['in-reply-to'][0]['type'])
+    assert_equal('/photo.jpg', exp_result['items'][5]['properties']['in-reply-to'][0]['properties']['photo'][0]['value'])
+    assert_equal('/photo.jpg', exp_result['items'][5]['properties']['in-reply-to'][0]['value'])
+    assert_equal('', exp_result['items'][5]['properties']['in-reply-to'][0]['properties']['photo'][0]['alt'])
+    assert_equal('', exp_result['items'][5]['properties']['in-reply-to'][0]['alt'])
 
 # unicode tests
 

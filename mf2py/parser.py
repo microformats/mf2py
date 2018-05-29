@@ -25,7 +25,7 @@ else:
     binary_type = bytes
 
 
-def parse(doc=None, url=None, html_parser=None, alt_in_photo=False):
+def parse(doc=None, url=None, html_parser=None, img_with_alt=False):
     """
     Parse a microformats2 document or url and return a json dictionary.
 
@@ -41,7 +41,7 @@ def parse(doc=None, url=None, html_parser=None, alt_in_photo=False):
 
     Return: a json dict represented the structured data in this document.
     """
-    return Parser(doc, url, html_parser, alt_in_photo).to_dict()
+    return Parser(doc, url, html_parser, img_with_alt).to_dict()
 
 
 class Parser(object):
@@ -69,7 +69,7 @@ class Parser(object):
 
     dict_class = dict
 
-    def __init__(self, doc=None, url=None, html_parser=None, alt_in_photo=False):
+    def __init__(self, doc=None, url=None, html_parser=None, img_with_alt=False):
         self.__url__ = None
         self.__doc__ = None
         self.__parsed__ = self.dict_class([
@@ -82,7 +82,7 @@ class Parser(object):
                 ('version', text_type(__version__))
             ]))
         ])
-        self.__alt_in_photo__ = alt_in_photo
+        self.__img_with_alt__ = img_with_alt
 
         # use default parser if none specified
         if html_parser is None:
@@ -186,19 +186,17 @@ class Parser(object):
                 # stop implied name if any p-*, e-*, h-* is already found
                 if "name" not in properties and do_implied_name:
 
-                    properties["name"] = [text_type(prop)
-                                          for prop
-                                          in implied_properties.name(el, base_url=self.__url__)]
+                    properties["name"] = [implied_properties.name(el, base_url=self.__url__)]
 
                 if "photo" not in properties:
-                    x = implied_properties.photo(el, base_url=self.__url__)
+                    x = implied_properties.photo(el, self.dict_class, self.__img_with_alt__, base_url=self.__url__)
                     if x is not None:
-                        properties["photo"] = [text_type(u) for u in x]
+                        properties["photo"] = [x]
 
                 if "url" not in properties:
                     x = implied_properties.url(el, base_url=self.__url__)
                     if x is not None:
-                        properties["url"] = [text_type(u) for u in x]
+                        properties["url"] = [x]
 
             # build microformat with type and properties
             microformat = self.dict_class([
@@ -282,7 +280,7 @@ class Parser(object):
 
                 # if value has not been parsed then parse it
                 if u_value is None:
-                    u_value = parse_property.url(el, base_url=self.__url__)
+                    u_value = parse_property.url(el, self.dict_class, self.__img_with_alt__, base_url=self.__url__)
 
                 if root_class_names:
                     stops_implied_name = True
@@ -290,11 +288,7 @@ class Parser(object):
                         root_class_names, el, value_property="url",
                         simple_value=u_value, backcompat_mode=backcompat_mode))
                 else:
-                    if prop_name == "photo" and self.__alt_in_photo__ and el.name == "img" and el.get("alt") is not None:
-                        u_value = self.dict_class([
-                        ('value', u_value),
-                        ('alt', el.get("alt"))
-                        ])
+                    if isinstance(u_value, self.dict_class):
                         prop_value.append(u_value)
                     else:
                         prop_value.append(text_type(u_value))
