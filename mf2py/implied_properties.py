@@ -64,7 +64,7 @@ def name(el, base_url=''):
                 return text_type(prop_value)
 
     # use text if all else fails
-    return get_textContent(el, replace_img=True, fix_whitespace=True, base_url=base_url)
+    return get_textContent(el, replace_img=True, base_url=base_url)
 
 
 def photo(el, dict_class, img_with_alt, base_url=''):

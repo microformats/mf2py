@@ -31,7 +31,7 @@ def text(el, base_url=''):
     if prop_value is None:
         prop_value = get_attr(el, "alt", check_name=("img", "area"))
     if prop_value is None:
-        prop_value = get_textContent(el, replace_img=True, fix_whitespace=True, base_url=base_url)
+        prop_value = get_textContent(el, replace_img=True, base_url=base_url)
 
     return prop_value
 
@@ -107,5 +107,5 @@ def embedded(el, base_url=''):
     """Process e-* properties"""
     return {
         'html': el.decode_contents().strip(),    # secret bs4 method to get innerHTML
-        'value': get_textContent(el, replace_img=True, fix_whitespace=True, base_url=base_url)
+        'value': get_textContent(el, replace_img=True, base_url=base_url)
     }

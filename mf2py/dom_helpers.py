@@ -69,7 +69,7 @@ def get_descendents(node):
         if isinstance(desc, bs4.Tag):
             yield desc
 
-def get_textContent(el, replace_img=False, fix_whitespace=False, base_url=''):
+def get_textContent(el, replace_img=False, base_url=''):
     """ Get the text content of an element, replacing images by alt or src
     """
 
@@ -127,51 +127,46 @@ def get_textContent(el, replace_img=False, fix_whitespace=False, base_url=''):
 
         return items
 
-    if fix_whitespace:
+    results = [t for t in text_collection(el, replace_img, base_url) if t is not '']
 
-        results = [t for t in text_collection(el, replace_img, base_url) if t is not '']
+    if results:
+        # remove <space> if it is first and last or if it is preceded by a <space> or <int> or followed by a <int>
+        # done by replacing it with 0
+        length = len(results)
+        for i  in range(0, length):
+            if (results[i] == ' ' and
+                    (i == 0 or
+                    i == length - 1 or
+                    results[i-1] == ' ' or
+                    isinstance(results[i-1], int) or
+                    results[i+1] == ' ' or
+                    isinstance(results[i+1], int)
+                    )
+                ):
+                results[i] = 0
 
-        if results:
-            # remove <space> if it is first and last or if it is preceded by a <space> or <int> or followed by a <int>
-            # done by replacing it with 0
-            length = len(results)
-            for i  in range(0, length):
-                if (results[i] == ' ' and
-                        (i == 0 or
-                        i == length - 1 or
-                        results[i-1] == ' ' or
-                        isinstance(results[i-1], int) or
-                        results[i+1] == ' ' or
-                        isinstance(results[i+1], int)
-                        )
-                    ):
-                    results[i] = 0
-
-        if results:
-            # remove leading \n and <int> i.e. next lines
-            while results[0] == '\n' or isinstance(results[0], int):
-                results.pop(0)
-                if not results:
-                    break
-        if results:
-            # remove trailing \n and <int> i.e. next lines
-            while results[-1] == '\n' or isinstance(results[-1], int):
-                results.pop(-1)
-                if not results:
-                    break
+    if results:
+        # remove leading \n and <int> i.e. next lines
+        while results[0] == '\n' or isinstance(results[0], int):
+            results.pop(0)
+            if not results:
+                break
+    if results:
+        # remove trailing \n and <int> i.e. next lines
+        while results[-1] == '\n' or isinstance(results[-1], int):
+            results.pop(-1)
+            if not results:
+                break
 
 
-        # create final string by concatenating replacing consecutive sequence of <int> by largest value number of \n
-        text = ''
-        count = 0
-        for t in results:
-            if isinstance(t, int):
-                count = max(t, count)
-            else:
-                text = ''.join([text, '\n'*count , t])
-                count = 0
+    # create final string by concatenating replacing consecutive sequence of <int> by largest value number of \n
+    text = ''
+    count = 0
+    for t in results:
+        if isinstance(t, int):
+            count = max(t, count)
+        else:
+            text = ''.join([text, '\n'*count , t])
+            count = 0
 
-        return text
-
-    else:
-        return el.get_text()
+    return text
