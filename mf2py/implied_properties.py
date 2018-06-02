@@ -160,6 +160,7 @@ def url(el, base_url=''):
         if len(poss_as) == 1:
             poss_a = poss_as[0]
             if not mf2_classes.root(poss_a.get('class', [])):
+                print("here")
                 return poss_a
 
         # if element has one area child use if not root class
@@ -189,6 +190,6 @@ def url(el, base_url=''):
 
     # if a possible child was found parse
     if poss_child is not None:
-        prop_value = get_attr(el, "href", check_name=("a", "area"))
+        prop_value = get_attr(poss_child, "href", check_name=("a", "area"))
         if prop_value is not None:  # an empty href is valid
             return text_type(urljoin(base_url, prop_value))

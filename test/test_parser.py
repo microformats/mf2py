@@ -444,6 +444,31 @@ def test_implied_url():
     # href="" is relative to the base url
     assert_equal(result["items"][5]["properties"]["url"][0], "http://foo.com/")
 
+def test_implied_photo():
+
+    result = parse_fixture("implied_properties/implied_photo.html")
+
+    for i in range(12):
+        photos = result["items"][i]["properties"]["photo"]
+        assert_equal(len(photos), 1)
+        assert_equal(photos[0], "http://example.com/photo.jpg")
+
+    # tests for no photo
+    for i in range(12, 23):
+        assert_false("photo" in result["items"][i]["properties"])
+
+def test_implied_url():
+
+    result = parse_fixture("implied_properties/implied_url.html")
+
+    for i in range(12):
+        urls = result["items"][i]["properties"]["url"]
+        assert_equal(len(urls), 1)
+        assert_equal(urls[0], "http://example.com")
+
+    # tests for no url
+    for i in range(12, 23):
+        assert_false("url" in result["items"][i]["properties"])
 
 def test_implied_nested_photo():
     result = parse_fixture("implied_properties/implied_properties.html", url="http://bar.org")
