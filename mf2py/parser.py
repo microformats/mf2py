@@ -85,8 +85,7 @@ class Parser(object):
         self.__img_with_alt__ = img_with_alt
 
         # use default parser if none specified
-        if html_parser is None:
-            html_parser = 'html5lib'
+        self.__html_parser__ = html_parser or 'html5lib'
 
         if url is not None:
             self.__url__ = url
@@ -114,15 +113,22 @@ class Parser(object):
             else:
                 try:
                     # try the user-given html parser or default html5lib
-                    self.__doc__ = BeautifulSoup(doc, features=html_parser)
+                    self.__doc__ = BeautifulSoup(doc, features=self.__html_parser__)
                 except FeatureNotFound:
                     # maybe raise a warning?
                     # else switch to default use
                     self.__doc__ = BeautifulSoup(doc)
 
+        # update actual parser used
+        # uses builder.NAME from BeautifulSoup
+        if isinstance(self.__doc__, BeautifulSoup) and self.__doc__.builder is not None:
+            self.__html_parser__ = self.__doc__.builder.NAME
+        else:
+            self.__html_parser__ = None
 
         # check for <base> tag
         if self.__doc__:
+
             poss_base = next((el for el in get_descendents(self.__doc__)
                               if el.name == 'base'), None)
             if poss_base:
@@ -163,7 +169,7 @@ class Parser(object):
             do_implied_name = True
 
             if backcompat_mode:
-                el = backcompat.apply_rules(el)
+                el = backcompat.apply_rules(el, self.__html_parser__)
                 root_class_names = mf2_classes.root(el.get('class',[]))
 
             # parse for properties and children
@@ -448,8 +454,8 @@ class Parser(object):
 
         # add actual parser used to debug
         # uses builder.NAME from BeautifulSoup
-        if isinstance(self.__doc__, BeautifulSoup) and self.__doc__.builder is not None:
-            self.__parsed__["debug"]["markup parser"] = text_type(self.__doc__.builder.NAME)
+        if self.__html_parser__:
+            self.__parsed__["debug"]["markup parser"] = text_type(self.__html_parser__)
         else:
             self.__parsed__["debug"]["markup parser"] = text_type('unknown')
 
