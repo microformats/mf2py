@@ -1,7 +1,7 @@
 """functions to parse the properties of elements"""
 from __future__ import unicode_literals, print_function
 
-from .dom_helpers import get_attr, get_children, get_textContent
+from .dom_helpers import get_attr, get_img_src_alt, get_children, get_textContent
 from .datetime_helpers import normalize_datetime, DATETIME_RE, TIME_RE
 from . import value_class_pattern
 
@@ -36,12 +36,16 @@ def text(el, base_url=''):
     return prop_value
 
 
-def url(el, base_url=''):
+def url(el, dict_class, img_with_alt, base_url=''):
     """Process u-* properties"""
 
     prop_value = get_attr(el, "href", check_name=("a", "area", "link"))
     if prop_value is None:
-        prop_value = get_attr(el, "src", check_name=("img", "audio", "video", "source"))
+        prop_value = get_img_src_alt(el, dict_class, img_with_alt, base_url)
+        if prop_value is not None:
+            return prop_value
+    if prop_value is None:
+        prop_value = get_attr(el, "src", check_name=("audio", "video", "source"))
     if prop_value is None:
         prop_value = get_attr(el, "poster", check_name="video")
     if prop_value is None:

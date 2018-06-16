@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Implied Photo</title>
+</head>
+<body>
+
+<!--if img.h-x[src], then use src for photo-->
+<img class="h-entry" src="http://example.com/photo.jpg"/>
+
+<!--else if object.h-x[data] then use data for photo-->
+<object class="h-entry" data="http://example.com/photo.jpg"></object>
+
+<!--else if .h-x>img[src]:only-of-type:not[.h-*] then use that img src for photo-->
+<article class="h-entry">
+    <img src="http://example.com/photo.jpg"/>
+</article>
+
+<article class="h-entry">
+    <img src="http://example.com/photo.jpg"/>
+    <span> test </span>
+</article>
+
+<!--else if .h-x>object[data]:only-of-type:not[.h-*] then use that object’s data for photo-->
+<article class="h-entry">
+    <object data="http://example.com/photo.jpg"></object>
+</article>
+
+<article class="h-entry">
+    <object data="http://example.com/photo.jpg"></object>
+    <span> test </span>
+</article>
+
+<!--else if .h-x>:only-child:not[.h-*]>img[src]:only-of-type:not[.h-*], then use that img’s src for photo-->
+<article class="h-entry">
+    <div>
+        <img src="http://example.com/photo.jpg"/>
+    </div>
+</article>
+
+<article class="h-entry">
+    <div>
+        <img src="http://example.com/photo.jpg"/>
+        <span>test</span>
+    </div>
+</article>
+
+<!--else if .h-x>:only-child:not[.h-*]>object[data]:only-of-type:not[.h-*], then use that object’s data for photo -->
+
+<article class="h-entry">
+    <div>
+        <object data="http://example.com/photo.jpg"></object>
+    </div>
+</article>
+
+<article class="h-entry">
+    <div>
+        <object data="http://example.com/photo.jpg"></object>
+        <span>test</span>
+    </div>
+</article>
+
+<!--priority tests; prefer img over object-->
+
+<article class="h-entry">
+    <object data="http://example.com/photo2.jpg"></object>
+    <img src="http://example.com/photo.jpg"/>
+</article>
+
+<article class="h-entry">
+    <div>
+        <object data="http://example.com/photo2.jpg"></object>
+        <img src="http://example.com/photo.jpg"/>
+    </div>
+</article>
+
+<!-- no photo tests -->
+<article class="h-entry">
+    <img src="http://example.com/photo.jpg"/>
+    <img src="http://example.com/photo2.jpg"/>
+</article>
+
+<article class="h-entry">
+    <img class="h-cite" src="http://example.com/photo.jpg"/>
+</article>
+
+<article class="h-entry">
+    <object data="http://example.com/photo.jpg"></object>
+    <object data="http://example.com/photo2.jpg"></object>
+</article>
+
+<article class="h-entry">
+    <object class="h-cite" data="http://example.com/photo.jpg"></object>
+</article>
+
+
+<article class="h-entry">
+    <div>
+        <img src="http://example.com/photo.jpg"/>
+    </div>
+    <span>test</span>
+</article>
+
+<article class="h-entry">
+    <div class="h-cite">
+        <img src="http://example.com/photo.jpg"/>
+    </div>
+</article>
+
+<article class="h-entry">
+    <div>
+        <img src="http://example.com/photo.jpg"/>
+        <img src="http://example.com/photo2.jpg"/>
+    </div>
+</article>
+
+<article class="h-entry">
+    <div class="h-cite">
+        <img class="h-cite" src="http://example.com/photo.jpg"/>
+    </div>
+</article>
+
+<article class="h-entry">
+    <div>
+        <object data="http://example.com/photo.jpg"></object>
+    </div>
+    <span>test</span>
+</article>
+
+<article class="h-entry">
+    <div class="h-cite">
+        <object data="http://example.com/photo.jpg"></object>
+    </div>
+</article>
+
+<article class="h-entry">
+    <div>
+        <object data="http://example.com/photo.jpg"></object>
+        <object data="http://example.com/photo2.jpg"></object>
+    </div>
+</article>
+
+</body>
+</html>

@@ -1,14 +1,19 @@
 # coding: utf-8
 from __future__ import unicode_literals, print_function
+
 from bs4 import BeautifulSoup, FeatureNotFound
 from bs4.element import Tag
-from mf2py import backcompat, mf2_classes, implied_properties, parse_property
-from mf2py import temp_fixes
-from mf2py.version import __version__
-from mf2py.dom_helpers import get_attr, get_children, get_descendents
+
+from . import backcompat, mf2_classes, implied_properties, parse_property
+from . import temp_fixes
+from .version import __version__
+from .dom_helpers import get_attr, get_children, get_descendents
+from .mf_helpers import unordered_list
+
 import json
 import requests
 import sys
+import copy
 
 if sys.version < '3':
     from urlparse import urlparse, urljoin
@@ -20,7 +25,7 @@ else:
     binary_type = bytes
 
 
-def parse(doc=None, url=None, html_parser=None):
+def parse(doc=None, url=None, html_parser=None, img_with_alt=False):
     """
     Parse a microformats2 document or url and return a json dictionary.
 
@@ -36,7 +41,7 @@ def parse(doc=None, url=None, html_parser=None):
 
     Return: a json dict represented the structured data in this document.
     """
-    return Parser(doc, url, html_parser).to_dict()
+    return Parser(doc, url, html_parser, img_with_alt).to_dict()
 
 
 class Parser(object):
@@ -52,6 +57,7 @@ class Parser(object):
       html_parser (string): optional, select a specific HTML parser. Valid
         options from the BeautifulSoup documentation are:
         "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
+        defaults to "html5lib"
 
     Attributes:
       useragent (string): the User-Agent string for the Parser
@@ -63,7 +69,7 @@ class Parser(object):
 
     dict_class = dict
 
-    def __init__(self, doc=None, url=None, html_parser='html5lib'):
+    def __init__(self, doc=None, url=None, html_parser=None, img_with_alt=False):
         self.__url__ = None
         self.__doc__ = None
         self.__parsed__ = self.dict_class([
@@ -76,6 +82,10 @@ class Parser(object):
                 ('version', text_type(__version__))
             ]))
         ])
+        self.__img_with_alt__ = img_with_alt
+
+        # use default parser if none specified
+        self.__html_parser__ = html_parser or 'html5lib'
 
         if url is not None:
             self.__url__ = url
@@ -97,19 +107,28 @@ class Parser(object):
         if doc is not None:
             self.__doc__ = doc
             if isinstance(doc, BeautifulSoup) or isinstance(doc, Tag):
-                self.__doc__ = doc
+                # make a deepcopy of the doc to not change original; also copy the HTML builder
+                self.__doc__ = copy.deepcopy(doc)
+                self.__doc__.builder = doc.builder
             else:
                 try:
                     # try the user-given html parser or default html5lib
-                    self.__doc__ = BeautifulSoup(doc, features=html_parser)
+                    self.__doc__ = BeautifulSoup(doc, features=self.__html_parser__)
                 except FeatureNotFound:
                     # maybe raise a warning?
                     # else switch to default use
                     self.__doc__ = BeautifulSoup(doc)
 
+        # update actual parser used
+        # uses builder.NAME from BeautifulSoup
+        if isinstance(self.__doc__, BeautifulSoup) and self.__doc__.builder is not None:
+            self.__html_parser__ = self.__doc__.builder.NAME
+        else:
+            self.__html_parser__ = None
 
         # check for <base> tag
         if self.__doc__:
+
             poss_base = next((el for el in get_descendents(self.__doc__)
                               if el.name == 'base'), None)
             if poss_base:
@@ -150,7 +169,7 @@ class Parser(object):
             do_implied_name = True
 
             if backcompat_mode:
-                el = backcompat.apply_rules(el)
+                el = backcompat.apply_rules(el, self.__html_parser__)
                 root_class_names = mf2_classes.root(el.get('class',[]))
 
             # parse for properties and children
@@ -173,19 +192,17 @@ class Parser(object):
                 # stop implied name if any p-*, e-*, h-* is already found
                 if "name" not in properties and do_implied_name:
 
-                    properties["name"] = [text_type(prop)
-                                          for prop
-                                          in implied_properties.name(el, base_url=self.__url__)]
+                    properties["name"] = [implied_properties.name(el, base_url=self.__url__)]
 
                 if "photo" not in properties:
-                    x = implied_properties.photo(el, base_url=self.__url__)
+                    x = implied_properties.photo(el, self.dict_class, self.__img_with_alt__, base_url=self.__url__)
                     if x is not None:
-                        properties["photo"] = [text_type(u) for u in x]
+                        properties["photo"] = [x]
 
                 if "url" not in properties:
                     x = implied_properties.url(el, base_url=self.__url__)
                     if x is not None:
-                        properties["url"] = [text_type(u) for u in x]
+                        properties["url"] = [x]
 
             # build microformat with type and properties
             microformat = self.dict_class([
@@ -237,7 +254,8 @@ class Parser(object):
                 root_class_names = backcompat.root(classes)
                 backcompat_mode = True
 
-            # Is this a property element (p-*, u-*, etc.)
+            # Is this a property element (p-*, u-*, etc.) flag
+            # False is default
             is_property_el = False
 
             # Parse plaintext p-* properties.
@@ -268,7 +286,7 @@ class Parser(object):
 
                 # if value has not been parsed then parse it
                 if u_value is None:
-                    u_value = parse_property.url(el, base_url=self.__url__)
+                    u_value = parse_property.url(el, self.dict_class, self.__img_with_alt__, base_url=self.__url__)
 
                 if root_class_names:
                     stops_implied_name = True
@@ -276,7 +294,10 @@ class Parser(object):
                         root_class_names, el, value_property="url",
                         simple_value=u_value, backcompat_mode=backcompat_mode))
                 else:
-                    prop_value.append(text_type(u_value))
+                    if isinstance(u_value, self.dict_class):
+                        prop_value.append(u_value)
+                    else:
+                        prop_value.append(text_type(u_value))
 
             # Parse datetime dt-* properties.
             dt_value = None
@@ -310,7 +331,11 @@ class Parser(object):
 
                 # if value has not been parsed then parse it
                 if e_value is None:
-                    e_value = parse_property.embedded(el, base_url=self.__url__)
+                    # send original element for parsing backcompat
+                    if el.original is None:
+                        e_value = parse_property.embedded(el, base_url=self.__url__)
+                    else:
+                        e_value = parse_property.embedded(el.original, base_url=self.__url__)
 
                 if root_class_names:
                     stops_implied_name = True
@@ -348,21 +373,29 @@ class Parser(object):
                 url = text_type(urljoin(self.__url__, el.get('href', '')))
                 value_dict = self.__parsed__["rel-urls"].get(url,
                                                              self.dict_class())
+
+                # 1st one wins
                 if "text" not in value_dict:
-                    value_dict["text"] = el.get_text().strip()  # 1st one wins
+                    value_dict["text"] = el.get_text().strip()  
+
                 url_rels = value_dict.get("rels", [])
                 value_dict["rels"] = url_rels
+
                 for knownattr in ("media", "hreflang", "type", "title"):
                     x = get_attr(el, knownattr)
-                    if x is not None:
+                    # 1st one wins
+                    if x is not None and knownattr not in value_dict:
                         value_dict[knownattr] = text_type(x)
+
                 self.__parsed__["rel-urls"][url] = value_dict
+
                 for rel_value in rel_attrs:
                     value_list = self.__parsed__["rels"].get(rel_value, [])
                     if url not in value_list:
                         value_list.append(url)
                     if rel_value not in url_rels:
                         url_rels.append(rel_value)
+
                     self.__parsed__["rels"][rel_value] = value_list
                 if "alternate" in rel_attrs:
                     alternate_list = self.__parsed__.get("alternates", [])
@@ -384,14 +417,6 @@ class Parser(object):
             """Parse an element for microformats
             """
             classes = el.get("class", [])
-
-            # Workaround for bs4+html5lib bug that
-            # prevents it from recognizing multi-valued
-            # attrs on the <html> element
-            # https://bugs.launchpad.net/beautifulsoup/+bug/1296481
-            # don't need anymore remove?
-            if el.name == 'html' and not isinstance(classes, list):
-                classes = classes.split()
 
             # find potential microformats in root classnames h-*
             potential_microformats = mf2_classes.root(classes)
@@ -421,10 +446,16 @@ class Parser(object):
             if el.name in ('a', 'area', 'link') and el.has_attr('rel'):
                 parse_rels(el)
 
+        # sort the rels array in rel-urls since this should be unordered set
+        for url in self.__parsed__["rel-urls"]:
+            if 'rels' in self.__parsed__["rel-urls"][url]:
+                rels = self.__parsed__["rel-urls"][url]['rels']
+                self.__parsed__["rel-urls"][url]['rels'] =  unordered_list(rels)
+
         # add actual parser used to debug
         # uses builder.NAME from BeautifulSoup
-        if isinstance(self.__doc__, BeautifulSoup):
-            self.__parsed__["debug"]["markup parser"] = text_type(self.__doc__.builder.NAME)
+        if self.__html_parser__:
+            self.__parsed__["debug"]["markup parser"] = text_type(self.__html_parser__)
         else:
             self.__parsed__["debug"]["markup parser"] = text_type('unknown')
 
