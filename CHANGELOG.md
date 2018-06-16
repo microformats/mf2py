@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## 1.1.1 - 2018-05-27
+## 1.1.1 - 2018-06-15
 
 - streamline backcompat to use JSON only.
 - fix multiple mf1 root rel-tag parsing 
