@@ -431,7 +431,7 @@ def test_nested_values():
 def test_implied_name():
     result = parse_fixture("implied_properties/implied_properties.html")
 
-    for i in range(6):
+    for i in range(7):
         assert_equal(result["items"][i]["properties"]["name"][0], "Tom Morris")
 
 
@@ -474,8 +474,12 @@ def test_implied_nested_photo():
     result = parse_fixture("implied_properties/implied_properties.html", url="http://bar.org")
     assert_equal(result["items"][2]["properties"]["photo"][0],
                  "http://tommorris.org/photo.png")
+    assert_equal(result["items"][3]["properties"]["photo"][0],
+                 "http://tommorris.org/photo.png")
+    assert_equal(result["items"][4]["properties"]["photo"][0],
+                 "http://tommorris.org/photo.png")
     # src="" is relative to the base url
-    assert_equal(result["items"][5]["properties"]["photo"][0],
+    assert_equal(result["items"][6]["properties"]["photo"][0],
                  "http://bar.org")
 
 

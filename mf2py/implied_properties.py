@@ -70,8 +70,9 @@ def name(el, base_url=''):
             return text_type(prop_value)
 
     # use text if all else fails
-    # don't replace images in implied name (https://github.com/microformats/microformats2-parsing/issues/35)
-    return get_textContent(el, base_url=base_url)
+    # replace images with alt but not with src in implied name
+    # proposal: https://github.com/microformats/microformats2-parsing/issues/35#issuecomment-393615508
+    return get_textContent(el, replace_img=True, img_to_src=False, base_url=base_url)
 
 
 def photo(el, dict_class, img_with_alt, base_url=''):

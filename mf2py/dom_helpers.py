@@ -69,7 +69,7 @@ def get_descendents(node):
         if isinstance(desc, bs4.Tag):
             yield desc
 
-def get_textContent(el, replace_img=False, base_url=''):
+def get_textContent(el, replace_img=False, img_to_src=True, base_url=''):
     """ Get the text content of an element, replacing images by alt or src
     """
 
@@ -78,7 +78,7 @@ def get_textContent(el, replace_img=False, base_url=''):
     P_BREAK_BEFORE = 1
     P_BREAK_AFTER = 0
 
-    def text_collection(el, replace_img=False, base_url=''):
+    def text_collection(el, replace_img=False, img_to_src=True, base_url=''):
         # returns array of strings or integers
 
         items = []
@@ -103,7 +103,7 @@ def get_textContent(el, replace_img=False, base_url=''):
 
         elif el.name == 'img' and replace_img:
             value = el.get('alt')
-            if value is None:
+            if value is None and img_to_src:
                 value = el.get('src')
                 if value is not None:
                     value = urljoin(base_url, value)
@@ -117,7 +117,7 @@ def get_textContent(el, replace_img=False, base_url=''):
         else:
             for child in el.children:
 
-                child_items = text_collection(child, replace_img, base_url)
+                child_items = text_collection(child, replace_img, img_to_src, base_url)
                 items.extend(child_items)
 
             if el.name == 'p':
@@ -127,7 +127,7 @@ def get_textContent(el, replace_img=False, base_url=''):
 
         return items
 
-    results = [t for t in text_collection(el, replace_img, base_url) if t is not '']
+    results = [t for t in text_collection(el, replace_img, img_to_src, base_url) if t is not '']
 
     if results:
         # remove <space> if it is first and last or if it is preceded by a <space> or <int> or followed by a <int>
