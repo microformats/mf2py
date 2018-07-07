@@ -43,15 +43,22 @@ def test_open_file():
     assert_true(type(p.to_dict()) is dict)
 
 def test_doc_tag():
-    # test that strings, BS doc and BS tags are all parsed
+    # test that strings, BS doc and BS tags are all parsed and in the latter cases copies are made but are the same stuff
     doc = '''<article class="h-entry"></article>'''
     soup = BeautifulSoup(doc)
+
     parse_string = Parser(doc).to_dict()
-    assert 'h-entry' in parse_string['items'][0]['type']
-    parse_doc = Parser(soup).to_dict()
-    assert 'h-entry' in parse_doc['items'][0]['type']
-    parse_tag = Parser(soup.article).to_dict()
-    assert 'h-entry' in parse_tag['items'][0]['type']
+    assert_true('h-entry' in parse_string['items'][0]['type'])
+
+    p = Parser(soup)
+    assert_true('h-entry' in p.to_dict()['items'][0]['type'])
+    assert_false(soup is p.__doc__)
+    assert_true(soup == p.__doc__)
+
+    p = Parser(soup.article)
+    assert_true('h-entry' in p.to_dict()['items'][0]['type'])
+    assert_false(soup.article is p.__doc__)
+    assert_true(soup.article == p.__doc__)
 
 @mock.patch('requests.get')
 def test_user_agent(getter):
@@ -174,7 +181,16 @@ def test_datetime_vcp_parsing():
                  "2014-06-01 12:30-06:00")
     assert_equal(result["items"][9]["properties"]["start"][0],
                  "2014-06-01 12:30-06:00")
-
+    assert_equal(result["items"][10]["properties"]["start"][0],
+                 "2014-06-01 00:30-06:00")
+    assert_equal(result["items"][10]["properties"]["end"][0],
+                 "2014-06-01 12:15")
+    assert_equal(result["items"][10]["properties"]["start"][1],
+                 "2014-06-01 00:30-06:00")
+    assert_equal(result["items"][10]["properties"]["end"][1],
+                 "2014-06-01 12:15")
+    assert_equal(result["items"][11]["properties"]["start"][0],
+                 "2016-03-02 00:30-06:00")
 
 def test_dt_end_implied_date():
     """Test that events with dt-start and dt-end use the implied date rule
@@ -204,7 +220,7 @@ def test_embedded_parsing():
         '   <p>Blah.</p>\n   <p>Blah blah blah.</p>')
     assert_equal(
         result["items"][0]["properties"]["content"][0]["value"],
-        'Blah blah blah blah blah.\n   Blah.\n   Blah blah blah.')
+        'Blah blah blah blah blah.\nBlah.\nBlah blah blah.')
 
 
 def test_hoisting_nested_hcard():
@@ -252,6 +268,34 @@ def test_template_parse():
     result = parse_fixture("template_tag.html")
     assert_equal(0, len(result["items"]))
 
+def test_ordering_dedup():
+    ''' test that classes are dedeuped and alphabetically ordered '''
+
+    result = parse_fixture("ordering_dedup.html")
+    item = result['items'][0]
+    assert_equal(['h-entry', 'h-feed', 'h-product', 'h-x-test'], item['type'])
+    assert_equal(['example.com', 'example.com/2'], item['properties']['url'])
+    assert_equal(['name', 'URL name'], item['properties']['name'])
+    assert_equal(['author', 'bookmark', 'me'], result['rel-urls']['example.com/rel']['rels'])
+    assert_equal('de', result['rel-urls']['example.com/lang']['hreflang'])
+
+def test_class_names_format():
+    ''' test that only classes with letters and possibly numbers in the vendor prefix part are used '''
+
+    result = parse_fixture("class_names_format.html")
+    item = result['items'][0]
+    assert_equal(['h-feed', 'h-p3k-entry', 'h-x-test'], item['type'])
+    assert 'url' in item['properties']
+    assert 'p3k-url' in item['properties']
+    assert 'Url' not in item['properties']
+    assert '-url' not in item['properties']
+    assert 'url-' not in item['properties']
+
+    assert 'name' in item['properties']
+    assert 'p3k-name' in item['properties']
+    assert 'nAme' not in item['properties']
+    assert '-name' not in item['properties']
+    assert 'name-' not in item['properties']
 
 def test_area_uparsing():
     result = parse_fixture("area.html")
@@ -386,7 +430,8 @@ def test_nested_values():
 
 def test_implied_name():
     result = parse_fixture("implied_properties/implied_properties.html")
-    for i in range(6):
+
+    for i in range(7):
         assert_equal(result["items"][i]["properties"]["name"][0], "Tom Morris")
 
 
@@ -399,13 +444,42 @@ def test_implied_url():
     # href="" is relative to the base url
     assert_equal(result["items"][5]["properties"]["url"][0], "http://foo.com/")
 
+def test_implied_photo():
+
+    result = parse_fixture("implied_properties/implied_photo.html")
+
+    for i in range(12):
+        photos = result["items"][i]["properties"]["photo"]
+        assert_equal(len(photos), 1)
+        assert_equal(photos[0], "http://example.com/photo.jpg")
+
+    # tests for no photo
+    for i in range(12, 23):
+        assert_false("photo" in result["items"][i]["properties"])
+
+def test_implied_url():
+
+    result = parse_fixture("implied_properties/implied_url.html")
+
+    for i in range(12):
+        urls = result["items"][i]["properties"]["url"]
+        assert_equal(len(urls), 1)
+        assert_equal(urls[0], "http://example.com")
+
+    # tests for no url
+    for i in range(12, 23):
+        assert_false("url" in result["items"][i]["properties"])
 
 def test_implied_nested_photo():
     result = parse_fixture("implied_properties/implied_properties.html", url="http://bar.org")
     assert_equal(result["items"][2]["properties"]["photo"][0],
                  "http://tommorris.org/photo.png")
+    assert_equal(result["items"][3]["properties"]["photo"][0],
+                 "http://tommorris.org/photo.png")
+    assert_equal(result["items"][4]["properties"]["photo"][0],
+                 "http://tommorris.org/photo.png")
     # src="" is relative to the base url
-    assert_equal(result["items"][5]["properties"]["photo"][0],
+    assert_equal(result["items"][6]["properties"]["photo"][0],
                  "http://bar.org")
 
 
@@ -476,7 +550,46 @@ def test_simple_person_reference_implied():
                  {'name': ['Frances Berriman']})
 
 
+def test_value_name_whitespace():
+    result = parse_fixture("value_name_whitespace.html")
+
+    for i in range(3):
+        assert_equal(result["items"][i]["properties"]["content"][0]["value"], "Hello World")
+        assert_equal(result["items"][i]["properties"]["name"][0], "Hello World")
+
+    for i in range(3, 8):
+        assert_equal(result["items"][i]["properties"]["content"][0]["value"], "Hello\nWorld")
+        assert_equal(result["items"][i]["properties"]["name"][0], "Hello\nWorld")
+
+    for i in range(8, 10):
+        assert_equal(result["items"][i]["properties"]["content"][0]["value"], "One\nTwo\nThree")
+        assert_equal(result["items"][i]["properties"]["name"][0], "One\nTwo\nThree")
+
+    assert_equal(result["items"][10]["properties"]["content"][0]["value"], "Hello World      one\n      two\n      three\n    ")
+    assert_equal(result["items"][10]["properties"]["name"][0], "Hello World      one\n      two\n      three\n    ")
+
+    assert_equal(result["items"][11]["properties"]["content"][0]["value"], "Correct name Correct summary")
+    assert_equal(result["items"][11]["properties"]["name"][0], "Correct name")
+
 # backcompat tests
+
+def test_doc_tag_backcompat():
+    # test that strings, BS doc and BS tags are all parsed and in the latter cases copies are made and are modified by backcompat
+    doc = '''<article class="hentry"></article>'''
+    soup = BeautifulSoup(doc)
+
+    parse_string = Parser(doc).to_dict()
+    assert_true('h-entry' in parse_string['items'][0]['type'])
+
+    p = Parser(soup)
+    assert_true('h-entry' in p.to_dict()['items'][0]['type'])
+    assert_false(soup is p.__doc__)
+    assert_false(soup == p.__doc__)
+
+    p = Parser(soup.article)
+    assert_true('h-entry' in p.to_dict()['items'][0]['type'])
+    assert_false(soup.article is p.__doc__)
+    assert_false(soup.article == p.__doc__)
 
 def test_backcompat_hentry():
     result = parse_fixture("backcompat/hentry.html")
@@ -504,6 +617,27 @@ def test_backcompat_hproduct_nested_hreview():
     result = parse_fixture("backcompat/hproduct_hreview_nested.html")
     assert_equal(['h-review'], result["items"][0]["children"][0]['type'])
 
+def test_backcompat_hreview_nested_card_event_product():
+    result = parse_fixture("backcompat/hreview_nested_card_event_product.html")
+    assert_equal(['h-review'], result["items"][0]['type'])
+    items = result["items"][0]["properties"]['item']
+    assert_equal(3, len(items))
+
+    event = items[0]
+    assert_equal(['h-event'], event['type'])
+    assert_equal(['http://example.com/event-url'], event['properties']['url'])
+    assert_equal(['event name'], event['properties']['name'])
+
+    card = items[1]
+    assert_equal(['h-card'], card['type'])
+    assert_equal(['http://example.com/card-url'], card['properties']['url'])
+    assert_equal(['card name'], card['properties']['name'])
+
+    product = items[2]
+    assert_equal(['h-product'], product['type'])
+    assert_equal(['http://example.com/product-url'], product['properties']['url'])
+    assert_equal(['product name'], product['properties']['name'])
+
 
 def test_backcompat_rel_bookmark():
     """Confirm that rel=bookmark inside of an h-entry is converted
@@ -519,13 +653,48 @@ def test_backcompat_rel_bookmark():
         assert_equal(['h-entry'], result['items'][ii]['type'])
         assert_equal([url], result['items'][ii]['properties']['url'])
 
+def test_backcompat_rel_bookmark():
+    """Confirm that rel=bookmark inside of an hentry and hreview is converted
+    to a u-url and original u-url is ignored
+    """
+
+    tests = ['backcompat/hentry_with_rel_bookmark.html', 'backcompat/hreview_with_rel_tag_bookmark.html']
+
+    results = [parse_fixture(x) for x in tests]
+
+    for result in results:
+        assert_equal(['https://example.com/bookmark', 'https://example.com/bookmark-url'], result['items'][0]['properties']['url'])
 
 def test_backcompat_rel_tag():
-    """Confirm that rel=tag inside of an h-entry is converted
+    """Confirm that rel=tag inside of an hentry is converted
     to a p-category and the last path segment of the href is used.
     """
-    result = parse_fixture('backcompat/hentry_with_rel_tag.html')
-    assert_equal(['cat', 'dog', 'mountain lion'], result['items'][0]['properties']['category'])
+
+    tests = ['backcompat/hentry_with_rel_tag.html', 'backcompat/hfeed_with_rel_tag.html', 'backcompat/hrecipe_with_rel_tag.html', 'backcompat/hreview_with_rel_tag_bookmark.html']
+
+    results = [parse_fixture(x) for x in tests]
+    for result in results:
+        assert_equal(['cat', 'dog', 'mountain lion', 'mouse', 'meerkat'], result['items'][0]['properties']['category'])
+
+def test_backcompat_rel_tag_entry_title():
+    """Confirm that other backcompat properties on a rel=tag are parsed
+    """
+
+    result = parse_fixture('backcompat/hentry_with_rel_tag_entry_title.html')
+    assert_equal(['cat'], result['items'][0]['properties']['category'])
+    assert_equal(['rhinoceros'], result['items'][0]['properties']['name'])
+
+def test_backcompat_rel_multiple_root():
+    """Confirm that rel=tag and rel=bookmark inside of an hentry+hreview is parsed correctly"""
+
+    result = parse_fixture('backcompat/hreview_hentry_with_rel_tag_bookmark.html')
+
+    assert_equal(len(result['items']), 1)
+    assert_true('h-entry' in result['items'][0]['type'])
+    assert_true('h-review' in result['items'][0]['type'])
+
+    assert_equal(['cat', 'dog', 'mountain lion', 'mouse', 'meerkat'], result['items'][0]['properties']['category'])
+    assert_equal(['https://example.com/bookmark', 'https://example.com/bookmark-url'], result['items'][0]['properties']['url'])
 
 def test_backcompat_ignore_mf1_root_if_mf2_present():
     """Confirm that mf1 root class is ignored if another mf2 root class is present.
@@ -585,11 +754,81 @@ def test_backcompat_nested_mf1_in_mf2_e_content():
 
     assert_equal('<div class="hentry">\n<span class="entry-title">Correct name</span>\n\n<span class="entry-summary">Correct summary</span>\n</div>', mf2_entry['properties']['content'][0]['html'])
 
-    assert_equal('Correct name\n\nCorrect summary', mf2_entry['properties']['content'][0]['value'])
+    assert_equal('Correct name Correct summary', mf2_entry['properties']['content'][0]['value'])
 
     assert_equal('h-entry', mf1_entry['type'][0])
     assert_equal('Correct name', mf1_entry['properties']['name'][0])
     assert_equal('Correct summary', mf1_entry['properties']['summary'][0])
+
+def test_backcompat_hentry_content_html():
+    """Confirm that mf1 entry-content html is parsed as authored without mf2 replacements
+    """
+    result = parse_fixture('backcompat/hentry_content_html.html')
+
+    entry = result['items'][0]
+
+    assert_equal('<p class="entry-summary">This is a summary</p> \n        <p>This is <a href="/tags/mytag" rel="tag">mytag</a> inside content. </p>', entry['properties']['content'][0]['html'])
+
+
+# experimental features tests
+
+def test_photo_with_alt():
+    """Confirm that alt text in img is parsed with feature flag img_with_alt under as a u-* property and implied photo
+    """
+
+    path = 'experimental/img_with_alt.html'
+
+    # without flag
+    result = parse_fixture(path)
+
+    # experimental img_with_alt=True
+    with open(os.path.join(TEST_DIR, path)) as f:
+        exp_result = Parser(doc=f, html_parser='html5lib', img_with_alt=True).to_dict()
+
+    # simple img with u-*
+    assert_equal('/photo.jpg', result['items'][0]['properties']['photo'][0])
+    assert_equal('/photo.jpg', exp_result['items'][0]['properties']['photo'][0])
+
+    assert_equal('/photo.jpg', result['items'][1]['properties']['url'][0])
+    assert_equal('/photo.jpg', exp_result['items'][1]['properties']['url'][0]['value'])
+    assert_equal('alt text', exp_result['items'][1]['properties']['url'][0]['alt'])
+
+    assert_equal('/photo.jpg', result['items'][2]['properties']['in-reply-to'][0])
+    assert_equal('/photo.jpg', exp_result['items'][2]['properties']['in-reply-to'][0]['value'])
+    assert_equal('', exp_result['items'][2]['properties']['in-reply-to'][0]['alt'])
+
+    # img with u-* and h-* example
+    assert_true('h-cite' in result['items'][3]['properties']['in-reply-to'][0]['type'])
+    assert_equal('/photo.jpg', result['items'][3]['properties']['in-reply-to'][0]['properties']['photo'][0])
+    assert_equal('/photo.jpg', result['items'][3]['properties']['in-reply-to'][0]['value'])
+    assert_false('alt' in result['items'][3]['properties']['in-reply-to'][0])
+
+    assert_true('h-cite' in exp_result['items'][3]['properties']['in-reply-to'][0]['type'])
+    assert_equal('/photo.jpg', exp_result['items'][3]['properties']['in-reply-to'][0]['properties']['photo'][0])
+    assert_equal('/photo.jpg', exp_result['items'][3]['properties']['in-reply-to'][0]['value'])
+    assert_false('alt' in exp_result['items'][3]['properties']['in-reply-to'][0])
+
+    assert_true('h-cite' in result['items'][4]['properties']['in-reply-to'][0]['type'])
+    assert_equal('/photo.jpg', result['items'][4]['properties']['in-reply-to'][0]['properties']['photo'][0])
+    assert_equal('/photo.jpg', result['items'][4]['properties']['in-reply-to'][0]['value'])
+    assert_false('alt' in result['items'][4]['properties']['in-reply-to'][0])
+
+    assert_true('h-cite' in exp_result['items'][4]['properties']['in-reply-to'][0]['type'])
+    assert_equal('/photo.jpg', exp_result['items'][4]['properties']['in-reply-to'][0]['properties']['photo'][0]['value'])
+    assert_equal('/photo.jpg', exp_result['items'][4]['properties']['in-reply-to'][0]['value'])
+    assert_equal('alt text', exp_result['items'][4]['properties']['in-reply-to'][0]['properties']['photo'][0]['alt'])
+    assert_equal('alt text', exp_result['items'][4]['properties']['in-reply-to'][0]['alt'])
+
+    assert_true('h-cite' in result['items'][5]['properties']['in-reply-to'][0]['type'])
+    assert_equal('/photo.jpg', result['items'][5]['properties']['in-reply-to'][0]['properties']['photo'][0])
+    assert_equal('/photo.jpg', result['items'][5]['properties']['in-reply-to'][0]['value'])
+    assert_false('alt' in result['items'][5]['properties']['in-reply-to'][0])
+
+    assert_true('h-cite' in exp_result['items'][5]['properties']['in-reply-to'][0]['type'])
+    assert_equal('/photo.jpg', exp_result['items'][5]['properties']['in-reply-to'][0]['properties']['photo'][0]['value'])
+    assert_equal('/photo.jpg', exp_result['items'][5]['properties']['in-reply-to'][0]['value'])
+    assert_equal('', exp_result['items'][5]['properties']['in-reply-to'][0]['properties']['photo'][0]['alt'])
+    assert_equal('', exp_result['items'][5]['properties']['in-reply-to'][0]['alt'])
 
 # unicode tests
 

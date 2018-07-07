@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Implied Photo</title>
+</head>
+<body>
+
+<!--if a.h-x[href] or area.h-x[href] then use that [href] for url-->
+<a class="h-entry" href="http://example.com">this be link</a>
+
+<area class="h-entry" href="http://example.com"/>
+
+<!--else if .h-x>a[href]:only-of-type:not[.h-*], then use that [href] for url-->
+<article class="h-entry">
+    <a href="http://example.com">this be link</a>
+</article>
+
+<article class="h-entry">
+    <a href="http://example.com">this be link</a>
+    <span> test </span>
+</article>
+
+<!--else if .h-x>area[href]:only-of-type:not[.h-*], then use that [href] for url-->
+<article class="h-entry">
+    <area href="http://example.com"/>
+</article>
+
+<article class="h-entry">
+    <area href="http://example.com"/>
+    <span> test </span>
+</article>
+
+<!--else if .h-x>:only-child:not[.h-*]>a[href]:only-of-type:not[.h-*], then use that [href] for url-->
+<article class="h-entry">
+    <div>
+        <a href="http://example.com">this be link</a>
+    </div>
+</article>
+
+<article class="h-entry">
+    <div>
+        <a href="http://example.com">this be link</a>
+        <span>test</span>
+    </div>
+</article>
+
+<!--else if .h-x>:only-child:not[.h-*]>area[href]:only-of-type:not[.h-*], then use that [href] for url -->
+<article class="h-entry">
+    <div>
+        <area href="http://example.com"/>
+    </div>
+</article>
+
+<article class="h-entry">
+    <div>
+        <area href="http://example.com"/>
+        <span>test</span>
+    </div>
+</article>
+
+<!--priority tests; prefer <a> over <area>-->
+
+<article class="h-entry">
+    <area href="http://example.com/not"/>
+    <a href="http://example.com">this be link</a>
+</article>
+
+<article class="h-entry">
+    <div>
+        <area href="http://example.com/not"/>
+        <a href="http://example.com">this be link</a>
+    </div>
+</article>
+
+<!-- no url tests -->
+<article class="h-entry">
+    <a href="http://example.com">this be link</a>
+    <a href="http://example.com/2">this be link</a>
+</article>
+
+<article class="h-entry">
+    <a class="h-cite" href="http://example.com">this be link</a>
+</article>
+
+<article class="h-entry">
+    <area href="http://example.com"/>
+    <area href="http://example.com/2"/>
+</article>
+
+<article class="h-entry">
+    <area class="h-cite" href="http://example.com"/>
+</article>
+
+
+<article class="h-entry">
+    <div>
+        <a href="http://example.com">this be link</a>
+    </div>
+    <span>test</span>
+</article>
+
+<article class="h-entry">
+    <div class="h-cite">
+        <a href="http://example.com">this be link</a>
+    </div>
+</article>
+
+<article class="h-entry">
+    <div>
+        <a href="http://example.com">this be link</a>
+        <a href="http://example.com/2">this be link</a>
+    </div>
+</article>
+
+<article class="h-entry">
+    <div class="h-cite">
+        <a class="h-cite" href="http://example.com">this be link</a>
+    </div>
+</article>
+
+<article class="h-entry">
+    <div>
+        <area href="http://example.com"/>
+    </div>
+    <span>test</span>
+</article>
+
+<article class="h-entry">
+    <div class="h-cite">
+        <area href="http://example.com"/>
+    </div>
+</article>
+
+<article class="h-entry">
+    <div>
+        <area href="http://example.com"/>
+        <area href="http://example.com/2"/>
+    </div>
+</article>
+
+
+</body>
+</html>

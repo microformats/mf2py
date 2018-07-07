@@ -54,6 +54,10 @@ Filter by microformat type
 
     p.to_dict(filter_by_type="h-entry")
     p.to_json(filter_by_type="h-entry")
+    
+Experimental features
+---------------------
+- pass the optional argument `img_with_alt=True` to either the `Parser` object or to the `parse` method to enable parsing of the `alt` attribute of `<img>` tags according to [issue: image alt text is lost during parsing](https://github.com/microformats/microformats2-parsing/issues/2). By default this is `False` to be backwards compatible.
 
 Frontends
 -------------
@@ -68,3 +72,4 @@ Contributions
 We welcome contributions and bug reports via Github, and on the microformats wiki.
 
 We try to follow the [IndieWebCamp code of conduct](http://indiewebcamp.com/code-of-conduct). Please be respectful of other contributors, and forge a spirit of positive co-operation without discrimination or disrespect.
+
