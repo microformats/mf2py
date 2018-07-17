@@ -161,7 +161,6 @@ def url(el, base_url=''):
         if len(poss_as) == 1:
             poss_a = poss_as[0]
             if not mf2_classes.root(poss_a.get('class', [])):
-                print("here")
                 return poss_a
 
         # if element has one area child use if not root class
