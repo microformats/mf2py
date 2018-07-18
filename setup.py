@@ -15,7 +15,12 @@ setup(name='mf2py',
       author='Tom Morris',
       author_email='tom@tommorris.org',
       url='http://microformats.org/wiki/mf2py',
-      install_requires=['html5lib', 'requests', 'BeautifulSoup4'],
+      install_requires=[
+          # Keep in sync with requirements.txt!
+          'html5lib>=1.0.1',
+          'requests>=2.18.4',
+          'BeautifulSoup4>=4.6.0',
+      ],
       tests_require=['nose', 'mock'],
       packages=['mf2py'],
       package_data={'mf2py': ['backcompat-rules/*.json']},
