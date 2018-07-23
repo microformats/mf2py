@@ -105,7 +105,6 @@ class Parser(object):
                     doc = data.content
 
         if doc is not None:
-            self.__doc__ = doc
             if isinstance(doc, BeautifulSoup):
                 # make a copy of the doc to not change original;
                 #this safely regenerates all children too, but is inefficient (serializes and parses again(
