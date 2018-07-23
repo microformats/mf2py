@@ -170,3 +170,29 @@ def get_textContent(el, replace_img=False, img_to_src=True, base_url=''):
             count = 0
 
     return text
+
+def deepcopy_tag(tag):
+    """Create deep copy of a Tag element:
+
+    Args:
+      tag (bs4.element.Tag): a Tag to copy
+
+    Returns:
+      bs4.element.Tag: a unconnected copy of tag"""
+
+    # This function is based on Tag.__copy__() in BS4,
+    # also under MIT license,  Copyright (c) 2004-2016 Leonard Richardson
+    # It only exists as a workaround since the source function is missing a deepcopy
+    # and potentially can be removed in the future
+    
+    clone = type(tag)(None, tag.builder, tag.name, tag.namespace,
+                           tag.prefix, copy.deepcopy(tag.attrs), is_xml=tag._is_xml)
+    
+    for attr in ('can_be_empty_element', 'hidden'):
+        setattr(clone, attr, getattr(tag, attr))
+        
+    for child in tag.contents:
+        clone.append(deepcopy_tag(child))
+        
+    return clone
+
