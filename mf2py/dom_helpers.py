@@ -192,7 +192,11 @@ def deepcopy_tag(tag):
         setattr(clone, attr, getattr(tag, attr))
         
     for child in tag.contents:
-        clone.append(deepcopy_tag(child))
+        if isinstance(child, Tag):
+            clone.append(deepcopy_tag(child))
+        else:
+            #NavigableString's have a __copy__() set up
+            clone.append(copy.copy(child))
         
     return clone
 
