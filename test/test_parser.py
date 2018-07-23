@@ -769,6 +769,15 @@ def test_backcompat_hentry_content_html():
 
     assert_equal('<p class="entry-summary">This is a summary</p> \n        <p>This is <a href="/tags/mytag" rel="tag">mytag</a> inside content. </p>', entry['properties']['content'][0]['html'])
 
+def test_whitespace_with_tags_inside_property():
+    """Whitespace should only be trimmed at the ends of textContent, not inside.
+
+    https://github.com/microformats/mf2py/issues/112
+    """
+    result = parse_fixture('tag_whitespace_inside_p_value.html')
+    assert_equal(result['items'][0]['properties'],
+                 {'name': ['foo bar']})
+
 
 # experimental features tests
 

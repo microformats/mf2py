@@ -5,6 +5,7 @@
 .eggs/
 build/
 dist/
+local/
 mf2py.egg-info/
 nbproject/
 venv/
