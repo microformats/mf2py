@@ -45,7 +45,7 @@ def url(el, dict_class, img_with_alt, base_url=''):
         if prop_value is not None:
             return prop_value
     if prop_value is None:
-        prop_value = get_attr(el, "src", check_name=("audio", "video", "source"))
+        prop_value = get_attr(el, "src", check_name=("audio", "video", "source", "iframe"))
     if prop_value is None:
         prop_value = get_attr(el, "poster", check_name="video")
     if prop_value is None:
