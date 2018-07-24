@@ -470,6 +470,23 @@ def test_implied_url():
     for i in range(12, 23):
         assert_false("url" in result["items"][i]["properties"])
 
+def test_stop_implied_url():
+    """testing that explicit properties case implied url-parsing to be aborted"""
+
+    result = parse_fixture("implied_properties/stop_implied_url.html")
+
+    assert_false("url" in result["items"][0]["properties"])
+    assert_false("url" in result["items"][1]["properties"])
+    assert_false("url" in result["items"][2]["properties"])
+    assert_false("url" in result["items"][3]["properties"])
+    assert_false("url" in result["items"][4]["properties"])
+    assert_false("url" in result["items"][5]["properties"])
+
+    assert_equal(result["items"][6]["properties"]["url"], ["http://example.com/"])
+    assert_equal(result["items"][7]["properties"]["url"], ["http://example.com/"])
+    assert_equal(result["items"][8]["properties"]["url"], ["http://example.com/"])
+    assert_equal(result["items"][9]["properties"]["url"], ["http://example.com/"])
+
 def test_implied_nested_photo():
     result = parse_fixture("implied_properties/implied_properties.html", url="http://bar.org")
     assert_equal(result["items"][2]["properties"]["photo"][0],
