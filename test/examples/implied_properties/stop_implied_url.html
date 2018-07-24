@@ -1,0 +1,59 @@
+<h1>real world example</h1>
+<article class="post h-entry">
+  <h1 class="p-name"><a href="/Waar-te-beginnen-met-Webmentions/">Waar te beginnen met Webmentions</a></h1>
+  <div class="entry e-content">
+    <p>Er zijn van die momenten dat ik het liefste de hele dag ga zitten puzzelen hoe ik nu de <a href="/webmentions/">webmentions</a> op deze site in orde moet maken. Het loopt allemaal nog steeds niet lekker, maar ik weet niet goed welke kant ik op moet denken en werken voor een oplossing.</p>
+    <p>Waar loop ik nog tegen aan?</p>
+    <p>...</p>    
+  </div>
+  <a href="https://news.indieweb.org/nl" class="u-syndication"></a>
+</article>
+
+<h1>synthetic test cases</h1>
+
+<article class="h-entry">
+  <h1>u- on only link stops implied url</h1>
+  <a href="http://example.com/" class="u-property"></a>
+</article>
+
+<article class="h-entry">
+  <h1><a href="http://example.com/post" class="u-property">u- on second link stops implied url</a></h1>
+  <a href="http://example.com/"></a>
+</article>
+
+<article class="h-entry">
+  <h1 class="p-property h-entry">nested object in property stops u-url parsing</h1>
+  <a href="http://example.com/"></a>
+</article>
+
+<article class="h-entry">
+  <h1 class="h-entry">nested child object stops u-url parsing</h1>
+  <a href="http://example.com/"></a>
+</article>
+
+<article class="h-entry">
+  <div><span><h1 class="h-entry">deeper nested child object stops u-url parsing</h1></span></div>
+  <a href="http://example.com/"></a>
+</article>
+
+<article class="h-entry">
+  <h1 class="p-name">p- property doesn't stop implied url parsing</h1>
+  <a href="http://example.com/"></a>
+</article>
+
+<article class="h-entry">
+  <p class="e-content">e-property doesn't stop implied url parsing"</p>
+  <a href="http://example.com/"></a>
+</article>
+
+<article class="h-entry">
+  <h1>implied u-photo does not stop implied u-url parsing</h1>
+  <img src="http://example.com/avatar.png">
+  <a href="http://example.com/"></a>
+</article>
+
+<article class="h-entry">
+  <h1>implied u-photo does not stop implied u-url parsing</h1>
+  <img src="http://example.com/avatar.png">
+  <a href="http://example.com/"></a>
+</article>
