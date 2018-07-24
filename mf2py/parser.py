@@ -191,7 +191,6 @@ class Parser(object):
             if not backcompat_mode:
                 # stop implied name if any p-*, e-*, h-* is already found
                 if "name" not in properties and parsed_types_aggregation.isdisjoint("peh"):
-
                     properties["name"] = [implied_properties.name(el, base_url=self.__url__)]
 
                 if "photo" not in properties:
@@ -199,6 +198,7 @@ class Parser(object):
                     if x is not None:
                         properties["photo"] = [x]
 
+                # stop implied url if any u-* or h-* is already found
                 if "url" not in properties and parsed_types_aggregation.isdisjoint("uh"):
                     x = implied_properties.url(el, base_url=self.__url__)
                     if x is not None:
