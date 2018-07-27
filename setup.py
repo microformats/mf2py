@@ -12,6 +12,8 @@ with open(os.path.join(os.path.dirname(__file__), 'mf2py/version.py'))\
 setup(name='mf2py',
       version=ns['__version__'],
       description='Python Microformats2 parser',
+      long_description=open('README.md').read(),
+      long_description_content_type='text/markdown',
       author='Tom Morris',
       author_email='tom@tommorris.org',
       url='http://microformats.org/wiki/mf2py',
