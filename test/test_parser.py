@@ -567,6 +567,14 @@ def test_simple_person_reference_implied():
                  {'name': ['Frances Berriman']})
 
 
+def test_implied_name_alt():
+    result = parse_fixture("implied_properties/implied_name_alt.html")
+    assert_equal(result["items"][0]["children"][0],
+                 {'type': ['h-card'],
+                  'properties': {'name': ['Avatar of Stephen'],
+                                 'photo': ['avatar.jpg']}})
+
+
 def test_value_name_whitespace():
     result = parse_fixture("value_name_whitespace.html")
 
