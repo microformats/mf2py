@@ -13,7 +13,6 @@ from .mf_helpers import unordered_list
 import json
 import requests
 import sys
-import copy
 
 if sys.version < '3':
     from urlparse import urlparse, urljoin
@@ -107,9 +106,7 @@ class Parser(object):
         if doc is not None:
             self.__doc__ = doc
             if isinstance(doc, BeautifulSoup) or isinstance(doc, Tag):
-                # make a deepcopy of the doc to not change original; also copy the HTML builder
-                self.__doc__ = copy.deepcopy(doc)
-                self.__doc__.builder = doc.builder
+                self.__doc__ = doc
             else:
                 try:
                     # try the user-given html parser or default html5lib

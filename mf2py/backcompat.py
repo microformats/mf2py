@@ -114,7 +114,11 @@ def root(classes):
 
 def apply_rules(el, html_parser):
     """add modern classnames for older mf1 classnames
+
+    returns a copy of el and does not modify the original
     """
+
+    el_copy = copy.copy(el)
 
     def apply_prop_rules_to_children(parent, rules):
 
@@ -134,12 +138,12 @@ def apply_rules(el, html_parser):
 
 
     # add mf2 root equivalent
-    classes = el.get('class', [])
+    classes = el_copy.get('class', [])
     old_roots = root(classes)
     for old_root in old_roots:
         new_roots = _CLASSIC_MAP[old_root]['type']
         classes.extend(new_roots)
-    el['class'] = classes
+    el_copy['class'] = classes
 
 
     # add mf2 prop equivalent to descendents and remove existing mf2 props
@@ -147,6 +151,6 @@ def apply_rules(el, html_parser):
     for old_root in old_roots:
         rules.extend(_get_rules(old_root, html_parser))
 
-    apply_prop_rules_to_children(el, rules)
+    apply_prop_rules_to_children(el_copy, rules)
 
-    return el
+    return el_copy

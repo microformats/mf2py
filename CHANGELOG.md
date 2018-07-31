@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 - bug fix: reduced implied urls (#117)
 - bug fix: don't collapse whitespace between tags
 - specify explicit versions for dependencies
+- revert BeautifulSoup copying added in 1.1.1, at least temporarily, due to bugs (eg #108)
 
 ## 1.1.1 - 2018-06-15
 

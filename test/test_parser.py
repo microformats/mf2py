@@ -43,22 +43,15 @@ def test_open_file():
     assert_true(type(p.to_dict()) is dict)
 
 def test_doc_tag():
-    # test that strings, BS doc and BS tags are all parsed and in the latter cases copies are made but are the same stuff
+    # test that strings, BS doc and BS tags are all parsed
     doc = '''<article class="h-entry"></article>'''
     soup = BeautifulSoup(doc)
-
     parse_string = Parser(doc).to_dict()
-    assert_true('h-entry' in parse_string['items'][0]['type'])
-
-    p = Parser(soup)
-    assert_true('h-entry' in p.to_dict()['items'][0]['type'])
-    assert_false(soup is p.__doc__)
-    assert_true(soup == p.__doc__)
-
-    p = Parser(soup.article)
-    assert_true('h-entry' in p.to_dict()['items'][0]['type'])
-    assert_false(soup.article is p.__doc__)
-    assert_true(soup.article == p.__doc__)
+    assert 'h-entry' in parse_string['items'][0]['type']
+    parse_doc = Parser(soup).to_dict()
+    assert 'h-entry' in parse_doc['items'][0]['type']
+    parse_tag = Parser(soup.article).to_dict()
+    assert 'h-entry' in parse_tag['items'][0]['type']
 
 @mock.patch('requests.get')
 def test_user_agent(getter):
@@ -597,24 +590,6 @@ def test_value_name_whitespace():
     assert_equal(result["items"][11]["properties"]["name"][0], "Correct name")
 
 # backcompat tests
-
-def test_doc_tag_backcompat():
-    # test that strings, BS doc and BS tags are all parsed and in the latter cases copies are made and are modified by backcompat
-    doc = '''<article class="hentry"></article>'''
-    soup = BeautifulSoup(doc)
-
-    parse_string = Parser(doc).to_dict()
-    assert_true('h-entry' in parse_string['items'][0]['type'])
-
-    p = Parser(soup)
-    assert_true('h-entry' in p.to_dict()['items'][0]['type'])
-    assert_false(soup is p.__doc__)
-    assert_false(soup == p.__doc__)
-
-    p = Parser(soup.article)
-    assert_true('h-entry' in p.to_dict()['items'][0]['type'])
-    assert_false(soup.article is p.__doc__)
-    assert_false(soup.article == p.__doc__)
 
 def test_backcompat_hentry():
     result = parse_fixture("backcompat/hentry.html")
