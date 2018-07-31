@@ -4,11 +4,10 @@ microformats2 names. Ported and adapted from php-mf2.
 """
 
 from __future__ import unicode_literals, print_function
-from .dom_helpers import get_children
+from .dom_helpers import get_children, deepcopy_tag
 from .mf_helpers import unordered_list
 from . import mf2_classes
 import bs4
-import copy
 import os
 import codecs
 import json
@@ -40,7 +39,7 @@ def _make_classes_rule(old_classes, new_classes):
     equivalent(s).
     """
     def f(child, **kwargs):
-        child_original = child.original or copy.copy(child)
+        child_original = child.original or deepcopy_tag(child)
         child_classes = child.get('class', [])
         if all(cl in child_classes for cl in old_classes):
             child_classes.extend([cl for cl in new_classes if cl not in child_classes])
