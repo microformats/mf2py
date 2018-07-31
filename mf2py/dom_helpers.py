@@ -5,7 +5,7 @@ import bs4
 import copy
 import re
 
-from bs4.element import Tag, NavigableString, Comment
+from bs4.element import Tag, NavigableString, Comment, NamespacedAttribute
 
 if sys.version < '3':
     from urlparse import urljoin
@@ -182,11 +182,18 @@ def deepcopy_tag(tag):
 
     # This function is based on Tag.__copy__() in BS4,
     # also under MIT license,  Copyright (c) 2004-2016 Leonard Richardson
-    # It only exists as a workaround since the source function is missing a deepcopy
+    # It only exists as a workaround since the source function is missing a deepcopy and not handling all cases
     # and potentially can be removed in the future
-    
+
+    attrs = {}
+    for key, value in tag.attrs.items():
+        if isinstance(key, NamespacedAttribute):
+            attrs[NamespacedAttribute(key.prefix,key.name,key.namespace)] = copy.deepcopy(value)
+        else:
+            attrs[key] = copy.deepcopy(value)
+
     clone = type(tag)(None, tag.builder, tag.name, tag.namespace,
-                           tag.prefix, copy.deepcopy(tag.attrs), is_xml=tag._is_xml)
+                           tag.prefix, attrs, is_xml=tag._is_xml)
     
     for attr in ('can_be_empty_element', 'hidden'):
         setattr(clone, attr, getattr(tag, attr))

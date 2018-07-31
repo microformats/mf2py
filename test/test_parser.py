@@ -60,6 +60,27 @@ def test_doc_tag():
     assert_false(soup.article is p.__doc__)
     assert_true(soup.article == p.__doc__)
 
+
+def test_doc_tag_namespace_attribs():
+    # test that strings, BS doc and BS tags are all parsed and in the latter cases copies are made but are the same stuff
+    # when there are namespaced attributes present
+    doc = '''<article class="h-entry"><svg ><use xlink:href="some-svg-part"></use></svg></article>'''
+    soup = BeautifulSoup(doc, "html5lib")
+
+    parse_string = Parser(doc).to_dict()
+    assert_true('h-entry' in parse_string['items'][0]['type'])
+
+    p = Parser(soup)
+    assert_true('h-entry' in p.to_dict()['items'][0]['type'])
+    assert_false(soup is p.__doc__)
+    assert_true(soup == p.__doc__)
+
+    p = Parser(soup.article)
+    assert_true('h-entry' in p.to_dict()['items'][0]['type'])
+    assert_false(soup.article is p.__doc__)
+    assert_true(soup.article == p.__doc__)
+
+
 @mock.patch('requests.get')
 def test_user_agent(getter):
     ua_expect = 'mf2py - microformats2 parser for python'
