@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 1.1.2 - unreleased
+- add parsing for iframe.u-*[src] (#116)
+- bug fix: reduced implied urls (#117)
+- bug fix: don't collapse whitespace between tags
+- specify explicit versions for dependencies
+
 ## 1.1.1 - 2018-06-15
 
 - streamline backcompat to use JSON only.
