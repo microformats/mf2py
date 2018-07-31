@@ -6,7 +6,7 @@ import copy
 import re
 import string
 
-from bs4.element import Tag, NavigableString, Comment
+from bs4.element import Tag, NavigableString, Comment, NamespacedAttribute
 
 if sys.version < '3':
     from urlparse import urljoin
@@ -185,3 +185,40 @@ def get_textContent(el, replace_img=False, img_to_src=True, base_url=''):
         last = t
 
     return text
+
+def deepcopy_tag(tag):
+    """Create deep copy of a Tag element:
+
+    Args:
+      tag (bs4.element.Tag): a Tag to copy
+
+    Returns:
+      bs4.element.Tag: a unconnected copy of tag"""
+
+    # This function is based on Tag.__copy__() in BS4,
+    # also under MIT license,  Copyright (c) 2004-2016 Leonard Richardson
+    # It only exists as a workaround since the source function is missing a deepcopy and not handling all cases
+    # and potentially can be removed in the future
+
+    attrs = {}
+    for key, value in tag.attrs.items():
+        if isinstance(key, NamespacedAttribute):
+            attrs[NamespacedAttribute(key.prefix,key.name,key.namespace)] = copy.deepcopy(value)
+        else:
+            attrs[key] = copy.deepcopy(value)
+
+    clone = type(tag)(None, tag.builder, tag.name, tag.namespace,
+                           tag.prefix, attrs, is_xml=tag._is_xml)
+    
+    for attr in ('can_be_empty_element', 'hidden'):
+        setattr(clone, attr, getattr(tag, attr))
+        
+    for child in tag.contents:
+        if isinstance(child, Tag):
+            clone.append(deepcopy_tag(child))
+        else:
+            #NavigableString's have a __copy__() set up
+            clone.append(copy.copy(child))
+        
+    return clone
+
