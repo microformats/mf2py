@@ -1,6 +1,27 @@
 # coding: utf-8
 """Looks for classic microformats class names and augments them with
 microformats2 names. Ported and adapted from php-mf2.
+
+NOTE: functions in this module modify DOM elements. For this copies of the source tree are created, but BS4's copy
+function doesn't create copy of all sub-elements: most notably, the values of the `attrs` dictionary are not copied,
+and thus reference the same list objects as in the original tree. Thus, special care has to be taken when modifying the
+tree so changes do not accidentally propagate.
+
+a) adding new/removing children is safe
+
+b) attributes (e.g. `class`) should only by changed by assigning a *copy* of the original value, not by modifying it in
+place.
+
+DO NOT:
+child_classes = child.get('class', [])
+child_classes.append('p-kittens')
+child['class'] = child_classes
+
+DO:
+child_classes = child.get('class', [])[:] ###<------- COPY CREATED HERE
+child_classes.append('p-kittens')
+child['class'] = child_classes
+
 """
 
 from __future__ import unicode_literals, print_function
@@ -41,7 +62,7 @@ def _make_classes_rule(old_classes, new_classes):
     """
     def f(child, **kwargs):
         child_original = child.original or copy.copy(child)
-        child_classes = child.get('class', [])
+        child_classes = child.get('class', [])[:]
         if all(cl in child_classes for cl in old_classes):
             child_classes.extend([cl for cl in new_classes if cl not in child_classes])
             child['class'] = child_classes
@@ -76,6 +97,7 @@ def _rel_tag_to_category_rule(child, html_parser, **kwargs):
             data['value'] = unquote(segments[-1])
             child.insert_before(data)
             # remove tag from rels to avoid repeat
+            # new list created, original not modifed -> safe on incomplete copy
             child['rel'] = [r for r in rels if r != 'tag']
 
 
@@ -87,7 +109,7 @@ def _make_rels_rule(old_rels, new_classes, html_parser):
 
     def f(child, **kwargs):
         child_rels = child.get('rel', [])
-        child_classes = child.get('class', [])
+        child_classes = child.get('class', [])[:]
         if all(r in child_rels for r in old_rels):
             if 'tag' in old_rels:
                 _rel_tag_to_category_rule(child, html_parser, **kwargs)
@@ -123,7 +145,7 @@ def apply_rules(el, html_parser):
     def apply_prop_rules_to_children(parent, rules):
 
         for child in get_children(parent):
-            classes = child.get('class',[])
+            classes = child.get('class',[])[:]
             # find existing mf2 properties if any and delete them
             mf2_props = mf2_classes.property_classes(classes)
             child['class'] = [cl for cl in classes if cl not in mf2_props]
@@ -138,7 +160,7 @@ def apply_rules(el, html_parser):
 
 
     # add mf2 root equivalent
-    classes = el_copy.get('class', [])
+    classes = el_copy.get('class', [])[:]
     old_roots = root(classes)
     for old_root in old_roots:
         new_roots = _CLASSIC_MAP[old_root]['type']
