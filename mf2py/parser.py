@@ -169,7 +169,7 @@ class Parser(object):
 
             if backcompat_mode:
                 el = backcompat.apply_rules(el, self.__html_parser__)
-                root_class_names = mf2_classes.root(el.get('class',[]))
+                root_class_names = mf2_classes.root(el.get('class', []))
 
             # parse for properties and children
             for child in get_children(el):
@@ -206,7 +206,7 @@ class Parser(object):
             # build microformat with type and properties
             microformat = self.dict_class([
                 ("type", [text_type(class_name)
-                          for class_name in root_class_names]),
+                          for class_name in sorted(root_class_names)]),
                 ("properties", properties),
             ])
             if str(el.name) == "area":
@@ -244,8 +244,9 @@ class Parser(object):
             parsed_types_aggregation = set()
 
             classes = el.get("class", [])
+            filtered_classes = mf2_classes.filter_classes(classes)
             # Is this element a microformat2 root?
-            root_class_names = mf2_classes.root(classes)
+            root_class_names = filtered_classes['h']
             backcompat_mode = False
 
             # Is this element a microformat1 root?
@@ -262,7 +263,7 @@ class Parser(object):
 
             # Parse plaintext p-* properties.
             p_value = None
-            for prop_name in mf2_classes.text(classes):
+            for prop_name in filtered_classes['p']:
                 is_property_el = True
                 parsed_types_aggregation.add('p')
                 prop_value = props.setdefault(prop_name, [])
@@ -280,7 +281,7 @@ class Parser(object):
 
             # Parse URL u-* properties.
             u_value = None
-            for prop_name in mf2_classes.url(classes):
+            for prop_name in filtered_classes['u']:
                 is_property_el = True
                 parsed_types_aggregation.add('u')
                 prop_value = props.setdefault(prop_name, [])
@@ -301,7 +302,7 @@ class Parser(object):
 
             # Parse datetime dt-* properties.
             dt_value = None
-            for prop_name in mf2_classes.datetime(classes):
+            for prop_name in filtered_classes['dt']:
                 is_property_el = True
                 parsed_types_aggregation.add('d')
                 prop_value = props.setdefault(prop_name, [])
@@ -325,7 +326,7 @@ class Parser(object):
 
             # Parse embedded markup e-* properties.
             e_value = None
-            for prop_name in mf2_classes.embedded(classes):
+            for prop_name in filtered_classes['e']:
                 is_property_el = True
                 parsed_types_aggregation.add('e')
                 prop_value = props.setdefault(prop_name, [])

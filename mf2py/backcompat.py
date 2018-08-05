@@ -68,9 +68,10 @@ def _make_classes_rule(old_classes, new_classes):
             child['class'] = child_classes
 
             # if any new class is e-* attach original to parse originally authored HTML
-            if mf2_classes.embedded(child_classes) and child.original is None:
+            if mf2_classes.has_embedded_class(child_classes) and child.original is None:
                 child.original = child_original
     return f
+
 
 def _rel_tag_to_category_rule(child, html_parser, **kwargs):
     """rel=tag converts to p-category using a special transformation (the
@@ -147,8 +148,7 @@ def apply_rules(el, html_parser):
         for child in get_children(parent):
             classes = child.get('class',[])[:]
             # find existing mf2 properties if any and delete them
-            mf2_props = mf2_classes.property_classes(classes)
-            child['class'] = [cl for cl in classes if cl not in mf2_props]
+            child['class'] = [cl for cl in classes if not mf2_classes.is_property_class(cl)]
 
             # apply rules to change mf1 to mf2
             for rule in rules:
@@ -157,7 +157,6 @@ def apply_rules(el, html_parser):
             # recurse if it's not a nested mf1 or mf2 root
             if not (mf2_classes.root(classes) or root(classes)):
                 apply_prop_rules_to_children(child, rules)
-
 
     # add mf2 root equivalent
     classes = el_copy.get('class', [])[:]
