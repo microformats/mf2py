@@ -261,6 +261,13 @@ def test_template_parse():
     result = parse_fixture("template_tag.html")
     assert_equal(0, len(result["items"]))
 
+def test_template_tag_inside_e_value():
+    result = parse_fixture("template_tag_inside_e_value.html")
+    assert_equal("This is a Test with a <code>template</code> tag after this:",
+                 result['items'][0]['properties']['content'][0]['html'])
+    assert_equal("This is a Test with a template tag after this:",
+                 result['items'][0]['properties']['content'][0]['value'])
+
 def test_ordering_dedup():
     ''' test that classes are dedeuped and alphabetically ordered '''
 
