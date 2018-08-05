@@ -15,12 +15,12 @@ def filter_classes(classes, regex=_mf2_classes_re):
 
     types = {x: set() for x in ('u', 'p', 'dt', 'e', 'h')}
     for c in classes:
-        a=regex.match(c)
-        if a:
+        match = regex.match(c)
+        if match:
             if c[0] == "h":
                 types['h'].add(c)
             else:
-                types[a[1]].add(a[2])
+                types[match.group(1)].add(match.group(2))
     return types
 
 
