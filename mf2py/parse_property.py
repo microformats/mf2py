@@ -1,7 +1,7 @@
 """functions to parse the properties of elements"""
 from __future__ import unicode_literals, print_function
 
-from .dom_helpers import get_attr, get_img_src_alt, get_children, get_textContent
+from .dom_helpers import get_attr, get_img_src_alt, get_children, get_textContent, try_urljoin
 from .datetime_helpers import normalize_datetime, DATETIME_RE, TIME_RE
 from . import value_class_pattern
 
@@ -9,11 +9,9 @@ import sys
 import re
 
 if sys.version < '3':
-    from urlparse import urljoin
     text_type = unicode
     binary_type = str
 else:
-    from urllib.parse import urljoin
     text_type = str
     binary_type = bytes
 
@@ -52,7 +50,7 @@ def url(el, dict_class, img_with_alt, base_url=''):
         prop_value = get_attr(el, "data", check_name="object")
 
     if prop_value is not None:
-        return urljoin(base_url, prop_value)
+        return try_urljoin(base_url, prop_value)
 
     # handle value-class-pattern
     prop_value = value_class_pattern.text(el)

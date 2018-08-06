@@ -22,6 +22,16 @@ else:
 _whitespace_to_space_regex = re.compile(r"[\n\t\r]+")
 _reduce_spaces_regex = re.compile(r" {2,}")
 
+
+def try_urljoin(base, url, allow_fragments=True):
+    """attempts urljoin, on ValueError passes through url"""
+    try:
+        url = urljoin(base, url, allow_fragments=allow_fragments)
+    except ValueError:
+        pass
+    return url
+
+
 def get_attr(el, attr, check_name=None):
     """Get the attribute of an element if it exists.
 
@@ -51,7 +61,7 @@ def get_img_src_alt(img, dict_class, img_with_alt, base_url=''):
     src = get_attr(img, "src", check_name="img")
 
     if src is not None:
-        src = urljoin(base_url, src)
+        src = try_urljoin(base_url, src)
 
         if alt is None or not img_with_alt:
             return text_type(src)
@@ -110,7 +120,7 @@ def get_textContent(el, replace_img=False, img_to_src=True, base_url=''):
             if value is None and img_to_src:
                 value = el.get('src')
                 if value is not None:
-                    value = urljoin(base_url, value)
+                    value = try_urljoin(base_url, value)
 
             if value is not None:
                 items = [' ', text_type(value), ' ']

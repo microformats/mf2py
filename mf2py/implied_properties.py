@@ -1,14 +1,12 @@
 from __future__ import unicode_literals, print_function
 from . import mf2_classes
-from .dom_helpers import get_attr, get_img_src_alt, get_children, get_textContent
+from .dom_helpers import get_attr, get_img_src_alt, get_children, get_textContent, try_urljoin
 import sys
 
 if sys.version < '3':
-    from urlparse import urljoin
     text_type = unicode
     binary_type = str
 else:
-    from urllib.parse import urljoin
     text_type = str
     binary_type = bytes
 
@@ -174,7 +172,7 @@ def url(el, base_url=''):
     # if element is a <a> or area use its href if exists
     prop_value = get_attr(el, "href", check_name=("a", "area"))
     if prop_value is not None:  # an empty href is valid
-        return text_type(urljoin(base_url, prop_value))
+        return text_type(try_urljoin(base_url, prop_value))
 
     # find candidate child or grandchild
     poss_child = None
@@ -192,4 +190,4 @@ def url(el, base_url=''):
     if poss_child is not None:
         prop_value = get_attr(poss_child, "href", check_name=("a", "area"))
         if prop_value is not None:  # an empty href is valid
-            return text_type(urljoin(base_url, prop_value))
+            return text_type(try_urljoin(base_url, prop_value))
