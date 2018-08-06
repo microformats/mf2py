@@ -147,7 +147,7 @@ def get_textContent(el, replace_img=False, img_to_src=True, base_url=''):
 
     if results:
         # remove leading whitespace and <int> i.e. next lines
-        while ((isinstance(results[0], basestring) and re.match(r'^\s*$', results[0])) or
+        while ((isinstance(results[0], basestring) and (results[0] == '' or results[0].isspace())) or
                results[0] in (P_BREAK_BEFORE, P_BREAK_AFTER)):
             results.pop(0)
             if not results:
@@ -155,7 +155,7 @@ def get_textContent(el, replace_img=False, img_to_src=True, base_url=''):
 
     if results:
         # remove trailing whitespace and <int> i.e. next lines
-        while ((isinstance(results[-1], basestring) and re.match(r'^\s*$', results[-1])) or
+        while ((isinstance(results[-1], basestring) and (results[-1] == '' or results[-1].isspace())) or
                results[-1] in (P_BREAK_BEFORE, P_BREAK_AFTER)):
             results.pop(-1)
             if not results:
