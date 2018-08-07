@@ -261,6 +261,13 @@ def test_template_parse():
     result = parse_fixture("template_tag.html")
     assert_equal(0, len(result["items"]))
 
+def test_template_tag_inside_e_value():
+    result = parse_fixture("template_tag_inside_e_value.html")
+    assert_equal("This is a Test with a <code>template</code> tag after this:",
+                 result['items'][0]['properties']['content'][0]['html'])
+    assert_equal("This is a Test with a template tag after this:",
+                 result['items'][0]['properties']['content'][0]['value'])
+
 def test_ordering_dedup():
     ''' test that classes are dedeuped and alphabetically ordered '''
 
@@ -877,3 +884,20 @@ def test_unicode_everywhere():
         result = parse_fixture(h)
         yield check_unicode, h, result
 
+
+def test_input_tree_integrity():
+    """ make sure that if we parse a BS4 soup, our modifications do not leak into the document represented by it """
+
+    for path in get_all_files():
+        with open(os.path.join(TEST_DIR, path)) as f:
+            soup = BeautifulSoup(f,features='lxml')
+            html1 = soup.prettify()
+            p = Parser(doc=soup, html_parser='lxml')
+            html2 = soup.prettify()
+        yield make_labelled_cmp("tree_integrity_" + path), html1, html2
+
+
+def make_labelled_cmp(label):
+    f = lambda html1, html2: assert_equal(html1,html2)
+    f.description = label
+    return f
