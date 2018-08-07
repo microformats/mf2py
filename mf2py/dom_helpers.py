@@ -24,7 +24,9 @@ _reduce_spaces_regex = re.compile(r" {2,}")
 
 
 def try_urljoin(base, url, allow_fragments=True):
-    """attempts urljoin, on ValueError passes through url"""
+    """attempts urljoin, on ValueError passes through url. Shortcuts http(s):// urls"""
+    if url.startswith(("https://", "http://")):
+        return url
     try:
         url = urljoin(base, url, allow_fragments=allow_fragments)
     except ValueError:
