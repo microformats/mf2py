@@ -18,6 +18,10 @@ else:
     binary_type = bytes
     basestring = str
 
+
+_whitespace_to_space_regex = re.compile(r"[\n\t\r]+")
+_reduce_spaces_regex = re.compile(r" {2,}")
+
 def get_attr(el, attr, check_name=None):
     """Get the attribute of an element if it exists.
 
@@ -93,10 +97,9 @@ def get_textContent(el, replace_img=False, img_to_src=True, base_url=''):
         elif isinstance(el, NavigableString):
             value = text_type(el)
             # replace \t \n \r by space
-            value = re.sub(r'\t|\n|\r', ' ', value)
+            value = _whitespace_to_space_regex.sub(' ', value)
             # replace multiple spaces with one space
-            value = re.sub(r'[ ]{1,}', ' ', value)
-            items = [value]
+            items = [_reduce_spaces_regex.sub(' ', value)]
 
         # don't do anything special for PRE-formatted tags defined above
         elif el.name in PRE_TAGS:
@@ -147,7 +150,7 @@ def get_textContent(el, replace_img=False, img_to_src=True, base_url=''):
 
     if results:
         # remove leading whitespace and <int> i.e. next lines
-        while ((isinstance(results[0], basestring) and re.match(r'^\s*$', results[0])) or
+        while ((isinstance(results[0], basestring) and (results[0] == '' or results[0].isspace())) or
                results[0] in (P_BREAK_BEFORE, P_BREAK_AFTER)):
             results.pop(0)
             if not results:
@@ -155,7 +158,7 @@ def get_textContent(el, replace_img=False, img_to_src=True, base_url=''):
 
     if results:
         # remove trailing whitespace and <int> i.e. next lines
-        while ((isinstance(results[-1], basestring) and re.match(r'^\s*$', results[-1])) or
+        while ((isinstance(results[-1], basestring) and (results[-1] == '' or results[-1].isspace())) or
                results[-1] in (P_BREAK_BEFORE, P_BREAK_AFTER)):
             results.pop(-1)
             if not results:

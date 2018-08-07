@@ -4,58 +4,31 @@ from .mf_helpers import unordered_list
 
 import re
 
-def _check_format(prefix, cl):
+_mf2_classes_re = re.compile("(p|e|u|dt|h)-((:?[a-z0-9]+-)?[a-z]+(:?-[a-z]+)*)$")
+_mf2_roots_re = re.compile("h-(:?[a-z0-9]+-)?[a-z]+(:?-[a-z]+)*$")
+_mf2_properties_re = re.compile("(p|e|u|dt)-(:?[a-z0-9]+-)?[a-z]+(:?-[a-z]+)*$")
+_mf2_e_properties_re = re.compile("e-(:?[a-z0-9]+-)?[a-z]+(:?-[a-z]+)*$")
 
-    # older one does not check hyphens
-    #FORMAT_RE = r'%s-([a-z0-9]+-)?[a-z-]+'
 
-    FORMAT_RE = r'%s-([a-z0-9]+-)?[a-z]+(-[a-z]+)*'
+def filter_classes(classes, regex=_mf2_classes_re):
+    """detect classes that are valid names for mf2, sort in dictionary by prefix"""
 
-    RE = FORMAT_RE % (prefix)
+    types = {x: set() for x in ('u', 'p', 'dt', 'e', 'h')}
+    for c in classes:
+        match = regex.match(c)
+        if match:
+            if c[0] == "h":
+                types['h'].add(c)
+            else:
+                types[match.group(1)].add(match.group(2))
+    return types
 
-    return re.match(RE + '$', cl)
 
 def root(classes):
-    """get all root classnames
-    """
+    return {c for c in classes if _mf2_roots_re.match(c)}
 
-    return unordered_list([c for c in classes if _check_format('h', c)])
+def is_property_class(class_):
+    return _mf2_properties_re.match(class_)
 
-
-def properties(classes):
-    """get all property (p-*, u-*, e-*, dt-*) classnames
-    """
-
-    return unordered_list([c.partition("-")[2] for c in classes if _check_format('(p|u|dt|e)', c)])
-
-def property_classes(classes):
-    """get all property (p-*, u-*, e-*, dt-*) classnames with prefix
-    """
-
-    return unordered_list([c for c in classes if _check_format('(p|u|dt|e)', c)])
-
-def text(classes):
-    """get text property (p-*) names
-    """
-
-    return unordered_list([c.partition("-")[2] for c in classes if _check_format('p', c)])
-
-
-def url(classes):
-    """get URL property (u-*) names
-    """
-
-    return unordered_list([c.partition("-")[2] for c in classes if _check_format('u', c)])
-
-
-def datetime(classes):
-    """get datetime property (dt-*) names
-    """
-
-    return unordered_list([c.partition("-")[2] for c in classes if _check_format('dt', c)])
-
-def embedded(classes):
-    """get embedded property (e-*) names
-    """
-
-    return unordered_list([c.partition("-")[2] for c in classes if _check_format('e', c)])
+def has_embedded_class(classes):
+    return any(_mf2_e_properties_re.match(c) for c in classes)
