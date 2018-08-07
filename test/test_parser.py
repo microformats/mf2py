@@ -368,6 +368,11 @@ def test_link_with_u_url():
         },
     }, result["items"][0])
 
+def test_broken_url():
+    result = parse_fixture("broken_url.html", "http://example.com")
+    assert_equal(result["items"][0]["properties"]["relative"][0], "http://example.com/foo.html")
+    assert_equal(result["items"][0]["properties"]["url"][0], "http://www.[w3.org/")
+    assert_equal(result["items"][0]["properties"]["photo"][0], "http://www.w3].org/20[08/site/images/logo-w3c-mobile-lg")
 
 def test_complex_e_content():
     """When parsing h-* e-* properties, we should fold {"value":..., "html":...}
