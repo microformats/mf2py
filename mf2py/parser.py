@@ -7,7 +7,7 @@ from bs4.element import Tag
 from . import backcompat, mf2_classes, implied_properties, parse_property
 from . import temp_fixes
 from .version import __version__
-from .dom_helpers import get_attr, get_children, get_descendents
+from .dom_helpers import get_attr, get_children, get_descendents, try_urljoin
 from .mf_helpers import unordered_list
 
 import json
@@ -16,11 +16,11 @@ import sys
 import copy
 
 if sys.version < '3':
-    from urlparse import urlparse, urljoin
+    from urlparse import urlparse
     text_type = unicode
     binary_type = str
 else:
-    from urllib.parse import urlparse, urljoin
+    from urllib.parse import urlparse
     text_type = str
     binary_type = bytes
 
@@ -139,7 +139,7 @@ class Parser(object):
                         self.__url__ = poss_base_url
                     elif self.__url__:
                         # base specifies a relative path
-                        self.__url__ = urljoin(self.__url__, poss_base_url)
+                        self.__url__ = try_urljoin(self.__url__, poss_base_url)
 
         if self.__doc__ is not None:
             # parse!
@@ -373,7 +373,7 @@ class Parser(object):
             # if rel attributes exist
             if rel_attrs is not None:
                 # find the url and normalise it
-                url = text_type(urljoin(self.__url__, el.get('href', '')))
+                url = try_urljoin(self.__url__, el.get('href', ''))
                 value_dict = self.__parsed__["rel-urls"].get(url,
                                                              self.dict_class())
 
