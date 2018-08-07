@@ -43,22 +43,15 @@ def test_open_file():
     assert_true(type(p.to_dict()) is dict)
 
 def test_doc_tag():
-    # test that strings, BS doc and BS tags are all parsed and in the latter cases copies are made but are the same stuff
+    # test that strings, BS doc and BS tags are all parsed
     doc = '''<article class="h-entry"></article>'''
     soup = BeautifulSoup(doc)
-
     parse_string = Parser(doc).to_dict()
-    assert_true('h-entry' in parse_string['items'][0]['type'])
-
-    p = Parser(soup)
-    assert_true('h-entry' in p.to_dict()['items'][0]['type'])
-    assert_false(soup is p.__doc__)
-    assert_true(soup == p.__doc__)
-
-    p = Parser(soup.article)
-    assert_true('h-entry' in p.to_dict()['items'][0]['type'])
-    assert_false(soup.article is p.__doc__)
-    assert_true(soup.article == p.__doc__)
+    assert 'h-entry' in parse_string['items'][0]['type']
+    parse_doc = Parser(soup).to_dict()
+    assert 'h-entry' in parse_doc['items'][0]['type']
+    parse_tag = Parser(soup.article).to_dict()
+    assert 'h-entry' in parse_tag['items'][0]['type']
 
 @mock.patch('requests.get')
 def test_user_agent(getter):
@@ -267,6 +260,13 @@ def test_string_strip():
 def test_template_parse():
     result = parse_fixture("template_tag.html")
     assert_equal(0, len(result["items"]))
+
+def test_template_tag_inside_e_value():
+    result = parse_fixture("template_tag_inside_e_value.html")
+    assert_equal("This is a Test with a <code>template</code> tag after this:",
+                 result['items'][0]['properties']['content'][0]['html'])
+    assert_equal("This is a Test with a template tag after this:",
+                 result['items'][0]['properties']['content'][0]['value'])
 
 def test_ordering_dedup():
     ''' test that classes are dedeuped and alphabetically ordered '''
@@ -598,24 +598,6 @@ def test_value_name_whitespace():
 
 # backcompat tests
 
-def test_doc_tag_backcompat():
-    # test that strings, BS doc and BS tags are all parsed and in the latter cases copies are made and are modified by backcompat
-    doc = '''<article class="hentry"></article>'''
-    soup = BeautifulSoup(doc)
-
-    parse_string = Parser(doc).to_dict()
-    assert_true('h-entry' in parse_string['items'][0]['type'])
-
-    p = Parser(soup)
-    assert_true('h-entry' in p.to_dict()['items'][0]['type'])
-    assert_false(soup is p.__doc__)
-    assert_false(soup == p.__doc__)
-
-    p = Parser(soup.article)
-    assert_true('h-entry' in p.to_dict()['items'][0]['type'])
-    assert_false(soup.article is p.__doc__)
-    assert_false(soup.article == p.__doc__)
-
 def test_backcompat_hentry():
     result = parse_fixture("backcompat/hentry.html")
     assert_true('h-entry' in result['items'][0]['type'])
@@ -902,3 +884,20 @@ def test_unicode_everywhere():
         result = parse_fixture(h)
         yield check_unicode, h, result
 
+
+def test_input_tree_integrity():
+    """ make sure that if we parse a BS4 soup, our modifications do not leak into the document represented by it """
+
+    for path in get_all_files():
+        with open(os.path.join(TEST_DIR, path)) as f:
+            soup = BeautifulSoup(f,features='lxml')
+            html1 = soup.prettify()
+            p = Parser(doc=soup, html_parser='lxml')
+            html2 = soup.prettify()
+        yield make_labelled_cmp("tree_integrity_" + path), html1, html2
+
+
+def make_labelled_cmp(label):
+    f = lambda html1, html2: assert_equal(html1,html2)
+    f.description = label
+    return f

@@ -60,21 +60,21 @@ def get_img_src_alt(img, dict_class, img_with_alt, base_url=''):
 def get_children(node):
     """An iterator over the immediate children tags of this tag"""
     for child in node.children:
-        if isinstance(child, bs4.Tag):
+        if isinstance(child, bs4.Tag) and child.name != 'template':
             yield child
 
 
 def get_descendents(node):
     """An iterator over the all children tags (descendants) of this tag"""
     for desc in node.descendants:
-        if isinstance(desc, bs4.Tag):
+        if isinstance(desc, bs4.Tag) and desc.name != 'template':
             yield desc
 
 def get_textContent(el, replace_img=False, img_to_src=True, base_url=''):
     """ Get the text content of an element, replacing images by alt or src
     """
 
-    DROP_TAGS = ('script', 'style')
+    DROP_TAGS = ('script', 'style',  'template')
     PRE_TAGS = ('pre',)
     P_BREAK_BEFORE = 1
     P_BREAK_AFTER = 0

@@ -54,10 +54,17 @@ Filter by microformat type
 
     p.to_dict(filter_by_type="h-entry")
     p.to_json(filter_by_type="h-entry")
-    
+
 Experimental features
 ---------------------
 - pass the optional argument `img_with_alt=True` to either the `Parser` object or to the `parse` method to enable parsing of the `alt` attribute of `<img>` tags according to [issue: image alt text is lost during parsing](https://github.com/microformats/microformats2-parsing/issues/2). By default this is `False` to be backwards compatible.
+
+FAQ
+---
+
+* I passed `mf2py.parse()` a BeautifulSoup document, and it got modified!
+
+Yes, mf2py currently does that. We're working on preventing it! Hopefully soon.
 
 Frontends
 -------------

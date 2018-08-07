@@ -72,6 +72,7 @@ class Parser(object):
     def __init__(self, doc=None, url=None, html_parser=None, img_with_alt=False):
         self.__url__ = None
         self.__doc__ = None
+        self._preserve_doc = False
         self.__parsed__ = self.dict_class([
             ('items', []),
             ('rels', self.dict_class()),
@@ -105,11 +106,10 @@ class Parser(object):
                     doc = data.content
 
         if doc is not None:
-            self.__doc__ = doc
+
             if isinstance(doc, BeautifulSoup) or isinstance(doc, Tag):
-                # make a deepcopy of the doc to not change original; also copy the HTML builder
-                self.__doc__ = copy.deepcopy(doc)
-                self.__doc__.builder = doc.builder
+                self.__doc__ = doc
+                self._preserve_doc = True
             else:
                 try:
                     # try the user-given html parser or default html5lib
@@ -143,7 +143,6 @@ class Parser(object):
 
         if self.__doc__ is not None:
             # parse!
-            temp_fixes.apply_rules(self.__doc__)
             self.parse()
 
     def parse(self):
@@ -335,9 +334,13 @@ class Parser(object):
                 if e_value is None:
                     # send original element for parsing backcompat
                     if el.original is None:
-                        e_value = parse_property.embedded(el, base_url=self.__url__)
+                        embedded_el = el
                     else:
-                        e_value = parse_property.embedded(el.original, base_url=self.__url__)
+                        embedded_el = el.original
+                    if self._preserve_doc:
+                        embedded_el = copy.copy(embedded_el)
+                    temp_fixes.rm_templates(embedded_el)
+                    e_value = parse_property.embedded(embedded_el, base_url=self.__url__)
 
                 if root_class_names:
                     stops_implied_name = True
