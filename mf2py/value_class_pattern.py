@@ -23,12 +23,6 @@ def text(el):
     if value_els:
         return ''.join(_get_vcp_value(el) for el in value_els)
 
-def url(el, base_url=''):
-
-    value_els = _get_vcp_children(el)
-    if value_els:
-        return urljoin(base_url, ''.join(_get_vcp_value(el)
-                       for el in value_els))
 
 def datetime(el, default_date=None):
 
@@ -68,7 +62,6 @@ def datetime(el, default_date=None):
             if match:
                 # if it's a full datetime, then we're done
                 date_part = match.group('date')
-                time_part = match.group('time')
                 return normalize_datetime(part, match=match), date_part
 
             # only use first found value

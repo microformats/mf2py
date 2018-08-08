@@ -1,7 +1,5 @@
 from __future__ import unicode_literals, print_function
 
-from .mf_helpers import unordered_list
-
 import re
 
 _mf2_classes_re = re.compile("(p|e|u|dt|h)-((:?[a-z0-9]+-)?[a-z]+(:?-[a-z]+)*)$")

@@ -2,9 +2,7 @@ from __future__ import unicode_literals
 
 import sys
 import bs4
-import copy
 import re
-import string
 
 from bs4.element import Tag, NavigableString, Comment
 
