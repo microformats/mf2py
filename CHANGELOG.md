@@ -1,12 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## 1.1.2 - unreleased
+## 1.1.2 - 2018-08-08
 - add parsing for iframe.u-*[src] (#116)
 - bug fix: reduced implied urls (#117)
 - bug fix: don't collapse whitespace between tags
 - specify explicit versions for dependencies
-- revert BeautifulSoup copying added in 1.1.1, at least temporarily, due to bugs (eg #108)
+- revert BeautifulSoup copying added in 1.1.1 due to bugs (eg #108)
+- misc performance improvements
 
 ## 1.1.1 - 2018-06-15
 
