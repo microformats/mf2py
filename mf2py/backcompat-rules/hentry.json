@@ -11,10 +11,7 @@
         ], 
         "published": [
             "dt-published"
-        ], 
-        "latitude": [
-            "p-latitude"
-        ], 
+        ],
         "entry-content": [
             "e-content"
         ], 
@@ -31,9 +28,6 @@
         ], 
         "updated": [
             "dt-updated"
-        ], 
-        "longitude": [
-            "p-longitude"
         ]
     },
     "rels": {
