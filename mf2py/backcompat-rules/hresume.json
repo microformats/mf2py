@@ -4,26 +4,26 @@
     ], 
     "properties": {
         "experience": [
-            "h-event", 
-            "p-experience"
+            "p-experience",
+            "vevent"
         ], 
         "summary": [
             "p-summary"
         ], 
         "affiliation": [
             "p-affiliation", 
-            "h-card"
+            "vcard"
         ], 
         "contact": [
-            "h-card", 
-            "p-contact"
+            "p-contact",
+            "vcard"
         ], 
         "skill": [
             "p-skill"
         ], 
         "education": [
-            "h-event", 
-            "p-education"
+            "p-education",
+            "vevent"
         ]
     }
 }

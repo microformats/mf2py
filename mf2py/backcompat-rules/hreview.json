@@ -14,11 +14,11 @@
         ], 
         "reviewer": [
             "p-author", 
-            "h-card"
+            "vcard"
         ], 
         "url": [
             "p-item", 
-            "h-item", 
+            "h-item",
             "u-url"
         ], 
         "photo": [

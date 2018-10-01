@@ -18,7 +18,7 @@
         "reviewer": [
             "p-reviewer", 
             "p-author", 
-            "h-card"
+            "vcard"
         ], 
         "best": [
             "p-best"

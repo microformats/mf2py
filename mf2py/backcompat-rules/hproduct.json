@@ -26,7 +26,7 @@
         ], 
         "review": [
             "p-review", 
-            "h-review" 
+            "hreview"
         ], 
         "fn": [
             "p-name"

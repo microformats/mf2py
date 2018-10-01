@@ -31,8 +31,7 @@
             "p-category"
         ], 
         "adr": [
-            "p-adr", 
-            "h-adr"
+            "p-adr"
         ], 
         "locality": [
             "p-locality"
@@ -80,8 +79,7 @@
             "p-honorific-prefix"
         ], 
         "geo": [
-            "p-geo", 
-            "h-geo"
+            "p-geo"
         ], 
         "fn": [
             "p-name"

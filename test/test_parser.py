@@ -606,9 +606,10 @@ def test_value_name_whitespace():
 def test_backcompat_hentry():
     result = parse_fixture("backcompat/hentry.html")
     assert_true('h-entry' in result['items'][0]['type'])
+    assert_equal({},
+                 result['items'][0]['properties']['author'][0]['properties'])
     assert_equal('Tom Morris',
-                 result['items'][0]['properties']
-                 ['author'][0]['properties']['name'][0])
+                 result['items'][0]['properties']['author'][0]['value'])
     assert_equal('A Title',
                  result['items'][0]['properties']['name'][0])
     assert_equal('Some Content',

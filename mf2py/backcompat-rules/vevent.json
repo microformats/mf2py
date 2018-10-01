@@ -19,7 +19,7 @@
             "dt-start"
         ], 
         "geo": [
-            "p-location h-geo"
+            "p-location"
         ], 
         "organizer": [
             "p-organizer"

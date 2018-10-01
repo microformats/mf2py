@@ -19,13 +19,12 @@
             "p-summary"
         ], 
         "author": [
-            "p-author", 
-            "h-card"
-        ], 
+            "p-author",
+            "vcard"
+        ],
         "geo": [
-            "p-geo", 
-            "h-geo"
-        ], 
+            "p-geo"
+        ],
         "updated": [
             "dt-updated"
         ]
