@@ -192,7 +192,7 @@ class Parser(object):
                 if "name" not in properties and parsed_types_aggregation.isdisjoint("peh"):
                     properties["name"] = [implied_properties.name(el, base_url=self.__url__)]
 
-                if "photo" not in properties:
+                if "photo" not in properties and parsed_types_aggregation.isdisjoint("uh"):
                     x = implied_properties.photo(el, self.dict_class, self.__img_with_alt__, base_url=self.__url__)
                     if x is not None:
                         properties["photo"] = [x]
