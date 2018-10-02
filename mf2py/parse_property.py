@@ -1,7 +1,7 @@
 """functions to parse the properties of elements"""
 from __future__ import unicode_literals, print_function
 
-from .dom_helpers import get_attr, get_img_src_alt, get_textContent, try_urljoin
+from .dom_helpers import get_attr, get_img_src_alt, get_textContent, try_urljoin, MinimalHTML5Formatter
 from .datetime_helpers import normalize_datetime, DATETIME_RE, TIME_RE
 from . import value_class_pattern
 
@@ -104,6 +104,6 @@ def datetime(el, default_date=None):
 def embedded(el, base_url=''):
     """Process e-* properties"""
     return {
-        'html': el.decode_contents().strip(),    # secret bs4 method to get innerHTML
+        'html': el.decode_contents(formatter=MinimalHTML5Formatter()).strip(),    # secret bs4 method to get innerHTML
         'value': get_textContent(el, replace_img=True, base_url=base_url)
     }

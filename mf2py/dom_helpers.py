@@ -4,7 +4,7 @@ import sys
 import bs4
 import re
 
-from bs4.element import Tag, NavigableString, Comment
+from bs4.element import Tag, NavigableString, Comment, MinimalHTMLFormatter
 
 if sys.version < '3':
     from urlparse import urljoin
@@ -19,6 +19,11 @@ else:
 
 _whitespace_to_space_regex = re.compile(r"[\n\t\r]+")
 _reduce_spaces_regex = re.compile(r" {2,}")
+
+
+class MinimalHTML5Formatter(MinimalHTMLFormatter):
+    """An HTML formatter that omits the slash in void tags and othewise does minimal replacement"""
+    void_element_close_prefix = None
 
 
 def try_urljoin(base, url, allow_fragments=True):
