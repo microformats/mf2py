@@ -10,7 +10,7 @@ DATE_RE = r'(\d{4}-\d{2}-\d{2})|(\d{4}-\d{3})'
 SEC_RE = r'(:(?P<second>\d{2})(\.\d+)?)'
 RAWTIME_RE = r'(?P<hour>\d{1,2})(:(?P<minute>\d{2})%s?)?' % (SEC_RE)
 AMPM_RE = r'am|pm|a\.m\.|p\.m\.|AM|PM|A\.M\.|P\.M\.'
-TIMEZONE_RE = r'Z|[+-]\d{2}:?\d{2}?'
+TIMEZONE_RE = r'Z|[+-]\d{1,2}:?\d{2}?'
 TIME_RE = (r'(?P<rawtime>%s)( ?(?P<ampm>%s))?( ?(?P<tz>%s))?' %
            (RAWTIME_RE, AMPM_RE, TIMEZONE_RE))
 DATETIME_RE = (r'(?P<date>%s)(?P<separator>[T ])(?P<time>%s)'

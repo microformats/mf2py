@@ -160,6 +160,7 @@ def test_datetime_parsing():
 
 def test_datetime_vcp_parsing():
     result = parse_fixture("datetimes.html")
+    assert_equal(len(result['items']), 16)
     assert_equal(result["items"][1]["properties"]["published"][0],
                  "3014-01-01 01:21Z")
     assert_equal(result["items"][2]["properties"]["updated"][0],
@@ -184,7 +185,14 @@ def test_datetime_vcp_parsing():
                  "2014-06-01 12:15")
     assert_equal(result["items"][11]["properties"]["start"][0],
                  "2016-03-02 00:30-06:00")
-
+    assert_equal(result["items"][12]["properties"]["start"][0],
+                 "2014-06-01 12:30-6:00")
+    assert_equal(result["items"][13]["properties"]["start"][0],
+                 "2014-06-01 12:30+6:00")
+    assert_equal(result["items"][14]["properties"]["start"][0],
+                 "2014-06-01 12:30Z")
+    assert_equal(result["items"][15]["properties"]["start"][0],
+                 "2014-06-01 12:30-6:00")
 def test_dt_end_implied_date():
     """Test that events with dt-start and dt-end use the implied date rule
     http://microformats.org/wiki/value-class-pattern#microformats2_parsers
