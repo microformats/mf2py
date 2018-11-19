@@ -856,6 +856,7 @@ def test_parse_id():
     result = parse_fixture("parse_id.html")
     assert_equal("recentArticles", result['items'][0]['id'])
     assert_equal("article", result['items'][0]['children'][0]['id'])
+    assert_true("id" not in result['items'][0]['children'][1])
     assert_equal("theAuthor", result['items'][0]['properties']['author'][0]['id'])
 
 # unicode tests
