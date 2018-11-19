@@ -621,7 +621,7 @@ def test_backcompat_hproduct():
     assert_equal(['bullshit'], result["items"][0]["properties"]["category"])
     assert_equal(['Quacktastic Products'], result["items"][0]["properties"]["brand"])
     assert_equal(['#BULLSHIT-001'], result["items"][0]["properties"]["identifier"])
-    assert_equal("Magical tasty sugar pills that don't do anything.", result["items"][0]["properties"]['description'][0]) 
+    assert_equal("Magical tasty sugar pills that don't do anything.", result["items"][0]["properties"]['description'][0])
     assert_equal(["Tom's Magical Quack Tincture"], result["items"][0]["properties"]["name"])
 
 
@@ -850,6 +850,13 @@ def test_photo_with_alt():
     assert_equal('/photo.jpg', exp_result['items'][5]['properties']['in-reply-to'][0]['value'])
     assert_equal('', exp_result['items'][5]['properties']['in-reply-to'][0]['properties']['photo'][0]['alt'])
     assert_equal('', exp_result['items'][5]['properties']['in-reply-to'][0]['alt'])
+
+
+def test_parse_id():
+    result = parse_fixture("parse_id.html")
+    assert_equal("recentArticles", result['items'][0]['id'])
+    assert_equal("article", result['items'][0]['children'][0]['id'])
+    assert_equal("theAuthor", result['items'][0]['properties']['author'][0]['id'])
 
 # unicode tests
 
