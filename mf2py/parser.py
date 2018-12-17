@@ -221,6 +221,11 @@ class Parser(object):
             # insert children if any
             if children:
                 microformat["children"] = children
+
+            Id = get_attr(el, 'id')
+            if Id:
+                microformat['id'] = Id
+
             # simple value is the parsed property value if it were not
             # an h-* class
             if simple_value is not None:
