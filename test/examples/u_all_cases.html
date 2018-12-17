@@ -1,0 +1,48 @@
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Hello World</title>
+  <base href="http://example.com/" />
+</head>
+<body>
+<article class="h-entry">
+    <h1><a  class="p-name">Testing variations of u-properties</a></h1>
+        <ul>
+            <!--if a.u-x[href] or area.u-x[href] or link.u-x[href], then get the href attribute -->
+            <li><a class="u-url" href="/test"></a></li>
+            <li><a class="u-url" href="http://example.com/test"></a></li>
+            <li><area class="u-url" href="/test"></li>
+            <li><area class="u-url" href="http://example.com/test"></li>
+            <li><link class="u-url" href="/test"></li>
+            <li><link class="u-url" href="http://example.com/test"></li>
+            <!--else if img.u-x[src] or audio.u-x[src] or video.u-x[src] or source.u-x[src] or iframe.u-x[src], then get the src attribute-->
+            <li><img class="u-url" src="/test"></li>
+            <li><img class="u-url" src="http://example.com/test"></li>
+            <li><audio class="u-url" src="/test"></audio></li>
+            <li><audio class="u-url" src="http://example.com/test"></audio></li>
+            <li><video class="u-url" src="/test"><source class="u-url" src="/test"></video></li>
+            <li><video class="u-url" src="http://example.com/test"><source class="u-url" src="http://example.com/test"></video></li>
+            <!--else if video.u-x[poster], then get the poster attribute-->
+            <li><video class="u-url" poster="/test"></video></li>
+            <li><video class="u-url" poster="http://example.com/test"></video></li>
+            <!--else if object.u-x[data], then get the data attribute-->
+            <li><object class="u-url" data="/test"></object></li>
+            <li><object class="u-url" data="http://example.com/test"></object></li>
+            <!-- else parse the element for the value-class-pattern. If a value is found, get it-->
+            <!-- no test case -->
+            <!-- else if abbr.u-x[title], then get the title attribute-->
+            <li><abbr class="u-url" title="/test">CHEESE</abbr></li>
+            <li><abbr class="u-url" title="http://example.com/test">CHEESE</abbr></li>
+            <!-- else if data.u-x[value] or input.u-x[value], then get the value attribute-->
+            <li><data class="u-url" value="/test"></data></li>
+            <li><data class="u-url" value="http://example.com/test"></data></li>
+            <li><input class="u-url" value="/test"></li>
+            <li><input class="u-url" value="http://example.com/test"></li>
+            <!-- else get the textContent of the element after removing all leading/trailing whitespace and nested <script> & <style> elements-->
+            <li><p class="u-url">/test</p></li>
+            <li><p class="u-url">http://example.com/test</p></li>
+            <li><p class="u-url">       /test        </p></li>
+            <li><p class="u-url">       /test<script>dsjfskjflkds</script>        </p></li>
+        </ul>
+</article>
+</body>

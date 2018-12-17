@@ -922,3 +922,13 @@ def make_labelled_cmp(label):
     f = lambda html1, html2: assert_equal(html1,html2)
     f.description = label
     return f
+
+def test_all_u_cases():
+    """ test variations of u- parsing and that relative urls are always resolved """
+
+    URL_COUNT = 28
+    result = parse_fixture("u_all_cases.html")
+
+    assert_equal(URL_COUNT, len(result['items'][0]['properties']['url']))
+    for i in range(URL_COUNT):
+        yield make_labelled_cmp("all_u_cases_" + str(i)), "http://example.com/test", result['items'][0]['properties']['url'][i]

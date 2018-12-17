@@ -49,21 +49,18 @@ def url(el, dict_class, img_with_alt, base_url=''):
     if prop_value is None:
         prop_value = get_attr(el, "data", check_name="object")
 
-    if prop_value is not None:
-        return try_urljoin(base_url, prop_value)
+    if prop_value is None:
+        # handle value-class-pattern
+        prop_value = value_class_pattern.text(el)
 
-    # handle value-class-pattern
-    prop_value = value_class_pattern.text(el)
-    if prop_value is not None:
-        return prop_value
-
-    prop_value = get_attr(el, "title", check_name="abbr")
+    if prop_value is None:
+        prop_value = get_attr(el, "title", check_name="abbr")
     if prop_value is None:
         prop_value = get_attr(el, "value", check_name=("data", "input"))
     if prop_value is None:
         prop_value = get_textContent(el)
 
-    return prop_value
+    return try_urljoin(base_url, prop_value)
 
 
 def datetime(el, default_date=None):
