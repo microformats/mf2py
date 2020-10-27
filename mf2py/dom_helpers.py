@@ -141,7 +141,7 @@ def get_textContent(el, replace_img=False, img_to_src=True, base_url=''):
 
         return items
 
-    results = [t for t in text_collection(el, replace_img, img_to_src, base_url) if t is not '']
+    results = [t for t in text_collection(el, replace_img, img_to_src, base_url) if t != '']
 
     if results:
         # remove <space> if it is first and last or if it is preceded by a <space> or <p> open/close
