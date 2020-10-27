@@ -261,7 +261,7 @@ class Parser(object):
 
             if root_class_names:
                 parsed_types_aggregation.add('h')
-            
+
             # Is this a property element (p-*, u-*, etc.) flag
             # False is default
             is_property_el = False
@@ -384,7 +384,7 @@ class Parser(object):
 
                 # 1st one wins
                 if "text" not in value_dict:
-                    value_dict["text"] = el.get_text().strip()  
+                    value_dict["text"] = el.get_text().strip()
 
                 url_rels = value_dict.get("rels", [])
                 value_dict["rels"] = url_rels
@@ -411,7 +411,7 @@ class Parser(object):
                     alternate_dict["url"] = url
                     x = " ".join(
                         [r for r in rel_attrs if not r == "alternate"])
-                    if x is not "":
+                    if x != "":
                         alternate_dict["rel"] = x
                     alternate_dict["text"] = text_type(el.get_text().strip())
                     for knownattr in ("media", "hreflang", "type", "title"):
