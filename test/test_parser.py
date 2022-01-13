@@ -45,7 +45,7 @@ def test_open_file():
 def test_doc_tag():
     # test that strings, BS doc and BS tags are all parsed
     doc = '''<article class="h-entry"></article>'''
-    soup = BeautifulSoup(doc)
+    soup = BeautifulSoup(doc, 'html5lib')
     parse_string = Parser(doc).to_dict()
     assert 'h-entry' in parse_string['items'][0]['type']
     parse_doc = Parser(soup).to_dict()
