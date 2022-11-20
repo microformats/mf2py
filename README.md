@@ -1,8 +1,6 @@
 mf2py
 =====
 
-[![Build Status](https://travis-ci.org/microformats/mf2py.svg?branch=master)](https://travis-ci.org/microformats/mf2py)
-
 Python parser for [microformats 2](http://microformats.org/wiki/Microformats2).
 
 Current status: Full-featured and mostly stable. Implements the full
