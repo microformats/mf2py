@@ -26,11 +26,10 @@ setup(name='mf2py',
       tests_require=[
           'lxml',
           'mock',
-          'nose',
+          'pytest',
       ],
       packages=['mf2py'],
       package_data={'mf2py': ['backcompat-rules/*.json']},
-      test_suite='nose.collector',
       classifiers=[
           'Development Status :: 4 - Beta',
           'Intended Audience :: Developers',
