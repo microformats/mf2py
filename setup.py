@@ -19,7 +19,7 @@ setup(name='mf2py',
       url='http://microformats.org/wiki/mf2py',
       install_requires=[
           # Keep in sync with requirements.txt!
-          'html5lib>=1.0.1',
+          'html5lib>=1.1',
           'requests>=2.18.4',
           'BeautifulSoup4>=4.6.0',
       ],
