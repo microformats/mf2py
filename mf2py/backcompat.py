@@ -1,4 +1,3 @@
-# coding: utf-8
 """Looks for classic microformats class names and augments them with
 microformats2 names. Ported and adapted from php-mf2.
 
@@ -24,7 +23,6 @@ child['class'] = child_classes
 
 """
 
-from __future__ import unicode_literals, print_function
 from .dom_helpers import get_children
 from .mf_helpers import unordered_list
 from . import mf2_classes
@@ -33,12 +31,7 @@ import copy
 import os
 import codecs
 import json
-
-import sys
-if sys.version < '3':
-    from urllib import unquote
-else:
-    from urllib.parse import unquote
+from urllib.parse import unquote
 
 # Classic map
 _CLASSIC_MAP = {}

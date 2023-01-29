@@ -1,6 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals, print_function
-
 from bs4 import BeautifulSoup, FeatureNotFound
 from bs4.element import Tag
 
@@ -12,17 +9,8 @@ from .mf_helpers import unordered_list
 
 import json
 import requests
-import sys
 import copy
-
-if sys.version < '3':
-    from urlparse import urlparse
-    text_type = unicode
-    binary_type = str
-else:
-    from urllib.parse import urlparse
-    text_type = str
-    binary_type = bytes
+from urllib.parse import urlparse
 
 
 def parse(doc=None, url=None, html_parser=None, img_with_alt=False):
@@ -80,7 +68,7 @@ class Parser(object):
             ('debug', self.dict_class([
                 ('description', self.ua_desc),
                 ('source', self.ua_url),
-                ('version', text_type(__version__))
+                ('version', __version__)
             ]))
         ])
         self.__img_with_alt__ = img_with_alt
@@ -205,18 +193,18 @@ class Parser(object):
 
             # build microformat with type and properties
             microformat = self.dict_class([
-                ("type", [text_type(class_name)
+                ("type", [class_name
                           for class_name in sorted(root_class_names)]),
                 ("properties", properties),
             ])
-            if str(el.name) == "area":
+            if el.name == "area":
                 shape = get_attr(el, 'shape')
                 if shape is not None:
-                    microformat['shape'] = text_type(shape)
+                    microformat['shape'] = shape
 
                 coords = get_attr(el, 'coords')
                 if coords is not None:
-                    microformat['coords'] = text_type(coords)
+                    microformat['coords'] = coords
 
             # insert children if any
             if children:
@@ -236,7 +224,7 @@ class Parser(object):
                     # details: https://github.com/microformats/mf2py/issues/35
                     microformat.update(simple_value)
                 else:
-                    microformat["value"] = text_type(simple_value)
+                    microformat["value"] = simple_value
 
             return microformat
 
@@ -275,7 +263,7 @@ class Parser(object):
 
                 # if value has not been parsed then parse it
                 if p_value is None:
-                    p_value = text_type(parse_property.text(el, base_url=self.__url__))
+                    p_value = parse_property.text(el, base_url=self.__url__)
 
                 if root_class_names:
                     prop_value.append(handle_microformat(
@@ -303,7 +291,7 @@ class Parser(object):
                     if isinstance(u_value, self.dict_class):
                         prop_value.append(u_value)
                     else:
-                        prop_value.append(text_type(u_value))
+                        prop_value.append(u_value)
 
             # Parse datetime dt-* properties.
             dt_value = None
@@ -324,10 +312,10 @@ class Parser(object):
                     stops_implied_name = True
                     prop_value.append(handle_microformat(
                         root_class_names, el,
-                        simple_value=text_type(dt_value), backcompat_mode=backcompat_mode))
+                        simple_value=dt_value, backcompat_mode=backcompat_mode))
                 else:
                     if dt_value is not None:
-                        prop_value.append(text_type(dt_value))
+                        prop_value.append(dt_value)
 
             # Parse embedded markup e-* properties.
             e_value = None
@@ -374,7 +362,7 @@ class Parser(object):
         def parse_rels(el):
             """Parse an element for rel microformats
             """
-            rel_attrs = [text_type(rel) for rel in get_attr(el, 'rel')]
+            rel_attrs = get_attr(el, 'rel')
             # if rel attributes exist
             if rel_attrs is not None:
                 # find the url and normalise it
@@ -393,7 +381,7 @@ class Parser(object):
                     x = get_attr(el, knownattr)
                     # 1st one wins
                     if x is not None and knownattr not in value_dict:
-                        value_dict[knownattr] = text_type(x)
+                        value_dict[knownattr] = x
 
                 self.__parsed__["rel-urls"][url] = value_dict
 
@@ -413,11 +401,11 @@ class Parser(object):
                         [r for r in rel_attrs if not r == "alternate"])
                     if x != "":
                         alternate_dict["rel"] = x
-                    alternate_dict["text"] = text_type(el.get_text().strip())
+                    alternate_dict["text"] = el.get_text().strip()
                     for knownattr in ("media", "hreflang", "type", "title"):
                         x = get_attr(el, knownattr)
                         if x is not None:
-                            alternate_dict[knownattr] = text_type(x)
+                            alternate_dict[knownattr] = x
                     alternate_list.append(alternate_dict)
                     self.__parsed__["alternates"] = alternate_list
 
@@ -463,9 +451,9 @@ class Parser(object):
         # add actual parser used to debug
         # uses builder.NAME from BeautifulSoup
         if self.__html_parser__:
-            self.__parsed__["debug"]["markup parser"] = text_type(self.__html_parser__)
+            self.__parsed__["debug"]["markup parser"] = self.__html_parser__
         else:
-            self.__parsed__["debug"]["markup parser"] = text_type('unknown')
+            self.__parsed__["debug"]["markup parser"] = 'unknown'
 
     def to_dict(self, filter_by_type=None):
         """Get a dictionary version of the parsed microformat document.

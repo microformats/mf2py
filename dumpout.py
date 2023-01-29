@@ -1,5 +1,3 @@
-# coding: utf-8
-
 from mf2py import Parser
 import os.path
 import glob

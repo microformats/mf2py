@@ -1,5 +1,3 @@
-from __future__ import unicode_literals, print_function
-
 import os
 import re
 import sys
@@ -11,13 +9,6 @@ from unittest import TestCase
 
 TestCase.maxDiff = None
 
-
-if sys.version < '3':
-    text_type = unicode
-    binary_type = str
-else:
-    text_type = str
-    binary_type = bytes
 
 TEST_DIR = 'test/examples/'
 
@@ -815,13 +806,13 @@ def get_all_files():
 def assert_unicode_everywhere(obj):
     if isinstance(obj, dict):
         for k, v in obj.items():
-            assert not isinstance(k, binary_type), 'key=%r; type=%r' % (k, type(k))
+            assert not isinstance(k, bytes), 'key=%r; type=%r' % (k, type(k))
             assert_unicode_everywhere(v)
     elif isinstance(obj, list):
         for v in obj:
             assert_unicode_everywhere(v)
 
-    assert not isinstance(obj, binary_type), 'value=%r; type=%r' % (obj, type(obj))
+    assert not isinstance(obj, bytes), 'value=%r; type=%r' % (obj, type(obj))
 
 
 def check_unicode(filename, jsonblob):

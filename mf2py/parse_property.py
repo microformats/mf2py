@@ -1,19 +1,11 @@
 """functions to parse the properties of elements"""
-from __future__ import unicode_literals, print_function
 
 from .dom_helpers import get_attr, get_img_src_alt, get_textContent, try_urljoin
 from .datetime_helpers import normalize_datetime, DATETIME_RE, TIME_RE
 from . import value_class_pattern
 
-import sys
 import re
 
-if sys.version < '3':
-    text_type = unicode
-    binary_type = str
-else:
-    text_type = str
-    binary_type = bytes
 
 def text(el, base_url=''):
     """Process p-* properties"""
