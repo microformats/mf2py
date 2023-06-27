@@ -1,9 +1,6 @@
-![mf2py banner](banner.png)
+# Home
 
-[![version](https://badge.fury.io/py/mf2py.svg?)](https://badge.fury.io/py/mf2py)
-[![downloads](https://img.shields.io/pypi/dm/mf2py)](https://pypistats.org/packages/mf2py)
-[![license](https://img.shields.io/pypi/l/mf2py?)](https://github.com/microformats/mf2py/blob/main/LICENSE)
-[![python-version](https://img.shields.io/pypi/pyversions/mf2py)](https://badge.fury.io/py/mf2py)
+![mf2py banner](banner.png)
 
 ## Welcome 👋
 
