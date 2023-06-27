@@ -19,18 +19,17 @@ setup(name='mf2py',
       url='http://microformats.org/wiki/mf2py',
       install_requires=[
           # Keep in sync with requirements.txt!
-          'html5lib>=1.0.1',
+          'html5lib>=1.1',
           'requests>=2.18.4',
           'BeautifulSoup4>=4.6.0',
       ],
       tests_require=[
           'lxml',
           'mock',
-          'nose',
+          'pytest',
       ],
       packages=['mf2py'],
       package_data={'mf2py': ['backcompat-rules/*.json']},
-      test_suite='nose.collector',
       classifiers=[
           'Development Status :: 4 - Beta',
           'Intended Audience :: Developers',

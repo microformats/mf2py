@@ -26,5 +26,5 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt --user
-      - name: Run tests with Nose
-        run: python -m nose --exclude=test_suite
+      - name: Run tests with pytest
+        run: pytest
