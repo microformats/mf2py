@@ -57,7 +57,7 @@ class Parser(object):
 
     dict_class = dict
 
-    def __init__(self, doc=None, url=None, html_parser=None, img_with_alt=False):
+    def __init__(self, doc=None, url=None, html_parser=None, img_with_alt=True):
         self.__url__ = None
         self.__doc__ = None
         self._preserve_doc = False
