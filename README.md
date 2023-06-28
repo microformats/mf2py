@@ -1,4 +1,4 @@
-![mf2py banner](banner.png)
+![mf2py banner](http://microformats.github.io/mf2py/banner.png)
 
 [![version](https://badge.fury.io/py/mf2py.svg?)](https://badge.fury.io/py/mf2py)
 [![downloads](https://img.shields.io/pypi/dm/mf2py)](https://pypistats.org/packages/mf2py)
