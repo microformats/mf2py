@@ -17,6 +17,7 @@ setup(name='mf2py',
       author='Tom Morris',
       author_email='tom@tommorris.org',
       url='http://microformats.org/wiki/mf2py',
+      python_requires='>=2.7',
       install_requires=[
           # Keep in sync with requirements.txt!
           'html5lib>=1.1',

@@ -1,0 +1,46 @@
+site_name: mf2py
+site_url: https://microformats.github.io/mf2py
+site_author: Microformats
+site_description: A microformats2 parser written in Python.
+repo_name: microformats/mf2py
+repo_url: https://github.com/microformats/mf2py
+edit_uri: https://github.com/microformats/mf2py/tree/main/docs
+copyright: MIT License
+
+extra_css:
+  - stylesheets/styles.css
+
+nav:
+  - Home: index.md
+  - Parse a Document: parser.md
+  - Changelog: changelog.md
+
+theme:
+  name: 'material'
+  logo: https://microformats.org/microformats-logo.png
+  favicon: https://microformats.org/microformats-logo.png
+  palette:
+    # Palette for light mode
+    - scheme: default
+      primary: 'custom'
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+plugins:
+  - mkdocstrings
+  - search
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - attr_list
+  - md_in_html
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
