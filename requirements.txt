@@ -3,6 +3,6 @@ html5lib==1.1
 pytest==7.2.1
 mock==2.0.0
 lxml==4.9.1
-requests==2.21.0
+requests==2.31.0
 BeautifulSoup4==4.6.3
 -e .
