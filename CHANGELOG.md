@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## 1.1.3 - 2022-06-28
+## 1.1.3 - 2023-06-28
 - reduce instances where photo is implied (#135)
 - always do relative URL resolution (#138)
 - VCP now handles tz offsets without leading zeros (#142)
