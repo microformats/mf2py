@@ -4,4 +4,4 @@
 
 import importlib.metadata
 
-__version__ = importlib.metadata.metadata("microformats")["Version"]
+__version__ = importlib.metadata.metadata("mf2py")["Version"]
