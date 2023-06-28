@@ -1,4 +1,3 @@
-from __future__ import unicode_literals, print_function
 import glob
 import json
 import mf2py

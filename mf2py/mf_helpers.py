@@ -14,7 +14,7 @@ def get_url(mf):
 
     urls = []
     for item in mf:
-        if isinstance(item, basestring):
+        if isinstance(item, str):
             urls.append(item)
         elif (isinstance(item, dict)
               and any(x.startswith('h-') for x in item.get('type', []))):

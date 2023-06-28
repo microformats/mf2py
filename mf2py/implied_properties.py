@@ -1,14 +1,5 @@
-from __future__ import unicode_literals, print_function
 from . import mf2_classes
 from .dom_helpers import get_attr, get_img_src_alt, get_children, get_textContent, try_urljoin
-import sys
-
-if sys.version < '3':
-    text_type = unicode
-    binary_type = str
-else:
-    text_type = str
-    binary_type = bytes
 
 
 def name(el, base_url=''):
@@ -28,12 +19,12 @@ def name(el, base_url=''):
     # if image or area use alt text if not empty
     prop_value = get_attr(el, "alt", check_name=("img", "area"))
     if non_empty(prop_value):
-        return text_type(prop_value)
+        return prop_value
 
     # if abbreviation use the title if not empty
     prop_value = get_attr(el, "title", check_name="abbr")
     if non_empty(prop_value):
-        return text_type(prop_value)
+        return prop_value
 
     # find candidate child or grandchild
     poss_child = None
@@ -60,12 +51,12 @@ def name(el, base_url=''):
         # use alt if possible child is img or area
         prop_value = get_attr(poss_child, "alt", check_name=("img", "area"))
         if non_empty(prop_value):
-            return text_type(prop_value)
+            return prop_value
 
         # use title if possible child is abbr
         prop_value = get_attr(poss_child, "title", check_name="abbr")
         if non_empty(prop_value):
-            return text_type(prop_value)
+            return prop_value
 
     # use text if all else fails
     # replace images with alt but not with src in implied name
@@ -113,7 +104,7 @@ def photo(el, dict_class, img_with_alt, base_url=''):
     # if element is an object use data if exists
     prop_value = get_attr(el, "data", check_name="object")
     if prop_value is not None:
-        return text_type(prop_value)
+        return prop_value
 
     # find candidate child or grandchild
     poss_child = None
@@ -137,7 +128,7 @@ def photo(el, dict_class, img_with_alt, base_url=''):
         # object get data
         prop_value = get_attr(poss_child, "data", check_name="object")
         if prop_value is not None:
-            return text_type(prop_value)
+            return prop_value
 
 
 def url(el, base_url=''):
@@ -172,7 +163,7 @@ def url(el, base_url=''):
     # if element is a <a> or area use its href if exists
     prop_value = get_attr(el, "href", check_name=("a", "area"))
     if prop_value is not None:  # an empty href is valid
-        return text_type(try_urljoin(base_url, prop_value))
+        return try_urljoin(base_url, prop_value)
 
     # find candidate child or grandchild
     poss_child = None
@@ -190,4 +181,4 @@ def url(el, base_url=''):
     if poss_child is not None:
         prop_value = get_attr(poss_child, "href", check_name=("a", "area"))
         if prop_value is not None:  # an empty href is valid
-            return text_type(try_urljoin(base_url, prop_value))
+            return try_urljoin(base_url, prop_value)

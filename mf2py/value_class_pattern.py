@@ -1,7 +1,5 @@
 """functions to parse the properties of elements according to the value class pattern http://microformats.org/wiki/value-class-pattern """
 
-from __future__ import unicode_literals, print_function
-
 from .dom_helpers import get_children
 from .datetime_helpers import normalize_datetime, DATETIME_RE, TIME_RE, DATE_RE, TIMEZONE_RE
 

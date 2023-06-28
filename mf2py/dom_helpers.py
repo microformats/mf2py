@@ -1,20 +1,8 @@
-from __future__ import unicode_literals
-
-import sys
 import bs4
 import re
+from urllib.parse import urljoin
 
 from bs4.element import Tag, NavigableString, Comment
-
-if sys.version < '3':
-    from urlparse import urljoin
-    text_type = unicode
-    binary_type = str
-else:
-    from urllib.parse import urljoin
-    text_type = str
-    binary_type = bytes
-    basestring = str
 
 
 _whitespace_to_space_regex = re.compile(r"[\n\t\r]+")
@@ -46,7 +34,7 @@ def get_attr(el, attr, check_name=None):
     """
     if check_name is None:
         return el.get(attr)
-    if isinstance(check_name, basestring) and el.name == check_name:
+    if isinstance(check_name, str) and el.name == check_name:
         return el.get(attr)
     if isinstance(check_name, (tuple, list)) and el.name in check_name:
         return el.get(attr)
@@ -64,11 +52,11 @@ def get_img_src_alt(img, dict_class, img_with_alt, base_url=''):
         src = try_urljoin(base_url, src)
 
         if alt is None or not img_with_alt:
-            return text_type(src)
+            return src
         else:
             return dict_class([
-                                ("value", text_type(src)),
-                                ("alt", text_type(alt))
+                                ("value", src),
+                                ("alt", alt)
                             ])
 
 def get_children(node):
@@ -105,7 +93,7 @@ def get_textContent(el, replace_img=False, img_to_src=True, base_url=''):
             items = []
 
         elif isinstance(el, NavigableString):
-            value = text_type(el)
+            value = el
             # replace \t \n \r by space
             value = _whitespace_to_space_regex.sub(' ', value)
             # replace multiple spaces with one space
@@ -123,7 +111,7 @@ def get_textContent(el, replace_img=False, img_to_src=True, base_url=''):
                     value = try_urljoin(base_url, value)
 
             if value is not None:
-                items = [' ', text_type(value), ' ']
+                items = [' ', value, ' ']
 
         elif el.name == 'br':
             items = ['\n']
@@ -160,7 +148,7 @@ def get_textContent(el, replace_img=False, img_to_src=True, base_url=''):
 
     if results:
         # remove leading whitespace and <int> i.e. next lines
-        while ((isinstance(results[0], basestring) and (results[0] == '' or results[0].isspace())) or
+        while ((isinstance(results[0], str) and (results[0] == '' or results[0].isspace())) or
                results[0] in (P_BREAK_BEFORE, P_BREAK_AFTER)):
             results.pop(0)
             if not results:
@@ -168,7 +156,7 @@ def get_textContent(el, replace_img=False, img_to_src=True, base_url=''):
 
     if results:
         # remove trailing whitespace and <int> i.e. next lines
-        while ((isinstance(results[-1], basestring) and (results[-1] == '' or results[-1].isspace())) or
+        while ((isinstance(results[-1], str) and (results[-1] == '' or results[-1].isspace())) or
                results[-1] in (P_BREAK_BEFORE, P_BREAK_AFTER)):
             results.pop(-1)
             if not results:
@@ -176,9 +164,9 @@ def get_textContent(el, replace_img=False, img_to_src=True, base_url=''):
 
     # trim leading and trailing non-<pre> whitespace
     if results:
-        if isinstance(results[0], basestring):
+        if isinstance(results[0], str):
             results[0] = results[0].lstrip()
-        if isinstance(results[-1], basestring):
+        if isinstance(results[-1], str):
             results[-1] = results[-1].rstrip()
 
     # create final string by concatenating replacing consecutive sequence of <int> by largest value number of \n

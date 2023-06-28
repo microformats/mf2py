@@ -1,5 +1,4 @@
 '''helper functions to deal wit datetime strings'''
-from __future__ import unicode_literals, print_function
 
 import re
 from datetime import datetime
@@ -47,7 +46,7 @@ def normalize_datetime(dtstr, match=None):
                     hourstr = '00'
 
                 if (ampmstr.startswith('p') or ampmstr.startswith('P')) and hourint < 12:
-                    hourstr = str(hourint + 12)
+                    hourstr = hourint + 12
 
 
             dtstr = '%s%s%s:%s' % (
