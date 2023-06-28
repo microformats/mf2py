@@ -10,3 +10,4 @@ mf2py.egg-info/
 nbproject/
 venv/
 *~
+poetry.lock

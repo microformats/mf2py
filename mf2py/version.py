@@ -2,4 +2,6 @@
 # the value without loading mf2py (loading mf2py is bad if its dependencies
 # haven't been installed yet, which is common during setup)
 
-__version__ = '2.0.0'
+import importlib.metadata
+
+__version__ = importlib.metadata.metadata("microformats")["Version"]
