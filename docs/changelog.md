@@ -1,6 +1,13 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 1.1.3 - 2022-06-28
+- reduce instances where photo is implied (#135)
+- always do relative URL resolution (#138)
+- VCP now handles tz offsets without leading zeros (#142)
+- implement id parsing (#143)
+- fix outdated syntax causing SyntaxWarning (#157)
+
 ## 1.1.2 - 2018-08-08
 - add parsing for iframe.u-*[src] (#116)
 - bug fix: reduced implied urls (#117)
