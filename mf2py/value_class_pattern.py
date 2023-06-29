@@ -1,15 +1,10 @@
 """functions to parse the properties of elements according to the value class pattern http://microformats.org/wiki/value-class-pattern """
 
-from .dom_helpers import get_children
-from .datetime_helpers import (
-    normalize_datetime,
-    DATETIME_RE,
-    TIME_RE,
-    DATE_RE,
-    TIMEZONE_RE,
-)
-
 import re
+
+from .datetime_helpers import (DATE_RE, DATETIME_RE, TIME_RE, TIMEZONE_RE,
+                               normalize_datetime)
+from .dom_helpers import get_children
 
 
 def _get_vcp_value(el):

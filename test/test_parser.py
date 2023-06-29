@@ -1,11 +1,12 @@
 import os
 import re
 import sys
+from unittest import TestCase
 
 import mock
-from mf2py import Parser
 from bs4 import BeautifulSoup
-from unittest import TestCase
+
+from mf2py import Parser
 
 TestCase.maxDiff = None
 

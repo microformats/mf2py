@@ -23,15 +23,17 @@ child['class'] = child_classes
 
 """
 
+import codecs
+import copy
+import json
+import os
+from urllib.parse import unquote
+
+import bs4
+
+from . import mf2_classes
 from .dom_helpers import get_children
 from .mf_helpers import unordered_list
-from . import mf2_classes
-import bs4
-import copy
-import os
-import codecs
-import json
-from urllib.parse import unquote
 
 # Classic map
 _CLASSIC_MAP = {}

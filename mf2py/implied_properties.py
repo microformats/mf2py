@@ -1,11 +1,6 @@
 from . import mf2_classes
-from .dom_helpers import (
-    get_attr,
-    get_img_src_alt,
-    get_children,
-    get_textContent,
-    try_urljoin,
-)
+from .dom_helpers import (get_attr, get_children, get_img_src_alt,
+                          get_textContent, try_urljoin)
 
 
 def name(el, base_url=""):
