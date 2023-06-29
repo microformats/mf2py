@@ -455,7 +455,7 @@ def test_implied_nested_photo_alt_name():
 
 def test_implied_image():
     result = parse_fixture("implied_properties/implied_properties.html")
-    assert result["items"][4]["properties"]["photo"][0] == "http://tommorris.org/photo.png"
+    assert result["items"][4]["properties"]["photo"][0] == {"alt": "Tom Morris", "value": "http://tommorris.org/photo.png"}
     assert result["items"][4]["properties"]["name"][0] == "Tom Morris"
 
 def test_implied_name_empty_alt():
@@ -741,7 +741,7 @@ def test_photo_with_alt():
     assert '/photo.jpg' == result['items'][0]['properties']['photo'][0]
     assert '/photo.jpg' == exp_result['items'][0]['properties']['photo'][0]
 
-    assert '/photo.jpg' == result['items'][1]['properties']['url'][0]
+    assert {'alt': 'alt text', 'value': '/photo.jpg'} == result['items'][1]['properties']['url'][0]
     assert '/photo.jpg' == exp_result['items'][1]['properties']['url'][0]['value']
     assert 'alt text' == exp_result['items'][1]['properties']['url'][0]['alt']
 
