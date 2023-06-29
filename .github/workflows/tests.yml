@@ -40,5 +40,5 @@ jobs:
         with:
           options: "--check --verbose"
           src: "./mf2py"
-          version: "21.5b1"
+          version: "23.3"
       - uses: isort/isort-action@v1
