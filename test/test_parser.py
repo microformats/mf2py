@@ -441,9 +441,9 @@ def test_stop_implied_url():
 
 def test_implied_nested_photo():
     result = parse_fixture("implied_properties/implied_properties.html", url="http://bar.org")
-    assert result["items"][2]["properties"]["photo"][0] == "http://tommorris.org/photo.png"
+    assert result["items"][2]["properties"]["photo"][0] == {"alt": "", "value": "http://tommorris.org/photo.png"}
     assert result["items"][3]["properties"]["photo"][0] == "http://tommorris.org/photo.png"
-    assert result["items"][4]["properties"]["photo"][0] == "http://tommorris.org/photo.png"
+    assert result["items"][4]["properties"]["photo"][0] == {"alt": "Tom Morris", "value": "http://tommorris.org/photo.png"}
     # src="" is relative to the base url
     assert result["items"][6]["properties"]["photo"][0] == "http://bar.org"
 
@@ -471,7 +471,7 @@ def test_implied_name_empty_alt():
         'properties': {
             'name': ['@kylewmahan'],
             'url': ['https://twitter.com/kylewmahan'],
-            'photo': ['https://example.org/test.jpg'],
+            'photo': [{'alt': '', 'value': 'https://example.org/test.jpg'}],
         },
     } == hcard
 
@@ -513,7 +513,7 @@ def test_implied_name_alt():
     assert result["items"][0]["children"][0] == \
                  {'type': ['h-card'],
                   'properties': {'name': ['Avatar of Stephen'],
-                                 'photo': ['avatar.jpg']}}
+                                 'photo': [{'alt': 'Avatar of', 'value': 'avatar.jpg'}]}}
 
 
 def test_value_name_whitespace():
