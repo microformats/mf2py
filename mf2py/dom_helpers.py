@@ -1,9 +1,8 @@
-import bs4
 import re
 from urllib.parse import urljoin
 
-from bs4.element import Tag, NavigableString, Comment
-
+import bs4
+from bs4.element import Comment, NavigableString, Tag
 
 _whitespace_to_space_regex = re.compile(r"[\n\t\r]+")
 _reduce_spaces_regex = re.compile(r" {2,}")

@@ -1,9 +1,11 @@
 import glob
 import json
-import mf2py
 import os.path
 import sys
+
 from test_parser import check_unicode
+
+import mf2py
 
 
 def test_mf2tests():

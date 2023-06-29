@@ -1,16 +1,16 @@
+import copy
+import json
+from urllib.parse import urlparse
+
+import requests
 from bs4 import BeautifulSoup, FeatureNotFound
 from bs4.element import Tag
 
-from . import backcompat, mf2_classes, implied_properties, parse_property
-from . import temp_fixes
-from .version import __version__
+from . import (backcompat, implied_properties, mf2_classes, parse_property,
+               temp_fixes)
 from .dom_helpers import get_attr, get_children, get_descendents, try_urljoin
 from .mf_helpers import unordered_list
-
-import json
-import requests
-import copy
-from urllib.parse import urlparse
+from .version import __version__
 
 
 def parse(doc=None, url=None, html_parser=None, img_with_alt=False):
