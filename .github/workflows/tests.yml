@@ -36,3 +36,9 @@ jobs:
         run: poetry install --no-interaction
       - name: Run tests
         run: poetry run pytest
+      - uses: psf/black@stable
+        with:
+          options: "--check --verbose"
+          src: "./"
+          version: "23.3"
+      - uses: isort/isort-action@v1
