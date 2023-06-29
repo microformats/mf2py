@@ -8,3 +8,4 @@
 - James <jamesg@jamesg.blog> https://jamesg.blog
 - Angelo Gladding <angelo@ragt.ag> https://ragt.ag
 - Paweł Miech https://pawelmhm.github.io/
+- Sven Knebel https://www.svenknebel.de
