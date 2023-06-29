@@ -39,6 +39,6 @@ jobs:
       - uses: psf/black@stable
         with:
           options: "--check --verbose"
-          src: "./mf2py"
+          src: "./"
           version: "23.3"
       - uses: isort/isort-action@v1
