@@ -6,8 +6,7 @@ import requests
 from bs4 import BeautifulSoup, FeatureNotFound
 from bs4.element import Tag
 
-from . import (backcompat, implied_properties, mf2_classes, parse_property,
-               temp_fixes)
+from . import backcompat, implied_properties, mf2_classes, parse_property, temp_fixes
 from .dom_helpers import get_attr, get_children, get_descendents, try_urljoin
 from .mf_helpers import unordered_list
 from .version import __version__

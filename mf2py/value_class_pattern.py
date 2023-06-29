@@ -2,8 +2,13 @@
 
 import re
 
-from .datetime_helpers import (DATE_RE, DATETIME_RE, TIME_RE, TIMEZONE_RE,
-                               normalize_datetime)
+from .datetime_helpers import (
+    DATE_RE,
+    DATETIME_RE,
+    TIME_RE,
+    TIMEZONE_RE,
+    normalize_datetime,
+)
 from .dom_helpers import get_children
 
 
