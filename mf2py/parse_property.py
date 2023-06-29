@@ -26,12 +26,12 @@ def text(el, base_url=""):
     return prop_value
 
 
-def url(el, dict_class, img_with_alt, base_url=""):
+def url(el, img_with_alt, base_url=""):
     """Process u-* properties"""
 
     prop_value = get_attr(el, "href", check_name=("a", "area", "link"))
     if prop_value is None:
-        prop_value = get_img_src_alt(el, dict_class, img_with_alt, base_url)
+        prop_value = get_img_src_alt(el, img_with_alt, base_url)
         if prop_value is not None:
             return prop_value
     if prop_value is None:

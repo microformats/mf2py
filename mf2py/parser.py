@@ -54,29 +54,20 @@ class Parser(object):
     ua_url = "https://github.com/microformats/mf2py"
     useragent = "{0} - version {1} - {2}".format(ua_desc, __version__, ua_url)
 
-    dict_class = dict
-
     def __init__(self, doc=None, url=None, html_parser=None, img_with_alt=True):
         self.__url__ = None
         self.__doc__ = None
         self._preserve_doc = False
-        self.__parsed__ = self.dict_class(
-            [
-                ("items", []),
-                ("rels", self.dict_class()),
-                ("rel-urls", self.dict_class()),
-                (
-                    "debug",
-                    self.dict_class(
-                        [
-                            ("description", self.ua_desc),
-                            ("source", self.ua_url),
-                            ("version", __version__),
-                        ]
-                    ),
-                ),
-            ]
-        )
+        self.__parsed__ = {
+            "items": [],
+            "rels": {},
+            "rel-urls": {},
+            "debug": {
+                "description": self.ua_desc,
+                "source": self.ua_url,
+                "version": __version__,
+            },
+        }
         self.__img_with_alt__ = img_with_alt
 
         # use default parser if none specified
@@ -161,7 +152,7 @@ class Parser(object):
             backcompat_mode=False,
         ):
             """Handles a (possibly nested) microformat, i.e. h-*"""
-            properties = self.dict_class()
+            properties = {}
             children = []
             self._default_date = None
             # for processing implied properties: collects if property types (p, e, u, d(t)) or children (h) have been processed
@@ -205,7 +196,6 @@ class Parser(object):
                 ):
                     x = implied_properties.photo(
                         el,
-                        self.dict_class,
                         self.__img_with_alt__,
                         base_url=self.__url__,
                     )
@@ -221,12 +211,10 @@ class Parser(object):
                         properties["url"] = [x]
 
             # build microformat with type and properties
-            microformat = self.dict_class(
-                [
-                    ("type", [class_name for class_name in sorted(root_class_names)]),
-                    ("properties", properties),
-                ]
-            )
+            microformat = {
+                "type": [class_name for class_name in sorted(root_class_names)],
+                "properties": properties,
+            }
             if el.name == "area":
                 shape = get_attr(el, "shape")
                 if shape is not None:
@@ -260,7 +248,7 @@ class Parser(object):
 
         def parse_props(el):
             """Parse the properties from a single element"""
-            props = self.dict_class()
+            props = {}
             children = []
             # for processing implied properties: collects if property types (p, e, u, d(t)) or children (h) have been processed
             parsed_types_aggregation = set()
@@ -318,7 +306,6 @@ class Parser(object):
                 if u_value is None:
                     u_value = parse_property.url(
                         el,
-                        self.dict_class,
                         self.__img_with_alt__,
                         base_url=self.__url__,
                     )
@@ -334,7 +321,7 @@ class Parser(object):
                         )
                     )
                 else:
-                    if isinstance(u_value, self.dict_class):
+                    if isinstance(u_value, dict):
                         prop_value.append(u_value)
                     else:
                         prop_value.append(u_value)
@@ -432,7 +419,7 @@ class Parser(object):
             if rel_attrs is not None:
                 # find the url and normalise it
                 url = try_urljoin(self.__url__, el.get("href", ""))
-                value_dict = self.__parsed__["rel-urls"].get(url, self.dict_class())
+                value_dict = self.__parsed__["rel-urls"].get(url, {})
 
                 # 1st one wins
                 if "text" not in value_dict:
@@ -459,7 +446,7 @@ class Parser(object):
                     self.__parsed__["rels"][rel_value] = value_list
                 if "alternate" in rel_attrs:
                     alternate_list = self.__parsed__.get("alternates", [])
-                    alternate_dict = self.dict_class()
+                    alternate_dict = {}
                     alternate_dict["url"] = url
                     x = " ".join([r for r in rel_attrs if not r == "alternate"])
                     if x != "":

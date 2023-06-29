@@ -73,12 +73,11 @@ def name(el, base_url=""):
     return get_textContent(el, replace_img=True, img_to_src=False, base_url=base_url)
 
 
-def photo(el, dict_class, img_with_alt, base_url=""):
+def photo(el, img_with_alt, base_url=""):
     """Find an implied photo property
 
     Args:
       el (bs4.element.Tag): a DOM element
-      dict_class: a python class used as a dictionary (set by the Parser object)
       img_with_alt: a flag to enable experimental parsing of alt attribute with img (set by the Parser object)
       base_url (string): the base URL to use, to reconcile relative URLs
 
@@ -106,7 +105,7 @@ def photo(el, dict_class, img_with_alt, base_url=""):
                 return poss_obj
 
     # if element is an img use source if exists
-    prop_value = get_img_src_alt(el, dict_class, img_with_alt, base_url)
+    prop_value = get_img_src_alt(el, img_with_alt, base_url)
     if prop_value is not None:
         return prop_value
 
@@ -133,7 +132,7 @@ def photo(el, dict_class, img_with_alt, base_url=""):
     # if a possible child was found parse
     if poss_child is not None:
         # img get src
-        prop_value = get_img_src_alt(poss_child, dict_class, img_with_alt, base_url)
+        prop_value = get_img_src_alt(poss_child, img_with_alt, base_url)
         if prop_value is not None:
             return prop_value
 
