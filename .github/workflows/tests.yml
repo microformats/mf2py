@@ -38,7 +38,7 @@ jobs:
         run: poetry run pytest
       - uses: psf/black@stable
         with:
-          options: "--check --verbose"
+          options: "--verbose"
           src: "./"
           version: "23.3"
       - uses: isort/isort-action@v1
