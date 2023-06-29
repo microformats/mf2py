@@ -9,12 +9,12 @@ _mf2_e_properties_re = re.compile("e-(:?[a-z0-9]+-)?[a-z]+(:?-[a-z]+)*$")
 def filter_classes(classes, regex=_mf2_classes_re):
     """detect classes that are valid names for mf2, sort in dictionary by prefix"""
 
-    types = {x: set() for x in ('u', 'p', 'dt', 'e', 'h')}
+    types = {x: set() for x in ("u", "p", "dt", "e", "h")}
     for c in classes:
         match = regex.match(c)
         if match:
             if c[0] == "h":
-                types['h'].add(c)
+                types["h"].add(c)
             else:
                 types[match.group(1)].add(match.group(2))
     return types
@@ -23,8 +23,10 @@ def filter_classes(classes, regex=_mf2_classes_re):
 def root(classes):
     return {c for c in classes if _mf2_roots_re.match(c)}
 
+
 def is_property_class(class_):
     return _mf2_properties_re.match(class_)
+
 
 def has_embedded_class(classes):
     return any(_mf2_e_properties_re.match(c) for c in classes)
