@@ -10,4 +10,4 @@ from .parser import Parser, parse
 from .mf_helpers import get_url
 
 
-__all__ = ['Parser', 'parse', 'get_url', '__version__']
+__all__ = ["Parser", "parse", "get_url", "__version__"]

@@ -7,7 +7,7 @@ from . import value_class_pattern
 import re
 
 
-def text(el, base_url=''):
+def text(el, base_url=""):
     """Process p-* properties"""
 
     # handle value-class-pattern
@@ -26,7 +26,7 @@ def text(el, base_url=''):
     return prop_value
 
 
-def url(el, dict_class, img_with_alt, base_url=''):
+def url(el, dict_class, img_with_alt, base_url=""):
     """Process u-* properties"""
 
     prop_value = get_attr(el, "href", check_name=("a", "area", "link"))
@@ -35,7 +35,9 @@ def url(el, dict_class, img_with_alt, base_url=''):
         if prop_value is not None:
             return prop_value
     if prop_value is None:
-        prop_value = get_attr(el, "src", check_name=("audio", "video", "source", "iframe"))
+        prop_value = get_attr(
+            el, "src", check_name=("audio", "video", "source", "iframe")
+        )
     if prop_value is None:
         prop_value = get_attr(el, "poster", check_name="video")
     if prop_value is None:
@@ -76,23 +78,25 @@ def datetime(el, default_date=None):
     if prop_value is None:
         prop_value = get_attr(el, "value", check_name=("data", "input"))
     if prop_value is None:
-        prop_value = get_textContent(el) 
+        prop_value = get_textContent(el)
 
     # if this is just a time, augment with default date
-    match = re.match(TIME_RE + '$', prop_value)
+    match = re.match(TIME_RE + "$", prop_value)
     if match and default_date:
-        prop_value = '%s %s' % (default_date, prop_value)
+        prop_value = "%s %s" % (default_date, prop_value)
         return normalize_datetime(prop_value), default_date
 
     # otherwise, treat it as a full date
-    match = re.match(DATETIME_RE + '$', prop_value)
-    return (normalize_datetime(prop_value, match=match),
-            match and match.group('date'),)
+    match = re.match(DATETIME_RE + "$", prop_value)
+    return (
+        normalize_datetime(prop_value, match=match),
+        match and match.group("date"),
+    )
 
 
-def embedded(el, base_url=''):
+def embedded(el, base_url=""):
     """Process e-* properties"""
     return {
-        'html': el.decode_contents().strip(),    # secret bs4 method to get innerHTML
-        'value': get_textContent(el, replace_img=True, base_url=base_url)
+        "html": el.decode_contents().strip(),  # secret bs4 method to get innerHTML
+        "value": get_textContent(el, replace_img=True, base_url=base_url),
     }
