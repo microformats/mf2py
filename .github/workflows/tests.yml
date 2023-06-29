@@ -42,3 +42,5 @@ jobs:
           src: "./"
           version: "23.3"
       - uses: isort/isort-action@v1
+        with:
+          configuration: ""
