@@ -745,7 +745,7 @@ def test_photo_with_alt():
     assert '/photo.jpg' == exp_result['items'][1]['properties']['url'][0]['value']
     assert 'alt text' == exp_result['items'][1]['properties']['url'][0]['alt']
 
-    assert '/photo.jpg' == result['items'][2]['properties']['in-reply-to'][0]
+    assert {'alt': '', 'value': '/photo.jpg'} == result['items'][2]['properties']['in-reply-to'][0]
     assert '/photo.jpg' == exp_result['items'][2]['properties']['in-reply-to'][0]['value']
     assert '' == exp_result['items'][2]['properties']['in-reply-to'][0]['alt']
 
@@ -761,9 +761,9 @@ def test_photo_with_alt():
     assert 'alt' not in exp_result['items'][3]['properties']['in-reply-to'][0]
 
     assert 'h-cite' in result['items'][4]['properties']['in-reply-to'][0]['type']
-    assert '/photo.jpg' == result['items'][4]['properties']['in-reply-to'][0]['properties']['photo'][0]
+    assert {'alt': 'alt text', 'value': '/photo.jpg'} == result['items'][4]['properties']['in-reply-to'][0]['properties']['photo'][0]
     assert '/photo.jpg' == result['items'][4]['properties']['in-reply-to'][0]['value']
-    assert 'alt' not in result['items'][4]['properties']['in-reply-to'][0]
+    assert 'alt' in result['items'][4]['properties']['in-reply-to'][0]
 
     assert 'h-cite' in exp_result['items'][4]['properties']['in-reply-to'][0]['type']
     assert '/photo.jpg' == exp_result['items'][4]['properties']['in-reply-to'][0]['properties']['photo'][0]['value']
@@ -772,9 +772,9 @@ def test_photo_with_alt():
     assert 'alt text' == exp_result['items'][4]['properties']['in-reply-to'][0]['alt']
 
     assert 'h-cite' in result['items'][5]['properties']['in-reply-to'][0]['type']
-    assert '/photo.jpg' == result['items'][5]['properties']['in-reply-to'][0]['properties']['photo'][0]
+    assert {'alt': '', 'value': '/photo.jpg'} == result['items'][5]['properties']['in-reply-to'][0]['properties']['photo'][0]
     assert '/photo.jpg' == result['items'][5]['properties']['in-reply-to'][0]['value']
-    assert 'alt' not in result['items'][5]['properties']['in-reply-to'][0]
+    assert 'alt' in result['items'][5]['properties']['in-reply-to'][0]
 
     assert 'h-cite' in exp_result['items'][5]['properties']['in-reply-to'][0]['type']
     assert '/photo.jpg' == exp_result['items'][5]['properties']['in-reply-to'][0]['properties']['photo'][0]['value']
