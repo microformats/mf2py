@@ -1,4 +1,4 @@
-## Contributing to mf2py 🛠️
+# Contributing to mf2py 🛠️
 
 Thank you for your interest in contributing to mf2py! In this document, we outline all you need to know to submit a contribution to the mf2py project.
 
