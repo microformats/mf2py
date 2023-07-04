@@ -46,6 +46,10 @@ jobs:
         python-version: ["3.8", "3.9", "3.10", "pypy3.8", "pypy3.9", "pypy3.10"]
     runs-on: "ubuntu-latest"
     steps:
+      - name: Install libxml2
+        run: |
+          sudo apt-get update
+          sudo apt-get install libxml2 libxml2-dev libxslt1-dev
       - uses: actions/checkout@v3
         with:
           python-version: ${{ matrix.python-version }}
@@ -58,6 +62,7 @@ jobs:
         with:
           version: 1.2.2
           virtualenvs-in-project: true
+      - run: echo "%APPDATA%\pypoetry\venv\Scripts\poetry" >> $GITHUB_PATH
       - name: Install dependencies
         run: poetry install --no-interaction --no-root
       - name: Install library
