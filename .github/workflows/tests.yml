@@ -79,6 +79,9 @@ jobs:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "pypy3.8", "pypy3.9", "pypy3.10"]
     runs-on: "windows-latest"
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v3
         with:
@@ -92,7 +95,6 @@ jobs:
         with:
           version: 1.2.2
           virtualenvs-in-project: true
-      - run: echo "%APPDATA%\pypoetry\venv\Scripts\poetry" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - name: Install dependencies
         run: poetry install --no-interaction --no-root
       - name: Install library
