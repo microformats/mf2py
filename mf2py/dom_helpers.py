@@ -53,7 +53,7 @@ def parse_srcset(srcset, base_url=''):
 
     return result
 
-def get_img_src_alt(img, dict_class, img_with_alt, base_url=""):
+def get_img_src_alt(img, img_with_alt, base_url=""):
     """given a img element, returns both src and alt attributes as a list of tuples if alt exists, else returns the src as a string
     use for alt parsing with img
     """
