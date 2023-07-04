@@ -1,4 +1,9 @@
-all:
-	pip install -r requirements.txt
+install:
+	poetry install
 test:
-	nosetests
+	poetry run pytest
+publish:
+	poetry publish --build
+lint:
+	poetry run black .
+	poetry run isort .

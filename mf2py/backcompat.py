@@ -1,4 +1,3 @@
-# coding: utf-8
 """Looks for classic microformats class names and augments them with
 microformats2 names. Ported and adapted from php-mf2.
 
@@ -24,52 +23,52 @@ child['class'] = child_classes
 
 """
 
-from __future__ import unicode_literals, print_function
+import codecs
+import copy
+import json
+import os
+from urllib.parse import unquote
+
+import bs4
+
+from . import mf2_classes
 from .dom_helpers import get_children
 from .mf_helpers import unordered_list
-from . import mf2_classes
-import bs4
-import copy
-import os
-import codecs
-import json
-
-import sys
-if sys.version < '3':
-    from urllib import unquote
-else:
-    from urllib.parse import unquote
 
 # Classic map
 _CLASSIC_MAP = {}
 
 # populate backcompat rules from JSON files
 
-_RULES_LOC = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'backcompat-rules')
+_RULES_LOC = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "backcompat-rules"
+)
 
 for filename in os.listdir(_RULES_LOC):
     file_path = os.path.join(_RULES_LOC, filename)
     root = os.path.splitext(filename)[0]
-    with codecs.open(file_path, 'r', 'utf-8') as f:
+    with codecs.open(file_path, "r", "utf-8") as f:
         rules = json.load(f)
 
-    _CLASSIC_MAP[root] = rules 
+    _CLASSIC_MAP[root] = rules
 
 
 def _make_classes_rule(old_classes, new_classes):
     """Builds a rule for augmenting an mf1 class with its mf2
     equivalent(s).
     """
+
     def f(child, **kwargs):
         child_original = child.original or copy.copy(child)
-        child_classes = child.get('class', [])[:]
+        child_classes = child.get("class", [])[:]
         if all(cl in child_classes for cl in old_classes):
             child_classes.extend([cl for cl in new_classes if cl not in child_classes])
-            child['class'] = child_classes
+            child["class"] = child_classes
 
             # if any new class is e-* attach original to parse originally authored HTML
             if mf2_classes.has_embedded_class(child_classes) and child.original is None:
                 child.original = child_original
+
     return f
 
 
@@ -80,60 +79,69 @@ def _rel_tag_to_category_rule(child, html_parser, **kwargs):
     <data class="p-category" value="cat"></data>
     """
 
-    href = child.get('href', '')
-    rels = child.get('rel', [])
-    if 'tag' in rels and href:
-        segments = [seg for seg in href.split('/') if seg]
+    href = child.get("href", "")
+    rels = child.get("rel", [])
+    if "tag" in rels and href:
+        segments = [seg for seg in href.split("/") if seg]
         if segments:
             if html_parser:
-                soup = bs4.BeautifulSoup('', features=html_parser)
+                soup = bs4.BeautifulSoup("", features=html_parser)
             else:
-                soup = bs4.BeautifulSoup('')
+                soup = bs4.BeautifulSoup("")
 
-            data = soup.new_tag('data')
+            data = soup.new_tag("data")
             # this does not use what's given in the JSON
             # but that is not a problem currently
             # use mf1 class so it doesn't get removed later
-            data['class'] = ['p-category']
-            data['value'] = unquote(segments[-1])
+            data["class"] = ["p-category"]
+            data["value"] = unquote(segments[-1])
             child.insert_before(data)
             # remove tag from rels to avoid repeat
             # new list created, original not modifed -> safe on incomplete copy
-            child['rel'] = [r for r in rels if r != 'tag']
+            child["rel"] = [r for r in rels if r != "tag"]
 
 
 def _make_rels_rule(old_rels, new_classes, html_parser):
-    """Builds a rule for augmenting an mf1 rel with its mf2 class equivalent(s).
-    """
+    """Builds a rule for augmenting an mf1 rel with its mf2 class equivalent(s)."""
 
     # need to special case rel=tag as it operates differently
 
     def f(child, **kwargs):
-        child_rels = child.get('rel', [])
-        child_classes = child.get('class', [])[:]
+        child_rels = child.get("rel", [])
+        child_classes = child.get("class", [])[:]
         if all(r in child_rels for r in old_rels):
-            if 'tag' in old_rels:
+            if "tag" in old_rels:
                 _rel_tag_to_category_rule(child, html_parser, **kwargs)
             else:
-                child_classes.extend([cl for cl in new_classes if cl not in child_classes])
-                child['class'] = child_classes
+                child_classes.extend(
+                    [cl for cl in new_classes if cl not in child_classes]
+                )
+                child["class"] = child_classes
+
     return f
 
 
 def _get_rules(old_root, html_parser):
-    """ for given mf1 root get the rules as a list of functions to act on children """
+    """for given mf1 root get the rules as a list of functions to act on children"""
 
-    class_rules = [_make_classes_rule(old_classes.split(), new_classes)
-                for old_classes, new_classes in _CLASSIC_MAP[old_root].get('properties', {}).items()]
-    rel_rules = [_make_rels_rule(old_rels.split(), new_classes, html_parser)
-                for old_rels, new_classes in _CLASSIC_MAP[old_root].get('rels', {}).items()]
+    class_rules = [
+        _make_classes_rule(old_classes.split(), new_classes)
+        for old_classes, new_classes in _CLASSIC_MAP[old_root]
+        .get("properties", {})
+        .items()
+    ]
+    rel_rules = [
+        _make_rels_rule(old_rels.split(), new_classes, html_parser)
+        for old_rels, new_classes in _CLASSIC_MAP[old_root].get("rels", {}).items()
+    ]
 
     return class_rules + rel_rules
 
+
 def root(classes):
-    """get all backcompat root classnames
-    """
+    """get all backcompat root classnames"""
     return unordered_list([c for c in classes if c in _CLASSIC_MAP])
+
 
 def apply_rules(el, html_parser):
     """add modern classnames for older mf1 classnames
@@ -144,11 +152,12 @@ def apply_rules(el, html_parser):
     el_copy = copy.copy(el)
 
     def apply_prop_rules_to_children(parent, rules):
-
         for child in get_children(parent):
-            classes = child.get('class',[])[:]
+            classes = child.get("class", [])[:]
             # find existing mf2 properties if any and delete them
-            child['class'] = [cl for cl in classes if not mf2_classes.is_property_class(cl)]
+            child["class"] = [
+                cl for cl in classes if not mf2_classes.is_property_class(cl)
+            ]
 
             # apply rules to change mf1 to mf2
             for rule in rules:
@@ -159,13 +168,12 @@ def apply_rules(el, html_parser):
                 apply_prop_rules_to_children(child, rules)
 
     # add mf2 root equivalent
-    classes = el_copy.get('class', [])[:]
+    classes = el_copy.get("class", [])[:]
     old_roots = root(classes)
     for old_root in old_roots:
-        new_roots = _CLASSIC_MAP[old_root]['type']
+        new_roots = _CLASSIC_MAP[old_root]["type"]
         classes.extend(new_roots)
-    el_copy['class'] = classes
-
+    el_copy["class"] = classes
 
     # add mf2 prop equivalent to descendents and remove existing mf2 props
     rules = []
