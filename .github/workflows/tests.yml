@@ -8,6 +8,11 @@ on:
       - main
 
 jobs:
+  prep:
+      runs-on: "macos-latest"
+      steps:
+        - run: brew install md5sha1sum
+
   build:
     strategy:
       matrix:
