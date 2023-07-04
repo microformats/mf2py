@@ -38,20 +38,22 @@ def get_attr(el, attr, check_name=None):
     if isinstance(check_name, (tuple, list)) and el.name in check_name:
         return el.get(attr)
 
-def parse_srcset(srcset, base_url=''):
+
+def parse_srcset(srcset, base_url=""):
     result = {}
 
-    srcset = srcset.split(',')
+    srcset = srcset.split(",")
 
     for src in srcset:
         src = src.strip()
         if not src:
             continue
 
-        src, size = src.split(' ', 1)
+        src, size = src.split(" ", 1)
         result[size] = try_urljoin(base_url, src)
 
     return result
+
 
 def get_img_src_alt(img, img_with_alt, base_url=""):
     """given a img element, returns both src and alt attributes as a list of tuples if alt exists, else returns the src as a string
@@ -65,20 +67,16 @@ def get_img_src_alt(img, img_with_alt, base_url=""):
     if src is not None:
         src = try_urljoin(base_url, src)
 
-        print(base_url)
-
         if alt is None or not img_with_alt:
-            return text_type(src)
-        
-        return_value = dict_class([
-            ("value", text_type(src)),
-            ("alt", text_type(alt))
-        ])
-        
+            return src
+
+        return_value = {"value": src, "alt": alt}
+
         if srcset is not None:
             return_value["srcset"] = parse_srcset(srcset, base_url)
 
         return return_value
+
 
 def get_children(node):
     """An iterator over the immediate children tags of this tag"""
