@@ -62,7 +62,6 @@ jobs:
   #       with:
   #         version: 1.2.2
   #         virtualenvs-in-project: true
-  #     - run: echo "%APPDATA%\pypoetry\venv\Scripts\poetry" >> $GITHUB_PATH
   #     - name: Install dependencies
   #       run: poetry install --no-interaction --no-root
   #     - name: Install library
@@ -93,6 +92,7 @@ jobs:
         with:
           version: 1.2.2
           virtualenvs-in-project: true
+      - run: echo "%APPDATA%\pypoetry\venv\Scripts\poetry" >> $GITHUB_PATH
       - name: Install dependencies
         run: poetry install --no-interaction --no-root
       - name: Install library
