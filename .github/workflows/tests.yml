@@ -12,13 +12,13 @@ jobs:
       runs-on: "macos-latest"
       steps:
         - run: brew install md5sha1sum
-
   build:
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "pypy3.8", "pypy3.9", "pypy3.10"]
         os: ["ubuntu-latest", "macos-latest", "windows-latest"]
     runs-on: ${{ matrix.os }}
+    if: ${{ github.event.prep.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v3
         with:
