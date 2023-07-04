@@ -8,72 +8,72 @@ on:
       - main
 
 jobs:
-  # build-macos:
-  #   strategy:
-  #     matrix:
-  #       python-version: ["3.8", "3.9", "3.10", "pypy3.8", "pypy3.9", "pypy3.10"]
-  #   runs-on: "macos-latest"
-  #   steps:
-  #     - name: Install md5sha1sum
-  #       run: brew install md5sha1sum
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-  #     - name: Install Python
-  #       uses: actions/setup-python@v4
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-  #     - name: Install Poetry
-  #       uses: snok/install-poetry@v1
-  #       with:
-  #         version: 1.2.2
-  #         virtualenvs-in-project: true
-  #     - name: Install dependencies
-  #       run: poetry install --no-interaction --no-root
-  #     - name: Install library
-  #       run: poetry install --no-interaction
-  #     - name: Run tests
-  #       run: poetry run pytest
-  #     - uses: psf/black@stable
-  #       with:
-  #         options: "--check --verbose"
-  #         src: "./"
-  #         version: "23.3"
-  #     - uses: isort/isort-action@v1
-  # build-linux:
-  #   strategy:
-  #     matrix:
-  #       python-version: ["3.8", "3.9", "3.10", "pypy3.8", "pypy3.9", "pypy3.10"]
-  #   runs-on: "ubuntu-latest"
-  #   steps:
-  #     - name: Install libxml2
-  #       run: |
-  #         sudo apt-get update
-  #         sudo apt-get install libxml2 libxml2-dev libxslt1-dev
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-  #     - name: Install Python
-  #       uses: actions/setup-python@v4
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-  #     - name: Install Poetry
-  #       uses: snok/install-poetry@v1
-  #       with:
-  #         version: 1.2.2
-  #         virtualenvs-in-project: true
-  #     - name: Install dependencies
-  #       run: poetry install --no-interaction --no-root
-  #     - name: Install library
-  #       run: poetry install --no-interaction
-  #     - name: Run tests
-  #       run: poetry run pytest
-  #     - uses: psf/black@stable
-  #       with:
-  #         options: "--check --verbose"
-  #         src: "./"
-  #         version: "23.3"
-  #     - uses: isort/isort-action@v1
+  build-macos:
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "pypy3.8", "pypy3.9", "pypy3.10"]
+    runs-on: "macos-latest"
+    steps:
+      - name: Install md5sha1sum
+        run: brew install md5sha1sum
+      - uses: actions/checkout@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.2.2
+          virtualenvs-in-project: true
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root
+      - name: Install library
+        run: poetry install --no-interaction
+      - name: Run tests
+        run: poetry run pytest
+      - uses: psf/black@stable
+        with:
+          options: "--check --verbose"
+          src: "./"
+          version: "23.3"
+      - uses: isort/isort-action@v1
+  build-linux:
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "pypy3.8", "pypy3.9", "pypy3.10"]
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Install libxml2
+        run: |
+          sudo apt-get update
+          sudo apt-get install libxml2 libxml2-dev libxslt1-dev
+      - uses: actions/checkout@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.2.2
+          virtualenvs-in-project: true
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root
+      - name: Install library
+        run: poetry install --no-interaction
+      - name: Run tests
+        run: poetry run pytest
+      - uses: psf/black@stable
+        with:
+          options: "--check --verbose"
+          src: "./"
+          version: "23.3"
+      - uses: isort/isort-action@v1
   build-windows:
     strategy:
       matrix:
@@ -106,4 +106,4 @@ jobs:
           options: "--check --verbose"
           src: "./"
           version: "23.3"
-      - uses: isort/isort-action@v1
+      # - uses: isort/isort-action@v1
