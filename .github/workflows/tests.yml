@@ -77,7 +77,7 @@ jobs:
   build-windows:
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "pypy3.8", "pypy3.9", "pypy3.10"]
+        python-version: ["3.8", "3.9", "3.10"]
     runs-on: "windows-latest"
     defaults:
       run:
