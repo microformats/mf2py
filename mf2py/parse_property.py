@@ -97,7 +97,7 @@ def datetime(el, default_date=None):
 def embedded(el, base_url=""):
     """Process e-* properties"""
     for tag in el.find_all():
-        for attr in ("href", "src", "cite", "poster"):
+        for attr in ("href", "src", "cite", "data", "poster"):
             if attr in tag.attrs:
                 tag.attrs[attr] = try_urljoin(base_url, tag.attrs[attr])
     return {
