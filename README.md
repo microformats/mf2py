@@ -76,9 +76,9 @@ p.to_dict(filter_by_type="h-entry")
 p.to_json(filter_by_type="h-entry")
 ```
 
-## Experimental Features 🧪
+## Breaking Changes in v2
 
-- Pass the optional argument `img_with_alt=True` to either the `Parser` object or to the `parse` method to enable parsing of the `alt` attribute of `<img>` tags according to [issue: image alt text is lost during parsing](https://github.com/microformats/microformats2-parsing/issues/2). By default this is `False` to be backwards compatible.
+- img alt support is now on by default
 
 ## FAQs ❓
 

@@ -12,7 +12,7 @@ from .mf_helpers import unordered_list
 from .version import __version__
 
 
-def parse(doc=None, url=None, html_parser=None, img_with_alt=False):
+def parse(doc=None, url=None, html_parser=None):
     """
     Parse a microformats2 document or url and return a json dictionary.
 
@@ -28,7 +28,7 @@ def parse(doc=None, url=None, html_parser=None, img_with_alt=False):
 
     Return: a json dict represented the structured data in this document.
     """
-    return Parser(doc, url, html_parser, img_with_alt).to_dict()
+    return Parser(doc, url, html_parser).to_dict()
 
 
 class Parser(object):
@@ -54,7 +54,7 @@ class Parser(object):
     ua_url = "https://github.com/microformats/mf2py"
     useragent = "{0} - version {1} - {2}".format(ua_desc, __version__, ua_url)
 
-    def __init__(self, doc=None, url=None, html_parser=None, img_with_alt=True):
+    def __init__(self, doc=None, url=None, html_parser=None):
         self.__url__ = None
         self.__doc__ = None
         self._preserve_doc = False
@@ -68,7 +68,6 @@ class Parser(object):
                 "version": __version__,
             },
         }
-        self.__img_with_alt__ = img_with_alt
 
         # use default parser if none specified
         self.__html_parser__ = html_parser or "html5lib"
@@ -194,11 +193,7 @@ class Parser(object):
                 if "photo" not in properties and parsed_types_aggregation.isdisjoint(
                     "uh"
                 ):
-                    x = implied_properties.photo(
-                        el,
-                        self.__img_with_alt__,
-                        base_url=self.__url__,
-                    )
+                    x = implied_properties.photo(el, base_url=self.__url__)
                     if x is not None:
                         properties["photo"] = [x]
 
@@ -304,11 +299,7 @@ class Parser(object):
 
                 # if value has not been parsed then parse it
                 if u_value is None:
-                    u_value = parse_property.url(
-                        el,
-                        self.__img_with_alt__,
-                        base_url=self.__url__,
-                    )
+                    u_value = parse_property.url(el, base_url=self.__url__)
 
                 if root_class_names:
                     prop_value.append(
