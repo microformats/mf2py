@@ -55,7 +55,7 @@ def parse_srcset(srcset, base_url=""):
     return result
 
 
-def get_img_src_alt(img, img_with_alt, base_url=""):
+def get_img_src_alt(img, base_url=""):
     """given a img element, returns both src and alt attributes as a list of tuples if alt exists, else returns the src as a string
     use for alt parsing with img
     """
@@ -67,7 +67,7 @@ def get_img_src_alt(img, img_with_alt, base_url=""):
     if src is not None:
         src = try_urljoin(base_url, src)
 
-        if alt is None or not img_with_alt:
+        if alt is None:
             return src
 
         return_value = {"value": src, "alt": alt}
