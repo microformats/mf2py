@@ -852,20 +852,15 @@ def test_whitespace_with_tags_inside_property():
     assert result["items"][0]["properties"] == {"name": ["foo bar"]}
 
 
-# experimental features tests
-
-
 def test_photo_with_alt():
-    """Confirm that alt text in img is parsed with feature flag img_with_alt under as a u-* property and implied photo"""
+    """Confirm that alt text in img is parsed as a u-* property and implied photo"""
 
-    path = "experimental/img_with_alt.html"
+    path = "img_with_alt.html"
 
-    # without flag
     result = parse_fixture(path)
 
-    # experimental img_with_alt=True
     with open(os.path.join(TEST_DIR, path)) as f:
-        exp_result = Parser(doc=f, html_parser="html5lib", img_with_alt=True).to_dict()
+        exp_result = Parser(doc=f, html_parser="html5lib").to_dict()
 
     # simple img with u-*
     assert "/photo.jpg" == result["items"][0]["properties"]["photo"][0]
