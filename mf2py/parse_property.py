@@ -96,6 +96,10 @@ def datetime(el, default_date=None):
 
 def embedded(el, base_url=""):
     """Process e-* properties"""
+    for tag in el.find_all():
+        for attr in ("href", "src", "cite", "poster"):
+            if attr in tag.attrs:
+                tag.attrs[attr] = try_urljoin(base_url, tag.attrs[attr])
     return {
         "html": el.decode_contents().strip(),  # secret bs4 method to get innerHTML
         "value": get_textContent(el, replace_img=True, base_url=base_url),
