@@ -129,9 +129,9 @@ class Parser(object):
                         self.__url__ = try_urljoin(self.__url__, poss_base_url)
 
         if self.__doc__ is not None:
+            if document := self.__doc__.find("html"):
+                self.lang = document.attrs.get("lang")
             # parse!
-            if root := self.__doc__.find("html"):
-                self.lang = root.attrs.get("lang")
             self.parse()
 
     def parse(self):
