@@ -130,7 +130,6 @@ class Parser(object):
 
         if self.__doc__ is not None:
             # parse!
-            # print(self.__doc__.find("html").attrs.get("lang"))
             if root := self.__doc__.find("html"):
                 if lang := root.attrs.get("lang"):
                     self.lang = lang
