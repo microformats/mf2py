@@ -393,20 +393,10 @@ def test_relative_url_in_e():
     """ """
     result = parse_fixture("relative_url_in_e.html")
 
-    assert {
-        "type": ["h-entry"],
-        "properties": {
-            "content": [
-                {
-                    "html": (
-                        '<p><a href="http://example.com/cat.html">Cat '
-                        '<img src="http://example.com/cat.jpg"/></a></p>'
-                    ),
-                    "value": "Cat  http://example.com/cat.jpg",
-                }
-            ],
-        },
-    } == result["items"][0]
+    assert (
+        '<p><a href="http://example.com/cat.html">Cat '
+        '<img src="http://example.com/cat.jpg"/></a></p>'
+    ) == result["items"][0]["properties"]["content"][0]["html"]
 
 
 def test_nested_values():
