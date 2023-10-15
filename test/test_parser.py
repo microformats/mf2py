@@ -455,6 +455,17 @@ def test_implied_photo():
     for i in range(12, 23):
         assert "photo" not in result["items"][i]["properties"]
 
+    result = parse_fixture("implied_properties/implied_photo_relative_url.html")
+
+    assert (
+        result["items"][0]["properties"]["photo"][0]["value"]
+        == "http://example.com/jane-img.jpeg"
+    )
+    assert (
+        result["items"][1]["properties"]["photo"][0]
+        == "http://example.com/jane-object.jpeg"
+    )
+
 
 def test_implied_url():
     result = parse_fixture("implied_properties/implied_url.html")
