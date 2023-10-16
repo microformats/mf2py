@@ -94,9 +94,13 @@ def datetime(el, default_date=None):
     )
 
 
-def embedded(el, base_url=""):
+def embedded(el, expose_dom, base_url=""):
     """Process e-* properties"""
-    return {
-        "html": el.decode_contents().strip(),  # secret bs4 method to get innerHTML
+    prop_value = {
         "value": get_textContent(el, replace_img=True, base_url=base_url),
     }
+    if expose_dom:
+        prop_value["dom"] = el
+    else:
+        prop_value["html"] = el.decode_contents().strip()
+    return prop_value

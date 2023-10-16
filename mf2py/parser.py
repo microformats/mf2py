@@ -12,7 +12,7 @@ from .mf_helpers import unordered_list
 from .version import __version__
 
 
-def parse(doc=None, url=None, html_parser=None):
+def parse(doc=None, url=None, html_parser=None, expose_dom=False):
     """
     Parse a microformats2 document or url and return a json dictionary.
 
@@ -28,7 +28,7 @@ def parse(doc=None, url=None, html_parser=None):
 
     Return: a json dict represented the structured data in this document.
     """
-    return Parser(doc, url, html_parser).to_dict()
+    return Parser(doc, url, html_parser, expose_dom).to_dict()
 
 
 class Parser(object):
@@ -54,7 +54,7 @@ class Parser(object):
     ua_url = "https://github.com/microformats/mf2py"
     useragent = "{0} - version {1} - {2}".format(ua_desc, __version__, ua_url)
 
-    def __init__(self, doc=None, url=None, html_parser=None):
+    def __init__(self, doc=None, url=None, html_parser=None, expose_dom=False):
         self.__url__ = None
         self.__doc__ = None
         self._preserve_doc = False
@@ -68,6 +68,7 @@ class Parser(object):
                 "version": __version__,
             },
         }
+        self.expose_dom = expose_dom
 
         # use default parser if none specified
         self.__html_parser__ = html_parser or "html5lib"
@@ -363,7 +364,7 @@ class Parser(object):
                         embedded_el = copy.copy(embedded_el)
                     temp_fixes.rm_templates(embedded_el)
                     e_value = parse_property.embedded(
-                        embedded_el, base_url=self.__url__
+                        embedded_el, self.expose_dom, base_url=self.__url__
                     )
 
                 if root_class_names:

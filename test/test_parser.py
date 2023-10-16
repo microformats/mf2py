@@ -3,6 +3,7 @@ import re
 import sys
 from unittest import TestCase
 
+import bs4
 import mock
 from bs4 import BeautifulSoup
 
@@ -14,9 +15,9 @@ TestCase.maxDiff = None
 TEST_DIR = "test/examples/"
 
 
-def parse_fixture(path, url=None):
+def parse_fixture(path, url=None, expose_dom=False):
     with open(os.path.join(TEST_DIR, path)) as f:
-        p = Parser(doc=f, url=url, html_parser="html5lib")
+        p = Parser(doc=f, url=url, html_parser="html5lib", expose_dom=expose_dom)
         return p.to_dict()
 
 
@@ -188,6 +189,13 @@ def test_embedded_parsing():
     assert (
         result["items"][0]["properties"]["content"][0]["value"]
         == "Blah blah blah blah blah.\nBlah.\nBlah blah blah."
+    )
+
+
+def test_embedded_exposed_dom():
+    result = parse_fixture("embedded.html", expose_dom=True)
+    assert isinstance(
+        result["items"][0]["properties"]["content"][0]["dom"], bs4.element.Tag
     )
 
 
