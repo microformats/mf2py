@@ -875,6 +875,22 @@ def test_plaintext_p_whitespace():
     assert result["items"][2]["properties"]["content"][0]["value"] == "foo bar\nbaz"
 
 
+def test_plaintext_img_whitespace():
+    result = parse_fixture("plaintext_img_whitespace.html")
+    assert (
+        result["items"][0]["properties"]["content"][0]["value"]
+        == "selfie At some tourist spot"
+    )
+    assert (
+        result["items"][1]["properties"]["content"][0]["value"]
+        == "At another tourist spot"
+    )
+    assert (
+        result["items"][2]["properties"]["content"][0]["value"]
+        == "https://example.com/photo.jpg At yet another tourist spot"
+    )
+
+
 def test_photo_with_alt():
     """Confirm that alt text in img is parsed as a u-* property and implied photo"""
 
