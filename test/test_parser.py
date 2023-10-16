@@ -868,7 +868,7 @@ def test_whitespace_with_tags_inside_property():
     assert result["items"][0]["properties"] == {"name": ["foo bar"]}
 
 
-def test_plaintext_img_whitespace():
+def test_plaintext_p_whitespace():
     result = parse_fixture("plaintext_p_whitespace.html")
     assert result["items"][0]["properties"]["content"][0]["value"] == "foo\nbar baz"
     assert result["items"][1]["properties"]["content"][0]["value"] == "foo\nbar baz"
