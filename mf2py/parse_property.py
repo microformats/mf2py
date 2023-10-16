@@ -94,9 +94,16 @@ def datetime(el, default_date=None):
     )
 
 
-def embedded(el, base_url=""):
+def embedded(el, root_lang, document_lang, base_url=""):
     """Process e-* properties"""
-    return {
+    prop_value = {
         "html": el.decode_contents().strip(),  # secret bs4 method to get innerHTML
         "value": get_textContent(el, replace_img=True, base_url=base_url),
     }
+    if lang := el.attrs.get("lang"):
+        prop_value["lang"] = lang
+    elif root_lang:
+        prop_value["lang"] = root_lang
+    elif document_lang:
+        prop_value["lang"] = document_lang
+    return prop_value
