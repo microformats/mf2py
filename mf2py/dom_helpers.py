@@ -119,8 +119,7 @@ def get_textContent(el, replace_img=False, img_to_src=True, base_url=""):
                 items.extend(child_items)
 
             if el.name == "p":
-                items = [P_BREAK_BEFORE] + items
-                items.append(P_BREAK_AFTER)
+                items = [P_BREAK_BEFORE] + items + [P_BREAK_AFTER, "\n"]
 
         return items
 

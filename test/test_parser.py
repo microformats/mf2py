@@ -187,7 +187,7 @@ def test_embedded_parsing():
     )
     assert (
         result["items"][0]["properties"]["content"][0]["value"]
-        == "Blah blah blah blah blah.\nBlah.\nBlah blah blah."
+        == "Blah blah blah blah blah.\n\nBlah.\n\nBlah blah blah."
     )
 
 
@@ -605,15 +605,20 @@ def test_value_name_whitespace():
         assert result["items"][i]["properties"]["content"][0]["value"] == "Hello World"
         assert result["items"][i]["properties"]["name"][0] == "Hello World"
 
-    for i in range(3, 8):
+    for i in range(3, 7):
         assert result["items"][i]["properties"]["content"][0]["value"] == "Hello\nWorld"
         assert result["items"][i]["properties"]["name"][0] == "Hello\nWorld"
 
-    for i in range(8, 10):
-        assert (
-            result["items"][i]["properties"]["content"][0]["value"] == "One\nTwo\nThree"
-        )
-        assert result["items"][i]["properties"]["name"][0] == "One\nTwo\nThree"
+    assert result["items"][7]["properties"]["content"][0]["value"] == "Hello\n\nWorld"
+    assert result["items"][7]["properties"]["name"][0] == "Hello\n\nWorld"
+
+    assert result["items"][8]["properties"]["content"][0]["value"] == "One\nTwo\nThree"
+    assert result["items"][8]["properties"]["name"][0] == "One\nTwo\nThree"
+
+    assert (
+        result["items"][9]["properties"]["content"][0]["value"] == "One\n\nTwo\n\nThree"
+    )
+    assert result["items"][9]["properties"]["name"][0] == "One\n\nTwo\n\nThree"
 
     assert (
         result["items"][10]["properties"]["content"][0]["value"]
@@ -861,6 +866,13 @@ def test_whitespace_with_tags_inside_property():
     """
     result = parse_fixture("tag_whitespace_inside_p_value.html")
     assert result["items"][0]["properties"] == {"name": ["foo bar"]}
+
+
+def test_plaintext_img_whitespace():
+    result = parse_fixture("plaintext_p_whitespace.html")
+    assert result["items"][0]["properties"]["content"][0]["value"] == "foo\nbar baz"
+    assert result["items"][1]["properties"]["content"][0]["value"] == "foo\nbar baz"
+    assert result["items"][2]["properties"]["content"][0]["value"] == "foo bar\nbaz"
 
 
 def test_photo_with_alt():
