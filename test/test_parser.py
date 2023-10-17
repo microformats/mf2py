@@ -886,9 +886,10 @@ def test_photo_with_alt():
     assert {"alt": "", "value": "/photo.jpg"} == result["items"][2]["properties"][
         "in-reply-to"
     ][0]
-    assert {"alt": "", "value": "/photo.jpg"} == result["items"][2]["properties"][
-        "in-reply-to"
-    ][0]
+    assert (
+        "/photo.jpg" == exp_result["items"][2]["properties"]["in-reply-to"][0]["value"]
+    )
+    assert "" == exp_result["items"][2]["properties"]["in-reply-to"][0]["alt"]
 
     # img with u-* and h-* example
     assert "h-cite" in result["items"][3]["properties"]["in-reply-to"][0]["type"]
@@ -940,18 +941,26 @@ def test_photo_with_alt():
     assert {"alt": "", "value": "/photo.jpg"} == result["items"][5]["properties"][
         "in-reply-to"
     ][0]["properties"]["photo"][0]
-    assert {"alt": "", "value": "/photo.jpg"} == result["items"][5]["properties"][
-        "in-reply-to"
-    ][0]["properties"]["photo"][0]
     assert "/photo.jpg" == result["items"][5]["properties"]["in-reply-to"][0]["value"]
+    assert "alt" in result["items"][5]["properties"]["in-reply-to"][0]
 
     assert "h-cite" in exp_result["items"][5]["properties"]["in-reply-to"][0]["type"]
-    assert {"alt": "", "value": "/photo.jpg"} == exp_result["items"][5]["properties"][
-        "in-reply-to"
-    ][0]["properties"]["photo"][0]
+    assert (
+        "/photo.jpg"
+        == exp_result["items"][5]["properties"]["in-reply-to"][0]["properties"][
+            "photo"
+        ][0]["value"]
+    )
     assert (
         "/photo.jpg" == exp_result["items"][5]["properties"]["in-reply-to"][0]["value"]
     )
+    assert (
+        ""
+        == exp_result["items"][5]["properties"]["in-reply-to"][0]["properties"][
+            "photo"
+        ][0]["alt"]
+    )
+    assert "" == exp_result["items"][5]["properties"]["in-reply-to"][0]["alt"]
 
 
 def test_photo_with_srcset():
