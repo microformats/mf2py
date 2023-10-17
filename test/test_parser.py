@@ -979,12 +979,12 @@ def test_photo_with_srcset():
         result["items"][1]["properties"]["photo"][0]["srcset"]["2x"]
         != "elva-fairy-2w.jpg"
     )
-    for i in range(2, 5):
+    for i in range(2, 7):
         assert result["items"][i]["properties"]["photo"][0]["srcset"] == {
             "1x": "elva-fairy,320w.jpg",
             "1.5x": "elva-fairy,480w.jpg",
         }
-    assert result["items"][5]["properties"]["photo"][0]["srcset"] == {
+    assert result["items"][7]["properties"]["photo"][0]["srcset"] == {
         "1x": "elva-fairy,320w.jpg",
     }
 
