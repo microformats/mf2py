@@ -62,9 +62,9 @@ def get_img(img, base_url):
     src = try_urljoin(base_url, src)
     alt = get_attr(img, "alt", check_name="img")
     srcset = get_attr(img, "srcset", check_name="img")
-    if alt or srcset:
+    if alt is not None or srcset:
         prop_value = {"value": src}
-        if alt:
+        if alt is not None:
             prop_value["alt"] = alt
         if srcset:
             prop_value["srcset"] = parse_srcset(srcset, base_url)

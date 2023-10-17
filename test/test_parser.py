@@ -502,9 +502,10 @@ def test_implied_nested_photo():
     result = parse_fixture(
         "implied_properties/implied_properties.html", url="http://bar.org"
     )
-    assert (
-        result["items"][2]["properties"]["photo"][0] == "http://tommorris.org/photo.png"
-    )
+    assert result["items"][2]["properties"]["photo"][0] == {
+        "alt": "",
+        "value": "http://tommorris.org/photo.png",
+    }
     assert (
         result["items"][3]["properties"]["photo"][0] == "http://tommorris.org/photo.png"
     )
@@ -543,7 +544,7 @@ def test_implied_name_empty_alt():
         "properties": {
             "name": ["@kylewmahan"],
             "url": ["https://twitter.com/kylewmahan"],
-            "photo": ["https://example.org/test.jpg"],
+            "photo": [{"alt": "", "value": "https://example.org/test.jpg"}],
         },
     } == hcard
 
@@ -882,7 +883,12 @@ def test_photo_with_alt():
     assert "/photo.jpg" == exp_result["items"][1]["properties"]["url"][0]["value"]
     assert "alt text" == exp_result["items"][1]["properties"]["url"][0]["alt"]
 
-    assert "/photo.jpg" == result["items"][2]["properties"]["in-reply-to"][0]
+    assert {"alt": "", "value": "/photo.jpg"} == result["items"][2]["properties"][
+        "in-reply-to"
+    ][0]
+    assert {"alt": "", "value": "/photo.jpg"} == result["items"][2]["properties"][
+        "in-reply-to"
+    ][0]
 
     # img with u-* and h-* example
     assert "h-cite" in result["items"][3]["properties"]["in-reply-to"][0]["type"]
@@ -931,19 +937,18 @@ def test_photo_with_alt():
     assert "alt text" == exp_result["items"][4]["properties"]["in-reply-to"][0]["alt"]
 
     assert "h-cite" in result["items"][5]["properties"]["in-reply-to"][0]["type"]
-    assert (
-        "/photo.jpg"
-        == result["items"][5]["properties"]["in-reply-to"][0]["properties"]["photo"][0]
-    )
+    assert {"alt": "", "value": "/photo.jpg"} == result["items"][5]["properties"][
+        "in-reply-to"
+    ][0]["properties"]["photo"][0]
+    assert {"alt": "", "value": "/photo.jpg"} == result["items"][5]["properties"][
+        "in-reply-to"
+    ][0]["properties"]["photo"][0]
     assert "/photo.jpg" == result["items"][5]["properties"]["in-reply-to"][0]["value"]
 
     assert "h-cite" in exp_result["items"][5]["properties"]["in-reply-to"][0]["type"]
-    assert (
-        "/photo.jpg"
-        == exp_result["items"][5]["properties"]["in-reply-to"][0]["properties"][
-            "photo"
-        ][0]
-    )
+    assert {"alt": "", "value": "/photo.jpg"} == exp_result["items"][5]["properties"][
+        "in-reply-to"
+    ][0]["properties"]["photo"][0]
     assert (
         "/photo.jpg" == exp_result["items"][5]["properties"]["in-reply-to"][0]["value"]
     )
