@@ -39,21 +39,38 @@ def get_attr(el, attr, check_name=None):
         return el.get(attr)
 
 
-def get_img_src_alt(img, base_url=""):
-    """given a img element, returns both src and alt attributes as a list of tuples if alt exists, else returns the src as a string
-    use for alt parsing with img
-    """
+def parse_srcset(srcset, base_url):
+    """Return a dictionary of sources found in srcset."""
+    sources = {}
+    for url, descriptor in re.findall(
+        r"(\S+)(\s[\d.]+[xw])?,?\s?", srcset, re.MULTILINE
+    ):
+        url = url.strip(",")
+        descriptor = descriptor.strip()
+        if not descriptor:
+            descriptor = "1x"
+        if descriptor not in sources:
+            sources[descriptor] = try_urljoin(base_url, url)
+    return sources
 
-    alt = get_attr(img, "alt", check_name="img")
+
+def get_img(img, base_url):
+    """Return a dictionary with src and alt/srcset if present, else just string src."""
     src = get_attr(img, "src", check_name="img")
-
-    if src is not None:
-        src = try_urljoin(base_url, src)
-
-        if alt is None:
-            return src
-        else:
-            return {"value": src, "alt": alt}
+    if src is None:
+        return
+    src = try_urljoin(base_url, src)
+    alt = get_attr(img, "alt", check_name="img")
+    srcset = get_attr(img, "srcset", check_name="img")
+    if alt or srcset:
+        prop_value = {"value": src}
+        if alt:
+            prop_value["alt"] = alt
+        if srcset:
+            prop_value["srcset"] = parse_srcset(srcset, base_url)
+        return prop_value
+    else:
+        return src
 
 
 def get_children(node):

@@ -502,10 +502,9 @@ def test_implied_nested_photo():
     result = parse_fixture(
         "implied_properties/implied_properties.html", url="http://bar.org"
     )
-    assert result["items"][2]["properties"]["photo"][0] == {
-        "alt": "",
-        "value": "http://tommorris.org/photo.png",
-    }
+    assert (
+        result["items"][2]["properties"]["photo"][0] == "http://tommorris.org/photo.png"
+    )
     assert (
         result["items"][3]["properties"]["photo"][0] == "http://tommorris.org/photo.png"
     )
@@ -544,7 +543,7 @@ def test_implied_name_empty_alt():
         "properties": {
             "name": ["@kylewmahan"],
             "url": ["https://twitter.com/kylewmahan"],
-            "photo": [{"alt": "", "value": "https://example.org/test.jpg"}],
+            "photo": ["https://example.org/test.jpg"],
         },
     } == hcard
 
@@ -883,13 +882,7 @@ def test_photo_with_alt():
     assert "/photo.jpg" == exp_result["items"][1]["properties"]["url"][0]["value"]
     assert "alt text" == exp_result["items"][1]["properties"]["url"][0]["alt"]
 
-    assert {"alt": "", "value": "/photo.jpg"} == result["items"][2]["properties"][
-        "in-reply-to"
-    ][0]
-    assert (
-        "/photo.jpg" == exp_result["items"][2]["properties"]["in-reply-to"][0]["value"]
-    )
-    assert "" == exp_result["items"][2]["properties"]["in-reply-to"][0]["alt"]
+    assert "/photo.jpg" == result["items"][2]["properties"]["in-reply-to"][0]
 
     # img with u-* and h-* example
     assert "h-cite" in result["items"][3]["properties"]["in-reply-to"][0]["type"]
@@ -938,29 +931,55 @@ def test_photo_with_alt():
     assert "alt text" == exp_result["items"][4]["properties"]["in-reply-to"][0]["alt"]
 
     assert "h-cite" in result["items"][5]["properties"]["in-reply-to"][0]["type"]
-    assert {"alt": "", "value": "/photo.jpg"} == result["items"][5]["properties"][
-        "in-reply-to"
-    ][0]["properties"]["photo"][0]
+    assert (
+        "/photo.jpg"
+        == result["items"][5]["properties"]["in-reply-to"][0]["properties"]["photo"][0]
+    )
     assert "/photo.jpg" == result["items"][5]["properties"]["in-reply-to"][0]["value"]
-    assert "alt" in result["items"][5]["properties"]["in-reply-to"][0]
 
     assert "h-cite" in exp_result["items"][5]["properties"]["in-reply-to"][0]["type"]
     assert (
         "/photo.jpg"
         == exp_result["items"][5]["properties"]["in-reply-to"][0]["properties"][
             "photo"
-        ][0]["value"]
+        ][0]
     )
     assert (
         "/photo.jpg" == exp_result["items"][5]["properties"]["in-reply-to"][0]["value"]
     )
+
+
+def test_photo_with_srcset():
+    result = parse_fixture("img_with_srcset.html")
+
+    assert result["items"][0]["properties"]["photo"][0]["srcset"] == {
+        "480w": "elva-fairy-480w.jpg",
+        "800w": "elva-fairy-800w.jpg",
+    }
+    assert result["items"][1]["properties"]["photo"][0]["srcset"] == {
+        "1x": "elva-fairy-320w.jpg",
+        "1.5x": "elva-fairy-480w.jpg",
+        "2x": "elva-fairy-640w.jpg",
+    }
     assert (
-        ""
-        == exp_result["items"][5]["properties"]["in-reply-to"][0]["properties"][
-            "photo"
-        ][0]["alt"]
+        result["items"][1]["properties"]["photo"][0]["srcset"]["2x"]
+        != "elva-fairy-2w.jpg"
     )
-    assert "" == exp_result["items"][5]["properties"]["in-reply-to"][0]["alt"]
+    for i in range(2, 5):
+        assert result["items"][i]["properties"]["photo"][0]["srcset"] == {
+            "1x": "elva-fairy,320w.jpg",
+            "1.5x": "elva-fairy,480w.jpg",
+        }
+    assert result["items"][5]["properties"]["photo"][0]["srcset"] == {
+        "1x": "elva-fairy,320w.jpg",
+    }
+
+    result = parse_fixture("img_with_srcset_with_base.html")
+
+    assert result["items"][0]["properties"]["photo"][0]["srcset"] == {
+        "480w": "https://example.com/elva-fairy-480w.jpg",
+        "800w": "https://example.com/elva-fairy-800w.jpg",
+    }
 
 
 def test_parse_id():
