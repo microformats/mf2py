@@ -43,7 +43,9 @@ def parse_srcset(srcset, base_url):
     """Return a dictionary of sources found in srcset."""
     sources = {}
     for url, descriptor in re.findall(
-        r"(\S+)\s?([\d.]+[xw])?[,\s]?", srcset, re.MULTILINE
+        r"(\S+)\s*([\d.]+[xw])?\s*,?\s*",
+        srcset,
+        re.MULTILINE,
     ):
         if not descriptor:
             descriptor = "1x"

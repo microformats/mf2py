@@ -987,6 +987,11 @@ def test_photo_with_srcset():
     assert result["items"][7]["properties"]["photo"][0]["srcset"] == {
         "1x": "elva-fairy,320w.jpg",
     }
+    assert result["items"][8]["properties"]["photo"][0]["srcset"] == {
+        "1x": "elva-fairy,320w.jpg",
+        "1.5x": "elva-fairy,480w.jpg",
+        "2x": "elva-fairy,640w.jpg",
+    }
 
     result = parse_fixture("img_with_srcset_with_base.html")
 
