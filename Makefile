@@ -1,7 +1,7 @@
 install:
 	poetry install
-test:
-	poetry run pytest
+tests:
+	poetry run pytest --doctest-modules -s -vv --doctest-glob README*
 publish:
 	poetry publish --build
 lint:

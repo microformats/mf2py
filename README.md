@@ -16,7 +16,9 @@ mf2py implements the full mf2 specification, including backward compatibility wi
 To install `mf2py`, run the following command:
 
 ```bash
+
 pip install mf2py
+
 ```
 
 ## Quickstart 🚀
@@ -24,7 +26,9 @@ pip install mf2py
 Import the parser using:
 
 ```python
-import mf2py
+
+>>> import mf2py
+
 ```
 
 ### Parse a File
@@ -32,8 +36,21 @@ import mf2py
 Parse a file containing HTML:
 
 ```python
-with open('file/content.html','r') as file:
-    obj = mf2py.parse(doc=file)
+
+>>> with open("example.html", "r") as file:
+...     mf2json = mf2py.parse(doc=file)
+>>> mf2json
+{'items': [{'type': ['h-entry'],
+            'properties': {'name': ['Hello'],
+                           'content': [{'html': 'Just saying hi.',
+                                        'value': 'Just saying hi.'}]}}],
+ 'rels': {},
+ 'rel-urls': {},
+ 'debug': {'description': 'mf2py - microformats2 parser for python',
+           'source': 'https://github.com/microformats/mf2py',
+           'version': '1.1.3',
+           'markup parser': 'html5lib'}}
+
 ```
 
 ### Parse a String
@@ -41,16 +58,21 @@ with open('file/content.html','r') as file:
 Parse string containing HTML content:
 
 ```python
-content = '<article class="h-entry"><h1 class="p-name">Hello</h1></article>'
-obj = mf2py.parse(doc=content)
+
+>>> content = '<article class="h-entry"><h1 class="p-name">Hello</h1></article>'
+>>> mf2py.parse(doc=content)["items"]
+[{'type': ['h-entry'], 'properties': {'name': ['Hello']}}]
+
 ```
 
-### Parse a HTML Document Retrieved from a URL
+### Parse an HTML Document Retrieved from a URL
 
 Parse content from a URL:
 
 ```python
-obj = mf2py.parse(url="http://tommorris.org/")
+
+>>> mf2json = mf2py.parse(url="https://indieweb.org")
+
 ```
 
 `parse` is a convenience method that actually delegates to
@@ -62,9 +84,11 @@ available by invoking the object directly.
 Retrieve parsed microformats as a Python dictionary or JSON string:
 
 ```python
+
 p = mf2py.Parser(...)
 p.to_dict()  # returns a python dictionary
 p.to_json()  # returns a JSON string
+
 ```
 
 ### Filter by Microformat Type
@@ -72,8 +96,10 @@ p.to_json()  # returns a JSON string
 Filter by microformat type:
 
 ```python
+
 p.to_dict(filter_by_type="h-entry")
 p.to_json(filter_by_type="h-entry")
+
 ```
 
 ## Breaking Changes in v2
