@@ -5,6 +5,8 @@ _mf2_roots_re = re.compile("h-(:?[a-z0-9]+-)?[a-z]+(:?-[a-z]+)*$")
 _mf2_properties_re = re.compile("(p|e|u|dt)-(:?[a-z0-9]+-)?[a-z]+(:?-[a-z]+)*$")
 _mf2_e_properties_re = re.compile("e-(:?[a-z0-9]+-)?[a-z]+(:?-[a-z]+)*$")
 
+blocked_roots = {"auto", "fit", "full", "max", "min", "px", "screen"}  # Tailwind v3.3
+
 
 def filter_classes(classes, regex=_mf2_classes_re):
     """detect classes that are valid names for mf2, sort in dictionary by prefix"""
@@ -21,7 +23,7 @@ def filter_classes(classes, regex=_mf2_classes_re):
 
 
 def root(classes):
-    return {c for c in classes if _mf2_roots_re.match(c)}
+    return {c for c in classes if _mf2_roots_re.match(c) and c[2:] not in blocked_roots}
 
 
 def is_property_class(class_):

@@ -1040,3 +1040,9 @@ def test_all_u_cases():
         make_labelled_cmp("all_u_cases_" + str(i))(
             "http://example.com/test", result["items"][0]["properties"]["url"][i]
         )
+
+
+def test_blocked_roots():
+    """"""
+    result = parse_fixture("blocked_roots.html")
+    assert len(result["items"]) == 0
