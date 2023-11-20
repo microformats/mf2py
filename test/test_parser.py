@@ -194,9 +194,9 @@ def test_embedded_parsing():
 
 def test_embedded_exposed_dom():
     result = parse_fixture("embedded.html", expose_dom=True)
-    assert isinstance(
-        result["items"][0]["properties"]["content"][0]["dom"], bs4.element.Tag
-    )
+    content = result["items"][0]["properties"]["content"][0]
+    assert "html" not in content
+    assert isinstance(content["dom"], bs4.element.Tag)
 
 
 def test_hoisting_nested_hcard():
