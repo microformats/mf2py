@@ -364,7 +364,7 @@ class Parser(object):
                         embedded_el = copy.copy(embedded_el)
                     temp_fixes.rm_templates(embedded_el)
                     e_value = parse_property.embedded(
-                        embedded_el, self.expose_dom, base_url=self.__url__
+                        embedded_el, self.__url__, self.expose_dom
                     )
 
                 if root_class_names:

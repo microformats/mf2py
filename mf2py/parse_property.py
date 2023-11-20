@@ -94,7 +94,7 @@ def datetime(el, default_date=None):
     )
 
 
-def embedded(el, expose_dom, base_url=""):
+def embedded(el, base_url, expose_dom):
     """Process e-* properties"""
     prop_value = {
         "value": get_textContent(el, replace_img=True, base_url=base_url),
