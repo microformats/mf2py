@@ -12,7 +12,7 @@ from .mf_helpers import unordered_list
 from .version import __version__
 
 
-def parse(doc=None, url=None, html_parser=None):
+def parse(doc=None, url=None, html_parser=None, filter_roots=False):
     """
     Parse a microformats2 document or url and return a json dictionary.
 
@@ -28,7 +28,7 @@ def parse(doc=None, url=None, html_parser=None):
 
     Return: a json dict represented the structured data in this document.
     """
-    return Parser(doc, url, html_parser).to_dict()
+    return Parser(doc, url, html_parser, filter_roots).to_dict()
 
 
 class Parser(object):
@@ -54,7 +54,7 @@ class Parser(object):
     ua_url = "https://github.com/microformats/mf2py"
     useragent = "{0} - version {1} - {2}".format(ua_desc, __version__, ua_url)
 
-    def __init__(self, doc=None, url=None, html_parser=None):
+    def __init__(self, doc=None, url=None, html_parser=None, filter_roots=False):
         self.__url__ = None
         self.__doc__ = None
         self._preserve_doc = False
@@ -68,6 +68,13 @@ class Parser(object):
                 "version": __version__,
             },
         }
+        try:
+            self.filtered_roots = set(filter_roots)
+        except TypeError:
+            if filter_roots:
+                self.filtered_roots = mf2_classes.CONFLICTING_ROOTS_TAILWIND
+            else:
+                self.filtered_roots = []
 
         # use default parser if none specified
         self.__html_parser__ = html_parser or "html5lib"
@@ -158,8 +165,12 @@ class Parser(object):
             parsed_types_aggregation = set()
 
             if backcompat_mode:
-                el = backcompat.apply_rules(el, self.__html_parser__)
-                root_class_names = mf2_classes.root(el.get("class", []))
+                el = backcompat.apply_rules(
+                    el, self.__html_parser__, self.filtered_roots
+                )
+                root_class_names = mf2_classes.root(
+                    el.get("class", []), self.filtered_roots
+                )
 
             # parse for properties and children
             for child in get_children(el):
@@ -187,13 +198,13 @@ class Parser(object):
                     "peh"
                 ):
                     properties["name"] = [
-                        implied_properties.name(el, base_url=self.__url__)
+                        implied_properties.name(el, self.__url__, self.filtered_roots)
                     ]
 
                 if "photo" not in properties and parsed_types_aggregation.isdisjoint(
                     "uh"
                 ):
-                    x = implied_properties.photo(el, base_url=self.__url__)
+                    x = implied_properties.photo(el, self.__url__, self.filtered_roots)
                     if x is not None:
                         properties["photo"] = [x]
 
@@ -201,7 +212,7 @@ class Parser(object):
                 if "url" not in properties and parsed_types_aggregation.isdisjoint(
                     "uh"
                 ):
-                    x = implied_properties.url(el, base_url=self.__url__)
+                    x = implied_properties.url(el, self.__url__, self.filtered_roots)
                     if x is not None:
                         properties["url"] = [x]
 
@@ -455,7 +466,7 @@ class Parser(object):
             classes = el.get("class", [])
 
             # find potential microformats in root classnames h-*
-            potential_microformats = mf2_classes.root(classes)
+            potential_microformats = mf2_classes.root(classes, self.filtered_roots)
 
             # if potential microformats found parse them
             if potential_microformats:

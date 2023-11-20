@@ -14,9 +14,9 @@ TestCase.maxDiff = None
 TEST_DIR = "test/examples/"
 
 
-def parse_fixture(path, url=None):
+def parse_fixture(path, url=None, filter_roots=False):
     with open(os.path.join(TEST_DIR, path)) as f:
-        p = Parser(doc=f, url=url, html_parser="html5lib")
+        p = Parser(doc=f, url=url, html_parser="html5lib", filter_roots=filter_roots)
         return p.to_dict()
 
 
@@ -1044,5 +1044,13 @@ def test_all_u_cases():
 
 def test_blocked_roots():
     """"""
-    result = parse_fixture("blocked_roots.html")
-    assert len(result["items"]) == 0
+    result = parse_fixture("filter_roots.html")
+    assert len(result["items"]) == 8
+
+    result = parse_fixture("filter_roots.html", filter_roots=True)
+    assert len(result["items"]) == 1
+
+    result = parse_fixture(
+        "filter_roots_custom.html", filter_roots={"foo", "bar", "bat", "baz"}
+    )
+    assert len(result["items"]) == 1

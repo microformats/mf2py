@@ -143,7 +143,7 @@ def root(classes):
     return unordered_list([c for c in classes if c in _CLASSIC_MAP])
 
 
-def apply_rules(el, html_parser):
+def apply_rules(el, html_parser, filtered_roots):
     """add modern classnames for older mf1 classnames
 
     returns a copy of el and does not modify the original
@@ -164,7 +164,7 @@ def apply_rules(el, html_parser):
                 rule(child)
 
             # recurse if it's not a nested mf1 or mf2 root
-            if not (mf2_classes.root(classes) or root(classes)):
+            if not (mf2_classes.root(classes, filtered_roots) or root(classes)):
                 apply_prop_rules_to_children(child, rules)
 
     # add mf2 root equivalent
