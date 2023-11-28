@@ -14,9 +14,9 @@ TestCase.maxDiff = None
 TEST_DIR = "test/examples/"
 
 
-def parse_fixture(path, url=None):
+def parse_fixture(path, **kwargs):
     with open(os.path.join(TEST_DIR, path)) as f:
-        p = Parser(doc=f, url=url, html_parser="html5lib")
+        p = Parser(doc=f, html_parser="html5lib", **kwargs)
         return p.to_dict()
 
 
@@ -338,14 +338,14 @@ def test_enclosures():
 
 
 def test_empty_href():
-    result = parse_fixture("hcard_with_empty_url.html", "http://foo.com")
+    result = parse_fixture("hcard_with_empty_url.html", url="http://foo.com")
 
     for hcard in result["items"]:
         assert ["http://foo.com"] == hcard["properties"]["url"]
 
 
 def test_link_with_u_url():
-    result = parse_fixture("link_with_u-url.html", "http://foo.com")
+    result = parse_fixture("link_with_u-url.html", url="http://foo.com")
     assert {
         "type": ["h-card"],
         "properties": {
@@ -356,7 +356,7 @@ def test_link_with_u_url():
 
 
 def test_broken_url():
-    result = parse_fixture("broken_url.html", "http://example.com")
+    result = parse_fixture("broken_url.html", url="http://example.com")
     assert (
         result["items"][0]["properties"]["relative"][0] == "http://example.com/foo.html"
     )
@@ -1042,18 +1042,40 @@ def test_all_u_cases():
         )
 
 
-def test_metaformats_ogp():
+def test_metaformats_flag_false():
     result = parse_fixture("metaformats_ogp.html")
+    assert result["items"] == []
+
+
+def test_no_metaformats():
+    result = parse_fixture("base.html", metaformats=True)
+    assert result["items"] == []
+
+
+def test_metaformats_ogp():
+    result = parse_fixture("metaformats_ogp.html", metaformats=True)
     assert result["items"] == [{
-        'type': ['h-entry'],
-        'properties': {
-            'name': ['Title foo'],
-            'summary': ['Description bar'],
-            'photo': ['http://example.com/baz.jpg'],
-            'audio': ['http://example.com/biff.mp3'],
-            'video': ['http://example.com/boff.mov'],
-            'author': ['http://tantek.com/me'],
-            'published': ['2023-01-02T03:04Z'],
-            'updated': ['2023-01-02T05:06Z'],
+        "type": ["h-entry"],
+        "properties": {
+            "name": ["Titull foo"],
+            "summary": ["Descrypshun bar"],
+            "photo": ["http://example.com/baz.jpg"],
+            "audio": ["http://example.com/biff.mp3"],
+            "video": ["http://example.com/boff.mov"],
+            "author": ["http://tantek.com/me"],
+            "published": ["2023-01-02T03:04Z"],
+            "updated": ["2023-01-02T05:06Z"],
+        },
+    }]
+
+
+def test_metaformats_twitter():
+    result = parse_fixture("metaformats_twitter.html", metaformats=True)
+    assert result["items"] == [{
+        "type": ["h-entry"],
+        "properties": {
+            "name": ["Titull foo"],
+            "summary": ["Descrypshun bar"],
+            "photo": ["http://tantek.com/baz.jpg"],
         },
     }]

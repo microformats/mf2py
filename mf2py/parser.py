@@ -6,7 +6,14 @@ import requests
 from bs4 import BeautifulSoup, FeatureNotFound
 from bs4.element import Tag
 
-from . import backcompat, implied_properties, mf2_classes, parse_property, temp_fixes
+from . import (
+    backcompat,
+    implied_properties,
+    metaformats,
+    mf2_classes,
+    parse_property,
+    temp_fixes,
+)
 from .dom_helpers import get_attr, get_children, get_descendents, try_urljoin
 from .mf_helpers import unordered_list
 from .version import __version__
@@ -479,9 +486,16 @@ class Parser(object):
                         parse_el(child, ctx)
 
         ctx = []
+
+        if self.__metaformats:
+            # extract out a metaformats item, if available
+            self.__metaformats_item = metaformats.parse(self.__doc__, url=self.__url__)
+
         # start parsing at root element of the document
         parse_el(self.__doc__, ctx)
         self.__parsed__["items"] = ctx
+        if self.__metaformats and self.__metaformats_item:
+            self.__parsed__["items"].append(self.__metaformats_item)
 
         # parse for rel values
         for el in get_descendents(self.__doc__):
