@@ -1040,3 +1040,20 @@ def test_all_u_cases():
         make_labelled_cmp("all_u_cases_" + str(i))(
             "http://example.com/test", result["items"][0]["properties"]["url"][i]
         )
+
+
+def test_metaformats_ogp():
+    result = parse_fixture("metaformats_ogp.html")
+    assert result["items"] == [{
+        'type': ['h-entry'],
+        'properties': {
+            'name': ['Title foo'],
+            'summary': ['Description bar'],
+            'photo': ['http://example.com/baz.jpg'],
+            'audio': ['http://example.com/biff.mp3'],
+            'video': ['http://example.com/boff.mov'],
+            'author': ['http://tantek.com/me'],
+            'published': ['2023-01-02T03:04Z'],
+            'updated': ['2023-01-02T05:06Z'],
+        },
+    }]

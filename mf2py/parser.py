@@ -12,9 +12,8 @@ from .mf_helpers import unordered_list
 from .version import __version__
 
 
-def parse(doc=None, url=None, html_parser=None):
-    """
-    Parse a microformats2 document or url and return a json dictionary.
+def parse(doc=None, url=None, html_parser=None, metaformats=False):
+    """Parse a microformats2 document or url and return a json dictionary.
 
     Args:
       doc (file or string or BeautifulSoup doc): file handle, text of content
@@ -25,6 +24,8 @@ def parse(doc=None, url=None, html_parser=None):
       html_parser (string): optional, select a specific HTML parser. Valid
         options from the BeautifulSoup documentation are:
         "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
+      metaformats (boolean): whether to include metaformats extracted from OGP
+        and Twitter card data: https://microformats.org/wiki/metaformats
 
     Return: a json dict represented the structured data in this document.
     """
@@ -45,6 +46,8 @@ class Parser(object):
         options from the BeautifulSoup documentation are:
         "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
         defaults to "html5lib"
+      metaformats (boolean): whether to include metaformats extracted from OGP
+        and Twitter card data: https://microformats.org/wiki/metaformats
 
     Attributes:
       useragent (string): the User-Agent string for the Parser
@@ -54,7 +57,7 @@ class Parser(object):
     ua_url = "https://github.com/microformats/mf2py"
     useragent = "{0} - version {1} - {2}".format(ua_desc, __version__, ua_url)
 
-    def __init__(self, doc=None, url=None, html_parser=None):
+    def __init__(self, doc=None, url=None, html_parser=None, metaformats=False):
         self.__url__ = None
         self.__doc__ = None
         self._preserve_doc = False
@@ -68,6 +71,7 @@ class Parser(object):
                 "version": __version__,
             },
         }
+        self.__metaformats = metaformats
 
         # use default parser if none specified
         self.__html_parser__ = html_parser or "html5lib"
