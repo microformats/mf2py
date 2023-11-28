@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## 2.0 - unreleased
 
+- add initial metaformats support (#212): https://microformats.org/wiki/metaformats . Includes "extended" metaformats for inferring `name` from `<title>` and `summary` from `meta[name=description]`.
+
 ## 1.1.3 - 2023-06-28
 - reduce instances where photo is implied (#135)
 - always do relative URL resolution (#138)
@@ -53,7 +55,7 @@ All notable changes to this project will be documented in this file.
 - reorganise tests
 - remove Heroku frontend, point to mf2py-web and python.microformats.io instead in README.
 - remove Flask and gunicorn requirements
-- add debug info with description, version, url and the html parser used 
+- add debug info with description, version, url and the html parser used
 
 ## 1.0.6 - 2018-03-04
 

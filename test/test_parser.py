@@ -1047,9 +1047,14 @@ def test_metaformats_flag_false():
     assert result["items"] == []
 
 
-def test_no_metaformats():
+def test_metaformats_title_only():
     result = parse_fixture("base.html", metaformats=True)
-    assert result["items"] == []
+    assert result["items"] == [{
+        "type": ["h-entry"],
+        "properties": {
+            "name": ["Hello World"],
+        },
+    }]
 
 
 def test_metaformats_ogp():
@@ -1077,5 +1082,16 @@ def test_metaformats_twitter():
             "name": ["Titull foo"],
             "summary": ["Descrypshun bar"],
             "photo": ["http://tantek.com/baz.jpg"],
+        },
+    }]
+
+
+def test_metaformats_html_meta():
+    result = parse_fixture("metaformats_html_meta.html", metaformats=True)
+    assert result["items"] == [{
+        "type": ["h-entry"],
+        "properties": {
+            "name": ["Hello World"],
+            "summary": ["Descrypshun bar"],
         },
     }]

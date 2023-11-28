@@ -23,6 +23,10 @@ METAFORMAT_TO_MF2 = [
     ("name", "twitter:title", "name"),
     ("name", "twitter:description", "summary"),
     ("name", "twitter:image", "photo"),
+
+    # HTML standard meta names
+    # https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name
+    ("name", "description", "summary"),
 ]
 OGP_TYPE_TO_MF2 = {
     "article": "h-entry",
@@ -56,7 +60,8 @@ def parse(soup, url=None):
     if filter_classes(soup.get("class", []))["h"]:
         return None
 
-    parsed = {}
+    parsed = {"properties": {}}
+    props = parsed["properties"]
 
     # Properties
     for attr, meta, mf2 in METAFORMAT_TO_MF2:
@@ -64,9 +69,13 @@ def parse(soup, url=None):
             if content := val.get("content"):
                 if meta in URL_PROPERTIES:
                     content = try_urljoin(url, content)
-                parsed.setdefault("properties", {}).setdefault(mf2, [content])
+                props.setdefault(mf2, [content])
 
-    if not parsed:
+    if soup.head.title:
+        if text := soup.head.title.text:
+            props.setdefault("name", [text])
+
+    if not props:
         # No OGP or Twitter properties
         return None
 
