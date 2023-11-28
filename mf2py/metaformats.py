@@ -10,19 +10,19 @@ METAFORMAT_TO_MF2 = [
     # in priority order, descending
 
     # OGP
-    ("article:author", "author"),
-    ("article:published_time", "published"),
-    ("article:modified_time", "updated"),
-    ("og:audio", "audio"),
-    ("og:description", "summary"),
-    ("og:image", "photo"),
-    ("og:title", "name"),
-    ("og:video", "video"),
+    ("property", "article:author", "author"),
+    ("property", "article:published_time", "published"),
+    ("property", "article:modified_time", "updated"),
+    ("property", "og:audio", "audio"),
+    ("property", "og:description", "summary"),
+    ("property", "og:image", "photo"),
+    ("property", "og:title", "name"),
+    ("property", "og:video", "video"),
 
     # Twitter
-    ("twitter:title", "name"),
-    ("twitter:description", "summary"),
-    ("twitter:image", "photo"),
+    ("name", "twitter:title", "name"),
+    ("name", "twitter:description", "summary"),
+    ("name", "twitter:image", "photo"),
 ]
 OGP_TYPE_TO_MF2 = {
     "article": "h-entry",
@@ -59,8 +59,8 @@ def parse(soup, url=None):
     parsed = {}
 
     # Properties
-    for meta, mf2 in METAFORMAT_TO_MF2:
-        if val := soup.head.find("meta", property=meta):
+    for attr, meta, mf2 in METAFORMAT_TO_MF2:
+        if val := soup.head.find("meta", attrs={attr: meta}):
             if content := val.get("content"):
                 if meta in URL_PROPERTIES:
                     content = try_urljoin(url, content)
