@@ -2,13 +2,11 @@
 
 https://microformats.org/wiki/metaformats
 """
-from . mf2_classes import filter_classes
 from .dom_helpers import try_urljoin
-
+from .mf2_classes import filter_classes
 
 METAFORMAT_TO_MF2 = [
     # in priority order, descending
-
     # OGP
     ("property", "article:author", "author"),
     ("property", "article:published_time", "published"),
@@ -18,12 +16,10 @@ METAFORMAT_TO_MF2 = [
     ("property", "og:image", "photo"),
     ("property", "og:title", "name"),
     ("property", "og:video", "video"),
-
     # Twitter
     ("name", "twitter:title", "name"),
     ("name", "twitter:description", "summary"),
     ("name", "twitter:image", "photo"),
-
     # HTML standard meta names
     # https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name
     ("name", "description", "summary"),
