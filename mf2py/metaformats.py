@@ -1,6 +1,10 @@
 """Metaformats parser.
 
 https://microformats.org/wiki/metaformats
+
+TODO:
+* explicit mf2 classes on meta tags
+  https://microformats.org/wiki/metaformats#parsing_an_element_for_properties
 """
 from .dom_helpers import try_urljoin
 from .mf2_classes import filter_classes
