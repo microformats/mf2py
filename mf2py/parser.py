@@ -36,7 +36,7 @@ def parse(doc=None, url=None, html_parser=None, metaformats=False):
 
     Return: a json dict represented the structured data in this document.
     """
-    return Parser(doc, url, html_parser).to_dict()
+    return Parser(doc, url, html_parser, metaformats=metaformats).to_dict()
 
 
 class Parser(object):
