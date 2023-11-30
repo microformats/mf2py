@@ -55,7 +55,7 @@ obj = mf2py.parse(url="http://tommorris.org/")
 
 ### Extensions
 
-Use `expose_dom=True` to expose the DOM of `e-*` properties.
+Use `expose_dom=True` to expose the DOM of embedded properties.
 
 ---
 
