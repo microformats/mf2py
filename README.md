@@ -92,25 +92,34 @@ Use `expose_dom=True` to expose the DOM of embedded properties.
 behaviors are available by invoking the parser object directly.
 
 ```pycon
->>> p = mf2py.Parser()
-
-```
-
-#### Output Format
-
-Output parsed microformats as a Python dictionary or JSON string:
-
-```pycon
->>> mf2dict = p.to_dict()
->>> mf2json = p.to_json()
+>>> html = '''<h1><span class=h-card>Frank</span> and <span class=h-card>Cosmo</span></h1>
+... <p class=h-entry><q class=p-content>It's time for the Festivus feats of
+... strength.</q></p>
+... <p class=h-entry><q class=p-content>It's a Festivus miracle!</q></p>
+... <p class=h-entry><q class=p-content>The tradition of Festivus begins with
+... the airing of grievances.</q></p>'''
+>>> mf2parser = mf2py.Parser(doc=html)
 
 ```
 
 #### Filter by Microformat Type
 
 ```pycon
->>> dict_entries = p.to_dict(filter_by_type="h-entry")
->>> json_entries = p.to_json(filter_by_type="h-entry")
+>>> mf2json = mf2parser.to_dict()
+>>> len(mf2json["items"])
+5
+>>> len(mf2parser.to_dict(filter_by_type="h-card"))
+2
+>>> len(mf2parser.to_dict(filter_by_type="h-entry"))
+3
+
+```
+
+#### JSON Output
+
+```pycon
+>>> json = mf2parser.to_json()
+>>> json_cards = mf2parser.to_json(filter_by_type="h-card")
 
 ```
 
