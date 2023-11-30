@@ -4,7 +4,7 @@ import re
 
 from . import value_class_pattern
 from .datetime_helpers import DATETIME_RE, TIME_RE, normalize_datetime
-from .dom_helpers import get_attr, get_img_src_alt, get_textContent, try_urljoin
+from .dom_helpers import get_attr, get_img, get_textContent, try_urljoin
 
 
 def text(el, base_url=""):
@@ -31,7 +31,7 @@ def url(el, base_url=""):
 
     prop_value = get_attr(el, "href", check_name=("a", "area", "link"))
     if prop_value is None:
-        prop_value = get_img_src_alt(el, base_url)
+        prop_value = get_img(el, base_url)
         if prop_value is not None:
             return prop_value
     if prop_value is None:

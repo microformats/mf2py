@@ -1001,6 +1001,44 @@ def test_photo_with_alt():
     assert "" == exp_result["items"][5]["properties"]["in-reply-to"][0]["alt"]
 
 
+def test_photo_with_srcset():
+    result = parse_fixture("img_with_srcset.html")
+
+    assert result["items"][0]["properties"]["photo"][0]["srcset"] == {
+        "480w": "elva-fairy-480w.jpg",
+        "800w": "elva-fairy-800w.jpg",
+    }
+    assert result["items"][1]["properties"]["photo"][0]["srcset"] == {
+        "1x": "elva-fairy-320w.jpg",
+        "1.5x": "elva-fairy-480w.jpg",
+        "2x": "elva-fairy-640w.jpg",
+    }
+    assert (
+        result["items"][1]["properties"]["photo"][0]["srcset"]["2x"]
+        != "elva-fairy-2w.jpg"
+    )
+    for i in range(2, 7):
+        assert result["items"][i]["properties"]["photo"][0]["srcset"] == {
+            "1x": "elva-fairy,320w.jpg",
+            "1.5x": "elva-fairy,480w.jpg",
+        }
+    assert result["items"][7]["properties"]["photo"][0]["srcset"] == {
+        "1x": "elva-fairy,320w.jpg",
+    }
+    assert result["items"][8]["properties"]["photo"][0]["srcset"] == {
+        "1x": "elva-fairy,320w.jpg",
+        "1.5x": "elva-fairy,480w.jpg",
+        "2x": "elva-fairy,640w.jpg",
+    }
+
+    result = parse_fixture("img_with_srcset_with_base.html")
+
+    assert result["items"][0]["properties"]["photo"][0]["srcset"] == {
+        "480w": "https://example.com/elva-fairy-480w.jpg",
+        "800w": "https://example.com/elva-fairy-800w.jpg",
+    }
+
+
 def test_parse_id():
     result = parse_fixture("parse_id.html")
     assert "recentArticles" == result["items"][0]["id"]
