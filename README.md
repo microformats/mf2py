@@ -53,6 +53,10 @@ Parse content from a URL:
 obj = mf2py.parse(url="http://tommorris.org/")
 ```
 
+### Extensions
+
+---
+
 `parse` is a convenience method that actually delegates to
 `mf2py.Parser` to do the real work. More sophisticated behaviors are
 available by invoking the object directly.
