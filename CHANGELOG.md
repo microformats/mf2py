@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## 2.0 - unreleased
 - make relative URLs in e-* properties absolute (#201)
+- fix whitespace in plaintext conversion (#207)
 
 ## 1.1.3 - 2023-06-28
 - reduce instances where photo is implied (#135)
