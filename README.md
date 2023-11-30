@@ -29,7 +29,7 @@ Import the parser using:
 ### Parse an HTML File
 
 ```pycon
->>> with open("example.html", "r") as file:
+>>> with open("test/examples/eras.html", "r") as file:
 ...     mf2json = mf2py.parse(doc=file)
 >>> mf2json
 {'items': [{'type': ['h-entry'],
