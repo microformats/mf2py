@@ -389,6 +389,16 @@ def test_complex_e_content():
     } == result["items"][0]
 
 
+def test_relative_url_in_e():
+    """When parsing e-* properties, make relative URLs absolute."""
+    result = parse_fixture("relative_url_in_e.html")
+
+    assert (
+        '<p><a href="http://example.com/cat.html">Cat '
+        '<img src="http://example.com/cat.jpg"/></a></p>'
+    ) == result["items"][0]["properties"]["content"][0]["html"]
+
+
 def test_nested_values():
     """When parsing nested microformats, check that value is the value of
     the simple property element"""
