@@ -33,7 +33,7 @@ jobs:
       - name: Install library
         run: poetry install --no-interaction
       - name: Run tests
-        run: poetry run pytest
+        run: make tests
       - uses: psf/black@stable
         with:
           options: "--check --verbose"
@@ -67,7 +67,7 @@ jobs:
       - name: Install library
         run: poetry install --no-interaction
       - name: Run tests
-        run: poetry run pytest
+        run: make tests
       - uses: psf/black@stable
         with:
           options: "--check --verbose"
@@ -100,7 +100,7 @@ jobs:
       - name: Install library
         run: poetry install --no-interaction
       - name: Run tests
-        run: poetry run pytest
+        run: make tests
       - uses: psf/black@stable
         with:
           options: "--check --verbose"
