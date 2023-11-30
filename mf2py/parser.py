@@ -373,7 +373,7 @@ class Parser(object):
                         embedded_el = copy.copy(embedded_el)
                     temp_fixes.rm_templates(embedded_el)
                     e_value = parse_property.embedded(
-                        embedded_el, self.__url__, self.expose_dom, root_lang, self.lang
+                        embedded_el, self.__url__, root_lang, self.lang, self.expose_dom
                     )
 
                 if root_class_names:
