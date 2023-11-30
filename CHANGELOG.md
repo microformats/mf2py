@@ -58,7 +58,7 @@ All notable changes to this project will be documented in this file.
 - reorganise tests
 - remove Heroku frontend, point to mf2py-web and python.microformats.io instead in README.
 - remove Flask and gunicorn requirements
-- add debug info with description, version, url and the html parser used 
+- add debug info with description, version, url and the html parser used
 
 ## 1.0.6 - 2018-03-04
 
