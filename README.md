@@ -16,17 +16,14 @@ mf2py implements the full mf2 specification, including backward compatibility wi
 To install `mf2py`, run the following command:
 
 ```bash
-
 pip install mf2py
-
 ```
 
 ## Quickstart 🚀
 
 Import the parser using:
 
-```python
-
+```pycon
 >>> import mf2py
 
 ```
@@ -35,8 +32,7 @@ Import the parser using:
 
 Parse a file containing HTML:
 
-```python
-
+```pycon
 >>> with open("example.html", "r") as file:
 ...     mf2json = mf2py.parse(doc=file)
 >>> mf2json
@@ -57,8 +53,7 @@ Parse a file containing HTML:
 
 Parse string containing HTML content:
 
-```python
-
+```pycon
 >>> content = '<article class="h-entry"><h1 class="p-name">Hello</h1></article>'
 >>> mf2py.parse(doc=content)["items"]
 [{'type': ['h-entry'], 'properties': {'name': ['Hello']}}]
@@ -69,36 +64,39 @@ Parse string containing HTML content:
 
 Parse content from a URL:
 
-```python
-
+```pycon
 >>> mf2json = mf2py.parse(url="https://indieweb.org")
 
 ```
+
+### Parser Object
 
 `parse` is a convenience method that actually delegates to
 `mf2py.Parser` to do the real work. More sophisticated behaviors are
 available by invoking the object directly.
 
-### Format Options
-
-Retrieve parsed microformats as a Python dictionary or JSON string:
-
-```python
-
-p = mf2py.Parser(...)
-p.to_dict()  # returns a python dictionary
-p.to_json()  # returns a JSON string
+```pycon
+>>> p = mf2py.Parser()
 
 ```
 
-### Filter by Microformat Type
+#### JSON Output
 
-Filter by microformat type:
+Retrieve parsed microformats as a Python dictionary or JSON string:
 
-```python
+```pycon
+>>> mf2dict = p.to_dict()
+>>> mf2json = p.to_json()
 
-p.to_dict(filter_by_type="h-entry")
-p.to_json(filter_by_type="h-entry")
+```
+
+#### Filter by Microformat Type
+
+Filter by microformat type.
+
+```pycon
+>>> dict_entries = p.to_dict(filter_by_type="h-entry")
+>>> json_entries = p.to_json(filter_by_type="h-entry")
 
 ```
 
