@@ -68,6 +68,7 @@ class Parser(object):
                 "version": __version__,
             },
         }
+        self.lang = None
 
         # use default parser if none specified
         self.__html_parser__ = html_parser or "html5lib"
@@ -128,6 +129,8 @@ class Parser(object):
                         self.__url__ = try_urljoin(self.__url__, poss_base_url)
 
         if self.__doc__ is not None:
+            if document := self.__doc__.find("html"):
+                self.lang = document.attrs.get("lang")
             # parse!
             self.parse()
 
@@ -161,13 +164,15 @@ class Parser(object):
                 el = backcompat.apply_rules(el, self.__html_parser__)
                 root_class_names = mf2_classes.root(el.get("class", []))
 
+            root_lang = el.attrs.get("lang")
+
             # parse for properties and children
             for child in get_children(el):
                 (
                     child_props,
                     child_children,
                     child_parsed_types_aggregation,
-                ) = parse_props(child)
+                ) = parse_props(child, root_lang)
                 for key, new_value in child_props.items():
                     prop_value = properties.get(key, [])
                     prop_value.extend(new_value)
@@ -239,9 +244,13 @@ class Parser(object):
                 else:
                     microformat["value"] = simple_value
 
+            if root_lang:
+                microformat["lang"] = root_lang
+            elif self.lang:
+                microformat["lang"] = self.lang
             return microformat
 
-        def parse_props(el):
+        def parse_props(el, root_lang):
             """Parse the properties from a single element"""
             props = {}
             children = []
@@ -363,7 +372,7 @@ class Parser(object):
                         embedded_el = copy.copy(embedded_el)
                     temp_fixes.rm_templates(embedded_el)
                     e_value = parse_property.embedded(
-                        embedded_el, base_url=self.__url__
+                        embedded_el, root_lang, self.lang, base_url=self.__url__
                     )
 
                 if root_class_names:
@@ -394,7 +403,7 @@ class Parser(object):
                         child_properties,
                         child_microformats,
                         child_parsed_types_aggregation,
-                    ) = parse_props(child)
+                    ) = parse_props(child, root_lang)
                     for prop_name in child_properties:
                         v = props.get(prop_name, [])
                         v.extend(child_properties[prop_name])
