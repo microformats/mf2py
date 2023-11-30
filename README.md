@@ -35,7 +35,7 @@ Parse a file containing HTML:
 ```pycon
 >>> with open("example.html", "r") as file:
 ...     mf2json = mf2py.parse(doc=file)
->>> mf2json
+>>> mf2json  # doctest: +NORMALIZE_WHITESPACE
 {'items': [{'type': ['h-entry'],
             'properties': {'name': ['Hello'],
                            'content': [{'html': 'Just saying hi.',
