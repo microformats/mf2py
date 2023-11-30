@@ -15,9 +15,9 @@ TestCase.maxDiff = None
 TEST_DIR = "test/examples/"
 
 
-def parse_fixture(path, url=None, expose_dom=False):
+def parse_fixture(path, **kwargs):
     with open(os.path.join(TEST_DIR, path)) as f:
-        p = Parser(doc=f, url=url, html_parser="html5lib", expose_dom=expose_dom)
+        p = Parser(doc=f, html_parser="html5lib", **kwargs)
         return p.to_dict()
 
 
@@ -188,7 +188,7 @@ def test_embedded_parsing():
     )
     assert (
         result["items"][0]["properties"]["content"][0]["value"]
-        == "Blah blah blah blah blah.\nBlah.\nBlah blah blah."
+        == "Blah blah blah blah blah.\n\nBlah.\n\nBlah blah blah."
     )
 
 
@@ -346,14 +346,14 @@ def test_enclosures():
 
 
 def test_empty_href():
-    result = parse_fixture("hcard_with_empty_url.html", "http://foo.com")
+    result = parse_fixture("hcard_with_empty_url.html", url="http://foo.com")
 
     for hcard in result["items"]:
         assert ["http://foo.com"] == hcard["properties"]["url"]
 
 
 def test_link_with_u_url():
-    result = parse_fixture("link_with_u-url.html", "http://foo.com")
+    result = parse_fixture("link_with_u-url.html", url="http://foo.com")
     assert {
         "type": ["h-card"],
         "properties": {
@@ -364,7 +364,7 @@ def test_link_with_u_url():
 
 
 def test_broken_url():
-    result = parse_fixture("broken_url.html", "http://example.com")
+    result = parse_fixture("broken_url.html", url="http://example.com")
     assert (
         result["items"][0]["properties"]["relative"][0] == "http://example.com/foo.html"
     )
@@ -395,6 +395,16 @@ def test_complex_e_content():
             ],
         },
     } == result["items"][0]
+
+
+def test_relative_url_in_e():
+    """When parsing e-* properties, make relative URLs absolute."""
+    result = parse_fixture("relative_url_in_e.html")
+
+    assert (
+        '<p><a href="http://example.com/cat.html">Cat '
+        '<img src="http://example.com/cat.jpg"/></a></p>'
+    ) == result["items"][0]["properties"]["content"][0]["html"]
 
 
 def test_nested_values():
@@ -613,15 +623,20 @@ def test_value_name_whitespace():
         assert result["items"][i]["properties"]["content"][0]["value"] == "Hello World"
         assert result["items"][i]["properties"]["name"][0] == "Hello World"
 
-    for i in range(3, 8):
+    for i in range(3, 7):
         assert result["items"][i]["properties"]["content"][0]["value"] == "Hello\nWorld"
         assert result["items"][i]["properties"]["name"][0] == "Hello\nWorld"
 
-    for i in range(8, 10):
-        assert (
-            result["items"][i]["properties"]["content"][0]["value"] == "One\nTwo\nThree"
-        )
-        assert result["items"][i]["properties"]["name"][0] == "One\nTwo\nThree"
+    assert result["items"][7]["properties"]["content"][0]["value"] == "Hello\n\nWorld"
+    assert result["items"][7]["properties"]["name"][0] == "Hello\n\nWorld"
+
+    assert result["items"][8]["properties"]["content"][0]["value"] == "One\nTwo\nThree"
+    assert result["items"][8]["properties"]["name"][0] == "One\nTwo\nThree"
+
+    assert (
+        result["items"][9]["properties"]["content"][0]["value"] == "One\n\nTwo\n\nThree"
+    )
+    assert result["items"][9]["properties"]["name"][0] == "One\n\nTwo\n\nThree"
 
     assert (
         result["items"][10]["properties"]["content"][0]["value"]
@@ -871,6 +886,29 @@ def test_whitespace_with_tags_inside_property():
     assert result["items"][0]["properties"] == {"name": ["foo bar"]}
 
 
+def test_plaintext_p_whitespace():
+    result = parse_fixture("plaintext_p_whitespace.html")
+    assert result["items"][0]["properties"]["content"][0]["value"] == "foo\nbar baz"
+    assert result["items"][1]["properties"]["content"][0]["value"] == "foo\nbar baz"
+    assert result["items"][2]["properties"]["content"][0]["value"] == "foo bar\nbaz"
+
+
+def test_plaintext_img_whitespace():
+    result = parse_fixture("plaintext_img_whitespace.html")
+    assert (
+        result["items"][0]["properties"]["content"][0]["value"]
+        == "selfie At some tourist spot"
+    )
+    assert (
+        result["items"][1]["properties"]["content"][0]["value"]
+        == "At another tourist spot"
+    )
+    assert (
+        result["items"][2]["properties"]["content"][0]["value"]
+        == "https://example.com/photo.jpg At yet another tourist spot"
+    )
+
+
 def test_photo_with_alt():
     """Confirm that alt text in img is parsed as a u-* property and implied photo"""
 
@@ -971,6 +1009,44 @@ def test_photo_with_alt():
     assert "" == exp_result["items"][5]["properties"]["in-reply-to"][0]["alt"]
 
 
+def test_photo_with_srcset():
+    result = parse_fixture("img_with_srcset.html")
+
+    assert result["items"][0]["properties"]["photo"][0]["srcset"] == {
+        "480w": "elva-fairy-480w.jpg",
+        "800w": "elva-fairy-800w.jpg",
+    }
+    assert result["items"][1]["properties"]["photo"][0]["srcset"] == {
+        "1x": "elva-fairy-320w.jpg",
+        "1.5x": "elva-fairy-480w.jpg",
+        "2x": "elva-fairy-640w.jpg",
+    }
+    assert (
+        result["items"][1]["properties"]["photo"][0]["srcset"]["2x"]
+        != "elva-fairy-2w.jpg"
+    )
+    for i in range(2, 7):
+        assert result["items"][i]["properties"]["photo"][0]["srcset"] == {
+            "1x": "elva-fairy,320w.jpg",
+            "1.5x": "elva-fairy,480w.jpg",
+        }
+    assert result["items"][7]["properties"]["photo"][0]["srcset"] == {
+        "1x": "elva-fairy,320w.jpg",
+    }
+    assert result["items"][8]["properties"]["photo"][0]["srcset"] == {
+        "1x": "elva-fairy,320w.jpg",
+        "1.5x": "elva-fairy,480w.jpg",
+        "2x": "elva-fairy,640w.jpg",
+    }
+
+    result = parse_fixture("img_with_srcset_with_base.html")
+
+    assert result["items"][0]["properties"]["photo"][0]["srcset"] == {
+        "480w": "https://example.com/elva-fairy-480w.jpg",
+        "800w": "https://example.com/elva-fairy-800w.jpg",
+    }
+
+
 def test_parse_id():
     result = parse_fixture("parse_id.html")
     assert "recentArticles" == result["items"][0]["id"]
@@ -1048,3 +1124,14 @@ def test_all_u_cases():
         make_labelled_cmp("all_u_cases_" + str(i))(
             "http://example.com/test", result["items"][0]["properties"]["url"][i]
         )
+
+
+def test_language():
+    result = parse_fixture("language.html")
+    assert result["items"][0]["lang"] == "it"
+    assert result["items"][1]["lang"] == "it"
+    assert result["items"][1]["properties"]["content"][0]["lang"] == "en"
+    assert result["items"][1]["properties"]["content"][1]["lang"] == "it"
+    assert result["items"][2]["lang"] == "sv"
+    assert result["items"][2]["properties"]["content"][0]["lang"] == "en"
+    assert result["items"][2]["properties"]["content"][1]["lang"] == "sv"

@@ -1,6 +1,12 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.0 - unreleased
+- make relative URLs in e-* properties absolute (#201)
+- fix whitespace in plaintext conversion (#207)
+- add srcset support (#209)
+- add language support (#210)
+
 ## 1.1.3 - 2023-06-28
 - reduce instances where photo is implied (#135)
 - always do relative URL resolution (#138)
@@ -19,7 +25,7 @@ All notable changes to this project will be documented in this file.
 ## 1.1.1 - 2018-06-15
 
 - streamline backcompat to use JSON only.
-- fix multiple mf1 root rel-tag parsing 
+- fix multiple mf1 root rel-tag parsing
 - correct url and photo for hreview.
 - add rules for nested hreview. update backcompat to use multiple matches in old properties.
 - fix `rel-tag` to `p-category` conversion so that other classes are not lost.
@@ -34,11 +40,11 @@ All notable changes to this project will be documented in this file.
 - better whitespace algorithm for `name` and `html.value` parsing
 - experimental flag for including `alt` in `u-photo` parsing
 - make a copy of the BeautifulSoup given by user to work on for parsing to prevent changes to original doc
-- bump version to 1.1.1 
+- bump version to 1.1.1
 
 ## 1.1.0 - 2018-03-16
 
-- bump version to 1.1.0 since it is a "major" change 
+- bump version to 1.1.0 since it is a "major" change
 - added tests for new implied name rules
 - modified earlier tests to accommodate new rules
 - use space separator instead of "T"
@@ -56,12 +62,12 @@ All notable changes to this project will be documented in this file.
 ## 1.0.6 - 2018-03-04
 
 - strip leading/trailing white space for `e-*[html]`. update the corresponding tests
-- blank values explicitly authored are allowed as property values 
+- blank values explicitly authored are allowed as property values
 - include `alt` or `src` from `<img>` in parsing for `p-*` and `e-*[value]`
-- parse `title` from `<link>` for `p-*` resolves #84 
-- and `poster` from `<video>` for `u-*` resolves #76 
+- parse `title` from `<link>` for `p-*` resolves #84
+- and `poster` from `<video>` for `u-*` resolves #76
 - use `html5lib` as default parser
-- use the final redirect URL resolves #62 
+- use the final redirect URL resolves #62
 - update requirements to use BS4 v4.6.0 and html5lib v1.0.1
 - drop support for Python 2.6 as html5lib dropped support
 
