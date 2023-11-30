@@ -14,9 +14,9 @@ TestCase.maxDiff = None
 TEST_DIR = "test/examples/"
 
 
-def parse_fixture(path, url=None):
+def parse_fixture(path, **kwargs):
     with open(os.path.join(TEST_DIR, path)) as f:
-        p = Parser(doc=f, url=url, html_parser="html5lib")
+        p = Parser(doc=f, html_parser="html5lib", **kwargs)
         return p.to_dict()
 
 
@@ -338,14 +338,14 @@ def test_enclosures():
 
 
 def test_empty_href():
-    result = parse_fixture("hcard_with_empty_url.html", "http://foo.com")
+    result = parse_fixture("hcard_with_empty_url.html", url="http://foo.com")
 
     for hcard in result["items"]:
         assert ["http://foo.com"] == hcard["properties"]["url"]
 
 
 def test_link_with_u_url():
-    result = parse_fixture("link_with_u-url.html", "http://foo.com")
+    result = parse_fixture("link_with_u-url.html", url="http://foo.com")
     assert {
         "type": ["h-card"],
         "properties": {
@@ -356,7 +356,7 @@ def test_link_with_u_url():
 
 
 def test_broken_url():
-    result = parse_fixture("broken_url.html", "http://example.com")
+    result = parse_fixture("broken_url.html", url="http://example.com")
     assert (
         result["items"][0]["properties"]["relative"][0] == "http://example.com/foo.html"
     )
