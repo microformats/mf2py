@@ -25,7 +25,7 @@ def parse(doc=None, url=None, html_parser=None, expose_dom=False):
       html_parser (string): optional, select a specific HTML parser. Valid
         options from the BeautifulSoup documentation are:
         "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
-      expose_dom (boolean): optional, expose the DOM of `e-*` properties.
+      expose_dom (boolean): optional, expose the DOM of embedded properties.
 
     Return: a json dict represented the structured data in this document.
     """
@@ -46,7 +46,7 @@ class Parser(object):
         options from the BeautifulSoup documentation are:
         "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
         defaults to "html5lib"
-      expose_dom (boolean): optional, expose the DOM of `e-*` properties.
+      expose_dom (boolean): optional, expose the DOM of embedded properties.
 
     Attributes:
       useragent (string): the User-Agent string for the Parser
