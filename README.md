@@ -7,9 +7,7 @@
 
 ## Welcome 👋
 
-`mf2py` is a full-featured microformats2 (mf2) parser implemented in Python.
-
-mf2py implements the full mf2 specification, including backward compatibility with microformats1.
+`mf2py` is a Python [microformats](https://microformats.org/wiki/microformats) parser with full support for `microformats2` and `microformats1`.
 
 ## Installation 💻
 
@@ -28,22 +26,30 @@ Import the parser using:
 
 ```
 
-### Parse a File
-
-Parse a file containing HTML:
+### Parse an HTML File
 
 ```pycon
->>> with open("example.html", "r") as file:
+>>> with open("test/examples/eras.html", "r") as file:
 ...     mf2json = mf2py.parse(doc=file)
 >>> mf2json
 {'items': [{'type': ['h-entry'],
-            'properties': {'name': ['Hello'],
-                           'content': [{'value': 'Just saying hi.',
+            'properties': {'author': [{'lang': 'en-us',
+                                       'properties': {'name': ['James'],
+                                                      'url': ['https://example.com/']},
+                                       'type': ['h-card'],
+                                       'value': 'James'}],
+                           'name': ['Excited for the Taylor Swift Eras Tour'],
+                           'category': ['music', 'Taylor Swift'],
+                           'featured': [{'alt': 'Eras tour poster',
+                                         'value': 'https://example.com/eras.jpg'}],
+                           'published': ['2023-11-30T19:08:09'],
+                           'content': [{'value': 'I can't decide which era is my favorite.',
                                         'lang': 'en-us',
-                                        'html': 'Just saying hi.'}]},
+                                        'html': '<p>I can't decide which era is my favorite.</p>'}]},
             'lang': 'en-us'}],
- 'rels': {},
- 'rel-urls': {},
+ 'rels': {'webmention': ['https://example.com/mentions']},
+ 'rel-urls': {'https://example.com/mentions': {'rels': ['webmention'],
+                                               'text': ''}},
  'debug': {'description': 'mf2py - microformats2 parser for python',
            'source': 'https://github.com/microformats/mf2py',
            'version': '1.1.3',
@@ -51,9 +57,7 @@ Parse a file containing HTML:
 
 ```
 
-### Parse a String
-
-Parse string containing HTML content:
+### Parse an HTML String
 
 ```pycon
 >>> content = '<article class="h-entry"><h1 class="p-name">Hello</h1></article>'
@@ -63,8 +67,6 @@ Parse string containing HTML content:
 ```
 
 ### Parse an HTML Document Retrieved from a URL
-
-Parse content from a URL:
 
 ```pycon
 >>> mf2json = mf2py.parse(url="https://indieweb.org")
