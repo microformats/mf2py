@@ -3,6 +3,7 @@ import re
 import sys
 from unittest import TestCase
 
+import bs4
 import mock
 from bs4 import BeautifulSoup
 
@@ -189,6 +190,13 @@ def test_embedded_parsing():
         result["items"][0]["properties"]["content"][0]["value"]
         == "Blah blah blah blah blah.\n\nBlah.\n\nBlah blah blah."
     )
+
+
+def test_embedded_exposed_dom():
+    result = parse_fixture("embedded.html", expose_dom=True)
+    content = result["items"][0]["properties"]["content"][0]
+    assert "html" not in content
+    assert isinstance(content["dom"], bs4.element.Tag)
 
 
 def test_hoisting_nested_hcard():
