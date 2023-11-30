@@ -60,28 +60,36 @@ Import the parser using:
 ### Parse an HTML String
 
 ```pycon
->>> content = '<article class="h-entry"><h1 class="p-name">Hello</h1></article>'
->>> mf2py.parse(doc=content)["items"]
-[{'type': ['h-entry'], 'properties': {'name': ['Hello']}}]
+>>> html = '''<article class="h-entry"><p class="p-content">The best time
+... to plant a tree was 30 years ago, and the second best time to plant a
+... tree is now.</p></article>'''
+>>> mf2py.parse(doc=html)["items"]
+[{'type': ['h-entry'], 'properties': {'content': ['The best time to plant
+a tree was 30 years ago, and the second best time to plant a tree is now.']}}]
 
 ```
 
 ### Parse an HTML Document Retrieved from a URL
 
 ```pycon
->>> mf2json = mf2py.parse(url="https://indieweb.org")
+>>> mf2json = mf2py.parse(url="https://events.indieweb.org")
+>>> mf2json["items"][0]["type"]
+['h-feed']
+>>> mf2json["items"][0]["children"][0]["type"]
+['h-event']
 
 ```
 
-### Extensions
+## Extensions
+
+### `expose_dom`
 
 Use `expose_dom=True` to expose the DOM of embedded properties.
 
-### Parser Object
+## Advanced Usage
 
-`parse` is a convenience method that actually delegates to
-`mf2py.Parser` to do the real work. More sophisticated behaviors are
-available by invoking the object directly.
+`parse` is a convenience method that delegates to `Parser`. More sophisticated
+behaviors are available by invoking the parser object directly.
 
 ```pycon
 >>> p = mf2py.Parser()
