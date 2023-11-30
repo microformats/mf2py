@@ -390,7 +390,7 @@ def test_complex_e_content():
 
 
 def test_relative_url_in_e():
-    """ """
+    """When parsing e-* properties, make relative URLs absolute."""
     result = parse_fixture("relative_url_in_e.html")
 
     assert (
