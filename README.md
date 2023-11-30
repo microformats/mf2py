@@ -38,8 +38,10 @@ Parse a file containing HTML:
 >>> mf2json
 {'items': [{'type': ['h-entry'],
             'properties': {'name': ['Hello'],
-                           'content': [{'html': 'Just saying hi.',
-                                        'value': 'Just saying hi.'}]}}],
+                           'content': [{'value': 'Just saying hi.',
+                                        'lang': 'en-us',
+                                        'html': 'Just saying hi.'}]},
+            'lang': 'en-us'}],
  'rels': {},
  'rel-urls': {},
  'debug': {'description': 'mf2py - microformats2 parser for python',
