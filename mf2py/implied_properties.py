@@ -103,15 +103,20 @@ def photo(el, base_url=""):
             if not mf2_classes.root(poss_obj.get("class", [])):
                 return poss_obj
 
-    # if element is an img use source if exists
-    prop_value = get_img_src_alt(el, base_url)
-    if prop_value is not None:
+    def resolve_relative_url(prop_value):
+        if isinstance(prop_value, dict):
+            prop_value["value"] = try_urljoin(base_url, prop_value["value"])
+        else:
+            prop_value = try_urljoin(base_url, prop_value)
         return prop_value
 
+    # if element is an img use source if exists
+    if prop_value := get_img_src_alt(el, base_url):
+        return resolve_relative_url(prop_value)
+
     # if element is an object use data if exists
-    prop_value = get_attr(el, "data", check_name="object")
-    if prop_value is not None:
-        return prop_value
+    if prop_value := get_attr(el, "data", check_name="object"):
+        return resolve_relative_url(prop_value)
 
     # find candidate child or grandchild
     poss_child = None
@@ -131,14 +136,12 @@ def photo(el, base_url=""):
     # if a possible child was found parse
     if poss_child is not None:
         # img get src
-        prop_value = get_img_src_alt(poss_child, base_url)
-        if prop_value is not None:
-            return prop_value
+        if prop_value := get_img_src_alt(poss_child, base_url):
+            return resolve_relative_url(prop_value)
 
         # object get data
-        prop_value = get_attr(poss_child, "data", check_name="object")
-        if prop_value is not None:
-            return prop_value
+        if prop_value := get_attr(poss_child, "data", check_name="object"):
+            return resolve_relative_url(prop_value)
 
 
 def url(el, base_url=""):

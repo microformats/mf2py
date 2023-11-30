@@ -58,5 +58,5 @@ def normalize_datetime(dtstr, match=None):
 
         tzstr = match.group("tz")
         if tzstr:
-            dtstr += tzstr
+            dtstr += tzstr.replace(":", "")
     return dtstr
