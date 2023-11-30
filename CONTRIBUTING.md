@@ -53,4 +53,4 @@ make test
 
 ## Join the Microformats Community
 
-Have a question about microformats or mf2py? Join the `#microformats` disussion on Slack, Discord, IRC, or Matrix. Guidance on how to join the community is available on the [IndieWeb wiki](https://indieweb.org/discuss).
+Have a question about microformats or mf2py? Join the `#microformats` disussion on Slack, Discord, or IRC. Guidance on how to join the community is available on the [IndieWeb wiki](https://indieweb.org/discuss).
