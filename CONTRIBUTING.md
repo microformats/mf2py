@@ -38,7 +38,7 @@ PRs must pass all tests and linting requirements before they can be merged.
 Before you submit a PR to `mf2py`, run the following command in the base directory of the project:
 
 ```bash
-make style
+make lint
 ```
 
 This will format your code using the linters configured with the project.
