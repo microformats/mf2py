@@ -1116,3 +1116,14 @@ def test_all_u_cases():
         make_labelled_cmp("all_u_cases_" + str(i))(
             "http://example.com/test", result["items"][0]["properties"]["url"][i]
         )
+
+
+def test_language():
+    result = parse_fixture("language.html")
+    assert result["items"][0]["lang"] == "it"
+    assert result["items"][1]["lang"] == "it"
+    assert result["items"][1]["properties"]["content"][0]["lang"] == "en"
+    assert result["items"][1]["properties"]["content"][1]["lang"] == "it"
+    assert result["items"][2]["lang"] == "sv"
+    assert result["items"][2]["properties"]["content"][0]["lang"] == "en"
+    assert result["items"][2]["properties"]["content"][1]["lang"] == "sv"
