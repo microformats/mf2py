@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 - fix whitespace in plaintext conversion (#207)
 - add srcset support (#209)
 - add language support (#210)
+- add extension to expose DOM for embedded properties (#208)
 
 ## 1.1.3 - 2023-06-28
 - reduce instances where photo is implied (#135)
