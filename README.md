@@ -1,4 +1,4 @@
-![mf2py banner](http://microformats.github.io/mf2py/banner.png)
+![mf2py banner](https://microformats.github.io/mf2py/banner.png)
 
 [![version](https://badge.fury.io/py/mf2py.svg?)](https://badge.fury.io/py/mf2py)
 [![downloads](https://img.shields.io/pypi/dm/mf2py)](https://pypistats.org/packages/mf2py)
@@ -96,9 +96,9 @@ behaviors are available by invoking the parser object directly.
 
 ```
 
-#### JSON Output
+#### Output Format
 
-Retrieve parsed microformats as a Python dictionary or JSON string:
+Output parsed microformats as a Python dictionary or JSON string:
 
 ```pycon
 >>> mf2dict = p.to_dict()
@@ -108,33 +108,26 @@ Retrieve parsed microformats as a Python dictionary or JSON string:
 
 #### Filter by Microformat Type
 
-Filter by microformat type.
-
 ```pycon
 >>> dict_entries = p.to_dict(filter_by_type="h-entry")
 >>> json_entries = p.to_json(filter_by_type="h-entry")
 
 ```
 
-## Breaking Changes in v2
+## Breaking Changes in `mf2py` 2.0
 
-- img alt support is now on by default
+- Image `alt` support is now on by default.
 
-## FAQs ❓
+## Notes 📝
 
-* I passed `mf2py.parse()` a BeautifulSoup document, and it got modified!
-
-Yes, mf2py currently does that. We're working on preventing it! Hopefully soon.
-
-## Testing Environments 🌐
-
-A hosted live version of mf2py can be found at [python.microformats.io](https://python.microformats.io).
+- If you pass a BeautifulSoup document it may be modified.
+- A hosted version of `mf2py` is available at [python.microformats.io](https://python.microformats.io).
 
 ## Contributing 🛠️
 
-We welcome contributions and bug reports via Github, and on the microformats wiki.
+We welcome contributions and bug reports via GitHub.
 
-We to follow the [IndieWebCamp code of conduct](http://indiewebcamp.com/code-of-conduct). Please be respectful of other contributors, and forge a spirit of positive co-operation without discrimination or disrespect.
+This project follows the [IndieWeb code of conduct](https://indieweb.org/code-of-conduct). Please be respectful of other contributors and forge a spirit of positive co-operation without discrimination or disrespect.
 
 ## License 🧑‍⚖️
 
