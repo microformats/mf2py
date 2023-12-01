@@ -1198,3 +1198,16 @@ def test_language():
     assert result["items"][2]["lang"] == "sv"
     assert result["items"][2]["properties"]["content"][0]["lang"] == "en"
     assert result["items"][2]["properties"]["content"][1]["lang"] == "sv"
+
+
+def test_parser_object():
+    with open(os.path.join(TEST_DIR, "festivus.html")) as f:
+        p = Parser(doc=f)
+    assert len(p.to_dict(filter_by_type="h-card")) == 3
+    assert len(p.to_dict(filter_by_type="h-entry")) == 4
+    assert (
+        p.to_json(filter_by_type="h-card")
+        == '[{"type": ["h-card"], "properties": {"name": ["Jerry"]}}, {"type": '
+        '["h-card"], "properties": {"name": ["Frank"]}}, {"type": ["h-card"], '
+        '"properties": {"name": ["Cosmo"]}}]'
+    )
