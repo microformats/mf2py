@@ -26,11 +26,11 @@ Import the parser using:
 
 ```
 
-### Parse an HTML File
+### Parse an HTML Document from a string
 
 ```pycon
->>> with open("test/examples/eras.html", "r") as file:
-...     mf2json = mf2py.parse(doc=file)
+>>> with open("test/examples/eras.html") as fp:
+...     mf2json = mf2py.parse(doc=html)
 >>> mf2json
 {'items': [{'type': ['h-entry'],
             'properties': {'name': ['Excited for the Taylor Swift Eras Tour'],
@@ -57,19 +57,7 @@ Import the parser using:
 
 ```
 
-### Parse an HTML String
-
-```pycon
->>> html = '''<article class="h-entry"><p class="p-content">The best time
-... to plant a tree was 30 years ago, and the second best time to plant a
-... tree is now.</p></article>'''
->>> mf2py.parse(doc=html)["items"]
-[{'type': ['h-entry'], 'properties': {'content': ['The best time to plant
-a tree was 30 years ago, and the second best time to plant a tree is now.']}}]
-
-```
-
-### Parse an HTML Document Retrieved from a URL
+### Parse an HTML Document from a URL
 
 ```pycon
 >>> mf2json = mf2py.parse(url="https://events.indieweb.org")
@@ -95,17 +83,12 @@ found.
 
 ## Advanced Usage
 
-`parse` is a convenience method that delegates to `Parser`. More sophisticated
-behaviors are available by invoking the parser object directly.
+`parse` is a convenience function for `Parser`. More sophisticated behaviors are
+available by invoking the parser object directly.
 
 ```pycon
->>> html = '''<h1><span class=h-card>Frank</span> and <span class=h-card>Cosmo</span></h1>
-... <p class=h-entry><q class=p-content>It's time for the Festivus feats of
-... strength.</q></p>
-... <p class=h-entry><q class=p-content>It's a Festivus miracle!</q></p>
-... <p class=h-entry><q class=p-content>The tradition of Festivus begins with
-... the airing of grievances.</q></p>'''
->>> mf2parser = mf2py.Parser(doc=html)
+>>> with open("test/examples/festivus.html") as fp:
+...     mf2parser = mf2py.Parser(doc=fp)
 
 ```
 
