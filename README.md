@@ -23,57 +23,87 @@ pip install mf2py
 
 Import the parser using:
 
-```python
-import mf2py
+```pycon
+>>> import mf2py
+
 ```
 
 ### Parse a File
 
 Parse a file containing HTML:
 
-```python
-with open('file/content.html','r') as file:
-    obj = mf2py.parse(doc=file)
+```pycon
+>>> with open("example.html", "r") as file:
+...     mf2json = mf2py.parse(doc=file)
+>>> mf2json
+{'items': [{'type': ['h-entry'],
+            'properties': {'name': ['Hello'],
+                           'content': [{'value': 'Just saying hi.',
+                                        'lang': 'en-us',
+                                        'html': 'Just saying hi.'}]},
+            'lang': 'en-us'}],
+ 'rels': {},
+ 'rel-urls': {},
+ 'debug': {'description': 'mf2py - microformats2 parser for python',
+           'source': 'https://github.com/microformats/mf2py',
+           'version': '1.1.3',
+           'markup parser': 'html5lib'}}
+
 ```
 
 ### Parse a String
 
 Parse string containing HTML content:
 
-```python
-content = '<article class="h-entry"><h1 class="p-name">Hello</h1></article>'
-obj = mf2py.parse(doc=content)
+```pycon
+>>> content = '<article class="h-entry"><h1 class="p-name">Hello</h1></article>'
+>>> mf2py.parse(doc=content)["items"]
+[{'type': ['h-entry'], 'properties': {'name': ['Hello']}}]
+
 ```
 
-### Parse a HTML Document Retrieved from a URL
+### Parse an HTML Document Retrieved from a URL
 
 Parse content from a URL:
 
-```python
-obj = mf2py.parse(url="http://tommorris.org/")
+```pycon
+>>> mf2json = mf2py.parse(url="https://indieweb.org")
+
 ```
+
+### Extensions
+
+Use `expose_dom=True` to expose the DOM of embedded properties.
+
+### Parser Object
 
 `parse` is a convenience method that actually delegates to
 `mf2py.Parser` to do the real work. More sophisticated behaviors are
 available by invoking the object directly.
 
-### Format Options
+```pycon
+>>> p = mf2py.Parser()
+
+```
+
+#### JSON Output
 
 Retrieve parsed microformats as a Python dictionary or JSON string:
 
-```python
-p = mf2py.Parser(...)
-p.to_dict()  # returns a python dictionary
-p.to_json()  # returns a JSON string
+```pycon
+>>> mf2dict = p.to_dict()
+>>> mf2json = p.to_json()
+
 ```
 
-### Filter by Microformat Type
+#### Filter by Microformat Type
 
-Filter by microformat type:
+Filter by microformat type.
 
-```python
-p.to_dict(filter_by_type="h-entry")
-p.to_json(filter_by_type="h-entry")
+```pycon
+>>> dict_entries = p.to_dict(filter_by_type="h-entry")
+>>> json_entries = p.to_json(filter_by_type="h-entry")
+
 ```
 
 ## Breaking Changes in v2

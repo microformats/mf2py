@@ -1,11 +1,5 @@
 from . import mf2_classes
-from .dom_helpers import (
-    get_attr,
-    get_children,
-    get_img_src_alt,
-    get_textContent,
-    try_urljoin,
-)
+from .dom_helpers import get_attr, get_children, get_img, get_textContent, try_urljoin
 
 
 def name(el, base_url=""):
@@ -111,7 +105,7 @@ def photo(el, base_url=""):
         return prop_value
 
     # if element is an img use source if exists
-    if prop_value := get_img_src_alt(el, base_url):
+    if prop_value := get_img(el, base_url):
         return resolve_relative_url(prop_value)
 
     # if element is an object use data if exists
@@ -136,7 +130,7 @@ def photo(el, base_url=""):
     # if a possible child was found parse
     if poss_child is not None:
         # img get src
-        if prop_value := get_img_src_alt(poss_child, base_url):
+        if prop_value := get_img(poss_child, base_url):
             return resolve_relative_url(prop_value)
 
         # object get data

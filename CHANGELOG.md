@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 ## 2.0 - unreleased
+- make relative URLs in e-* properties absolute (#201)
+- fix whitespace in plaintext conversion (#207)
+- add srcset support (#209)
+- add language support (#210)
+- add extension to expose the DOM for embedded properties (#208)
 
 - add initial metaformats support (#212): https://microformats.org/wiki/metaformats . Includes "extended" metaformats for inferring `name` from `<title>` and `summary` from `meta[name=description]`.
 
