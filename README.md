@@ -82,9 +82,16 @@ a tree was 30 years ago, and the second best time to plant a tree is now.']}}]
 
 ## Extensions
 
+The following extensions can be invoked via keyword arguments to `parse()` and `Parser()`.
+
 ### `expose_dom`
 
 Use `expose_dom=True` to expose the DOM of embedded properties.
+
+### `metaformats`
+
+Use `metaformats=True` to include any [metaformats](https://microformats.org/wiki/metaformats)
+found.
 
 ## Advanced Usage
 
