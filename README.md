@@ -30,7 +30,7 @@ Import the parser using:
 
 ```pycon
 >>> with open("test/examples/eras.html") as fp:
-...     mf2json = mf2py.parse(doc=html)
+...     mf2json = mf2py.parse(doc=fp)
 >>> mf2json
 {'items': [{'type': ['h-entry'],
             'properties': {'name': ['Excited for the Taylor Swift Eras Tour'],
@@ -97,11 +97,11 @@ available by invoking the parser object directly.
 ```pycon
 >>> mf2json = mf2parser.to_dict()
 >>> len(mf2json["items"])
-5
+7
 >>> len(mf2parser.to_dict(filter_by_type="h-card"))
-2
->>> len(mf2parser.to_dict(filter_by_type="h-entry"))
 3
+>>> len(mf2parser.to_dict(filter_by_type="h-entry"))
+4
 
 ```
 
