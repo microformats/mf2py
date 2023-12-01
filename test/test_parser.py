@@ -1126,6 +1126,69 @@ def test_all_u_cases():
         )
 
 
+def test_metaformats_flag_false():
+    result = parse_fixture("metaformats_ogp.html")
+    assert result["items"] == []
+
+
+def test_metaformats_title_only():
+    result = parse_fixture("base.html", metaformats=True)
+    assert result["items"] == [
+        {
+            "type": ["h-entry"],
+            "properties": {
+                "name": ["Hello World"],
+            },
+        }
+    ]
+
+
+def test_metaformats_ogp():
+    result = parse_fixture("metaformats_ogp.html", metaformats=True)
+    assert result["items"] == [
+        {
+            "type": ["h-entry"],
+            "properties": {
+                "name": ["Titull foo"],
+                "summary": ["Descrypshun bar"],
+                "photo": ["http://example.com/baz.jpg"],
+                "audio": ["http://example.com/biff.mp3"],
+                "video": ["http://example.com/boff.mov"],
+                "author": ["http://tantek.com/me"],
+                "published": ["2023-01-02T03:04Z"],
+                "updated": ["2023-01-02T05:06Z"],
+            },
+        }
+    ]
+
+
+def test_metaformats_twitter():
+    result = parse_fixture("metaformats_twitter.html", metaformats=True)
+    assert result["items"] == [
+        {
+            "type": ["h-entry"],
+            "properties": {
+                "name": ["Titull foo"],
+                "summary": ["Descrypshun bar"],
+                "photo": ["http://tantek.com/baz.jpg"],
+            },
+        }
+    ]
+
+
+def test_metaformats_html_meta():
+    result = parse_fixture("metaformats_html_meta.html", metaformats=True)
+    assert result["items"] == [
+        {
+            "type": ["h-entry"],
+            "properties": {
+                "name": ["Hello World"],
+                "summary": ["Descrypshun bar"],
+            },
+        }
+    ]
+
+
 def test_language():
     result = parse_fixture("language.html")
     assert result["items"][0]["lang"] == "it"

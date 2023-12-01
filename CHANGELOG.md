@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 - add srcset support (#209)
 - add language support (#210)
 - add extension to expose the DOM for embedded properties (#208)
+- add extension to support metaformats (#212)
 
 ## 1.1.3 - 2023-06-28
 - reduce instances where photo is implied (#135)

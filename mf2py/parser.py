@@ -6,13 +6,20 @@ import requests
 from bs4 import BeautifulSoup, FeatureNotFound
 from bs4.element import Tag
 
-from . import backcompat, implied_properties, mf2_classes, parse_property, temp_fixes
+from . import (
+    backcompat,
+    implied_properties,
+    metaformats,
+    mf2_classes,
+    parse_property,
+    temp_fixes,
+)
 from .dom_helpers import get_attr, get_children, get_descendents, try_urljoin
 from .mf_helpers import unordered_list
 from .version import __version__
 
 
-def parse(doc=None, url=None, html_parser=None, expose_dom=False):
+def parse(doc=None, url=None, html_parser=None, expose_dom=False, metaformats=False):
     """
     Parse a microformats2 document or url and return a json dictionary.
 
@@ -26,10 +33,18 @@ def parse(doc=None, url=None, html_parser=None, expose_dom=False):
         options from the BeautifulSoup documentation are:
         "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
       expose_dom (boolean): optional, expose the DOM of embedded properties.
+      metaformats (boolean): whether to include metaformats extracted from OGP
+        and Twitter card data: https://microformats.org/wiki/metaformats
 
     Return: a json dict represented the structured data in this document.
     """
-    return Parser(doc, url, html_parser, expose_dom).to_dict()
+    return Parser(
+        doc,
+        url,
+        html_parser,
+        expose_dom=expose_dom,
+        metaformats=metaformats,
+    ).to_dict()
 
 
 class Parser(object):
@@ -47,6 +62,8 @@ class Parser(object):
         "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
         defaults to "html5lib"
       expose_dom (boolean): optional, expose the DOM of embedded properties.
+      metaformats (boolean): whether to include metaformats extracted from OGP
+        and Twitter card data: https://microformats.org/wiki/metaformats
 
     Attributes:
       useragent (string): the User-Agent string for the Parser
@@ -56,7 +73,14 @@ class Parser(object):
     ua_url = "https://github.com/microformats/mf2py"
     useragent = "{0} - version {1} - {2}".format(ua_desc, __version__, ua_url)
 
-    def __init__(self, doc=None, url=None, html_parser=None, expose_dom=False):
+    def __init__(
+        self,
+        doc=None,
+        url=None,
+        html_parser=None,
+        expose_dom=False,
+        metaformats=False,
+    ):
         self.__url__ = None
         self.__doc__ = None
         self._preserve_doc = False
@@ -70,6 +94,7 @@ class Parser(object):
                 "version": __version__,
             },
         }
+        self.__metaformats = metaformats
         self.expose_dom = expose_dom
         self.lang = None
 
@@ -487,9 +512,16 @@ class Parser(object):
                         parse_el(child, ctx)
 
         ctx = []
+
+        if self.__metaformats:
+            # extract out a metaformats item, if available
+            self.__metaformats_item = metaformats.parse(self.__doc__, url=self.__url__)
+
         # start parsing at root element of the document
         parse_el(self.__doc__, ctx)
         self.__parsed__["items"] = ctx
+        if self.__metaformats and self.__metaformats_item:
+            self.__parsed__["items"].append(self.__metaformats_item)
 
         # parse for rel values
         for el in get_descendents(self.__doc__):
