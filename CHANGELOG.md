@@ -2,12 +2,15 @@
 All notable changes to this project will be documented in this file.
 
 ## 2.0 - unreleased
-- make relative URLs in e-* properties absolute (#201)
+- enable image `alt` processing by default (#184)
+- make relative URLs in `e-*` properties absolute (#201)
+- fix implied photo relative paths (#205)
+- add timezone offset normalisation (#206)
 - fix whitespace in plaintext conversion (#207)
-- add srcset support (#209)
-- add language support (#210)
 - add extension to expose the DOM for embedded properties (#208)
-- add extension to support metaformats (#212)
+- add `srcset` support (#209)
+- add `lang` support (#210)
+- add extension to support `metaformats` (#212)
 
 ## 1.1.3 - 2023-06-28
 - reduce instances where photo is implied (#135)
