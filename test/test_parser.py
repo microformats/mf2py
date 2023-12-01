@@ -1187,6 +1187,8 @@ def test_metaformats_html_meta():
             },
         }
     ]
+
+
 def test_language():
     result = parse_fixture("language.html")
     assert result["items"][0]["lang"] == "it"
