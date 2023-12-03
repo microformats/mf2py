@@ -26,7 +26,7 @@ Import the parser using:
 
 ```
 
-### Parse an HTML Document from a string
+### Parse an HTML Document from a file or string
 
 ```pycon
 >>> with open("test/examples/eras.html") as fp:
@@ -54,6 +54,15 @@ Import the parser using:
            'source': 'https://github.com/microformats/mf2py',
            'version': '1.1.3',
            'markup parser': 'html5lib'}}
+
+```
+
+```pycon
+>>> mf2json = mf2py.parse(doc="<a class=h-card href=https://example.com>James</a>")
+>>> mf2json["items"]
+[{'type': ['h-card'],
+  'properties': {'name': ['James'],
+                 'url': ['https://example.com']}}]
 
 ```
 
