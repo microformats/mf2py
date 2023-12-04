@@ -1,6 +1,50 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## v2.0.0 - 2023-12-04
+
+The mf2py library is excited to transition into 2.0. This version increase incorporates months of work from contributors, informed by active discussions among implementers and users.
+
+This release officially deprecates support for versions of Python lower than 3.8.
+
+Below are the changes we have made in this release.
+
+## New Features
+
+* Enable img_with_alt by default by @capjamesg in https://github.com/microformats/mf2py/pull/184
+* Add timezone offset normalisation by @angelogladding in https://github.com/microformats/mf2py/pull/206
+* Add extension to expose DOM for embedded properties by @angelogladding in https://github.com/microformats/mf2py/pull/208
+* Add srcset support by @angelogladding in https://github.com/microformats/mf2py/pull/209
+* Add language support by @angelogladding in https://github.com/microformats/mf2py/pull/210
+* Add extension to support metaformats by @snarfed in https://github.com/microformats/mf2py/pull/213
+
+## Changes
+
+* Remove `img_with_alt` option entirely by @angelogladding in https://github.com/microformats/mf2py/pull/200
+* Resolve implied photo relative paths by @angelogladding in https://github.com/microformats/mf2py/pull/205
+* Make relative URLs in `e-` properties absolute by @angelogladding in https://github.com/microformats/mf2py/pull/201
+* Fix whitespace in plaintext conversion by @angelogladding in https://github.com/microformats/mf2py/pull/207
+* Replace `dict_class` with standard `dict` by @angelogladding in https://github.com/microformats/mf2py/pull/196
+
+## Tests, Library and Documentation Maintenance
+
+* Update tests to include alt texts by default by @angelogladding in https://github.com/microformats/mf2py/pull/190
+* Add Windows and macOS tests by @capjamesg in https://github.com/microformats/mf2py/pull/198
+* Use poetry for dependency management by @angelogladding in https://github.com/microformats/mf2py/pull/189
+* Deprecate Python 2 support by @angelogladding in https://github.com/microformats/mf2py/pull/179
+* Code linted with `black` and `isort` by @capjamesg 
+* Bump requests from 2.21.0 to 2.31.0 by @dependabot in https://github.com/microformats/mf2py/pull/185
+* Add linting CI actions by @capjamesg in https://github.com/microformats/mf2py/pull/193
+* Move from nose2 to pytest by @capjamesg in https://github.com/microformats/mf2py/pull/186
+* Switch from nosetests to pytest by @angelogladding in https://github.com/microformats/mf2py/pull/178
+* Add 3.11, 3.12 and drop pypy from test matrix; upgrade poetry action by @angelogladding in https://github.com/microformats/mf2py/pull/204
+* Prepare tests to test extensions by @angelogladding in https://github.com/microformats/mf2py/pull/214
+* Bring README doctests up-to-date by @angelogladding in https://github.com/microformats/mf2py/pull/215
+* Update README by @angelogladding in https://github.com/microformats/mf2py/pull/216
+* Fix tests/doctests by @angelogladding in https://github.com/microformats/mf2py/pull/217
+
+**Full Changelog**: https://github.com/microformats/mf2py/compare/v1.1.3...v2.0.0
+
 ## 1.1.3 - 2022-06-28
 - reduce instances where photo is implied (#135)
 - always do relative URL resolution (#138)
