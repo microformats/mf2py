@@ -3,6 +3,7 @@ import re
 import sys
 from unittest import TestCase
 
+import bs4
 import mock
 from bs4 import BeautifulSoup
 
@@ -14,9 +15,9 @@ TestCase.maxDiff = None
 TEST_DIR = "test/examples/"
 
 
-def parse_fixture(path, url=None, filter_roots=False):
+def parse_fixture(path, **kwargs):
     with open(os.path.join(TEST_DIR, path)) as f:
-        p = Parser(doc=f, url=url, html_parser="html5lib", filter_roots=filter_roots)
+        p = Parser(doc=f, html_parser="html5lib", **kwargs)
         return p.to_dict()
 
 
@@ -187,8 +188,15 @@ def test_embedded_parsing():
     )
     assert (
         result["items"][0]["properties"]["content"][0]["value"]
-        == "Blah blah blah blah blah.\nBlah.\nBlah blah blah."
+        == "Blah blah blah blah blah.\n\nBlah.\n\nBlah blah blah."
     )
+
+
+def test_embedded_exposed_dom():
+    result = parse_fixture("embedded.html", expose_dom=True)
+    content = result["items"][0]["properties"]["content"][0]
+    assert "html" not in content
+    assert isinstance(content["dom"], bs4.element.Tag)
 
 
 def test_hoisting_nested_hcard():
@@ -338,14 +346,14 @@ def test_enclosures():
 
 
 def test_empty_href():
-    result = parse_fixture("hcard_with_empty_url.html", "http://foo.com")
+    result = parse_fixture("hcard_with_empty_url.html", url="http://foo.com")
 
     for hcard in result["items"]:
         assert ["http://foo.com"] == hcard["properties"]["url"]
 
 
 def test_link_with_u_url():
-    result = parse_fixture("link_with_u-url.html", "http://foo.com")
+    result = parse_fixture("link_with_u-url.html", url="http://foo.com")
     assert {
         "type": ["h-card"],
         "properties": {
@@ -356,7 +364,7 @@ def test_link_with_u_url():
 
 
 def test_broken_url():
-    result = parse_fixture("broken_url.html", "http://example.com")
+    result = parse_fixture("broken_url.html", url="http://example.com")
     assert (
         result["items"][0]["properties"]["relative"][0] == "http://example.com/foo.html"
     )
@@ -387,6 +395,16 @@ def test_complex_e_content():
             ],
         },
     } == result["items"][0]
+
+
+def test_relative_url_in_e():
+    """When parsing e-* properties, make relative URLs absolute."""
+    result = parse_fixture("relative_url_in_e.html")
+
+    assert (
+        '<p><a href="http://example.com/cat.html">Cat '
+        '<img src="http://example.com/cat.jpg"/></a></p>'
+    ) == result["items"][0]["properties"]["content"][0]["html"]
 
 
 def test_nested_values():
@@ -605,15 +623,20 @@ def test_value_name_whitespace():
         assert result["items"][i]["properties"]["content"][0]["value"] == "Hello World"
         assert result["items"][i]["properties"]["name"][0] == "Hello World"
 
-    for i in range(3, 8):
+    for i in range(3, 7):
         assert result["items"][i]["properties"]["content"][0]["value"] == "Hello\nWorld"
         assert result["items"][i]["properties"]["name"][0] == "Hello\nWorld"
 
-    for i in range(8, 10):
-        assert (
-            result["items"][i]["properties"]["content"][0]["value"] == "One\nTwo\nThree"
-        )
-        assert result["items"][i]["properties"]["name"][0] == "One\nTwo\nThree"
+    assert result["items"][7]["properties"]["content"][0]["value"] == "Hello\n\nWorld"
+    assert result["items"][7]["properties"]["name"][0] == "Hello\n\nWorld"
+
+    assert result["items"][8]["properties"]["content"][0]["value"] == "One\nTwo\nThree"
+    assert result["items"][8]["properties"]["name"][0] == "One\nTwo\nThree"
+
+    assert (
+        result["items"][9]["properties"]["content"][0]["value"] == "One\n\nTwo\n\nThree"
+    )
+    assert result["items"][9]["properties"]["name"][0] == "One\n\nTwo\n\nThree"
 
     assert (
         result["items"][10]["properties"]["content"][0]["value"]
@@ -863,6 +886,29 @@ def test_whitespace_with_tags_inside_property():
     assert result["items"][0]["properties"] == {"name": ["foo bar"]}
 
 
+def test_plaintext_p_whitespace():
+    result = parse_fixture("plaintext_p_whitespace.html")
+    assert result["items"][0]["properties"]["content"][0]["value"] == "foo\nbar baz"
+    assert result["items"][1]["properties"]["content"][0]["value"] == "foo\nbar baz"
+    assert result["items"][2]["properties"]["content"][0]["value"] == "foo bar\nbaz"
+
+
+def test_plaintext_img_whitespace():
+    result = parse_fixture("plaintext_img_whitespace.html")
+    assert (
+        result["items"][0]["properties"]["content"][0]["value"]
+        == "selfie At some tourist spot"
+    )
+    assert (
+        result["items"][1]["properties"]["content"][0]["value"]
+        == "At another tourist spot"
+    )
+    assert (
+        result["items"][2]["properties"]["content"][0]["value"]
+        == "https://example.com/photo.jpg At yet another tourist spot"
+    )
+
+
 def test_photo_with_alt():
     """Confirm that alt text in img is parsed as a u-* property and implied photo"""
 
@@ -963,6 +1009,44 @@ def test_photo_with_alt():
     assert "" == exp_result["items"][5]["properties"]["in-reply-to"][0]["alt"]
 
 
+def test_photo_with_srcset():
+    result = parse_fixture("img_with_srcset.html")
+
+    assert result["items"][0]["properties"]["photo"][0]["srcset"] == {
+        "480w": "elva-fairy-480w.jpg",
+        "800w": "elva-fairy-800w.jpg",
+    }
+    assert result["items"][1]["properties"]["photo"][0]["srcset"] == {
+        "1x": "elva-fairy-320w.jpg",
+        "1.5x": "elva-fairy-480w.jpg",
+        "2x": "elva-fairy-640w.jpg",
+    }
+    assert (
+        result["items"][1]["properties"]["photo"][0]["srcset"]["2x"]
+        != "elva-fairy-2w.jpg"
+    )
+    for i in range(2, 7):
+        assert result["items"][i]["properties"]["photo"][0]["srcset"] == {
+            "1x": "elva-fairy,320w.jpg",
+            "1.5x": "elva-fairy,480w.jpg",
+        }
+    assert result["items"][7]["properties"]["photo"][0]["srcset"] == {
+        "1x": "elva-fairy,320w.jpg",
+    }
+    assert result["items"][8]["properties"]["photo"][0]["srcset"] == {
+        "1x": "elva-fairy,320w.jpg",
+        "1.5x": "elva-fairy,480w.jpg",
+        "2x": "elva-fairy,640w.jpg",
+    }
+
+    result = parse_fixture("img_with_srcset_with_base.html")
+
+    assert result["items"][0]["properties"]["photo"][0]["srcset"] == {
+        "480w": "https://example.com/elva-fairy-480w.jpg",
+        "800w": "https://example.com/elva-fairy-800w.jpg",
+    }
+
+
 def test_parse_id():
     result = parse_fixture("parse_id.html")
     assert "recentArticles" == result["items"][0]["id"]
@@ -1042,8 +1126,7 @@ def test_all_u_cases():
         )
 
 
-def test_blocked_roots():
-    """"""
+def test_filtered_roots():
     result = parse_fixture("filter_roots.html")
     assert len(result["items"]) == 8
 
@@ -1054,3 +1137,90 @@ def test_blocked_roots():
         "filter_roots_custom.html", filter_roots={"foo", "bar", "bat", "baz"}
     )
     assert len(result["items"]) == 1
+
+
+def test_metaformats_flag_false():
+    result = parse_fixture("metaformats_ogp.html")
+    assert result["items"] == []
+
+
+def test_metaformats_title_only():
+    result = parse_fixture("base.html", metaformats=True)
+    assert result["items"] == [
+        {
+            "type": ["h-entry"],
+            "properties": {
+                "name": ["Hello World"],
+            },
+        }
+    ]
+
+
+def test_metaformats_ogp():
+    result = parse_fixture("metaformats_ogp.html", metaformats=True)
+    assert result["items"] == [
+        {
+            "type": ["h-entry"],
+            "properties": {
+                "name": ["Titull foo"],
+                "summary": ["Descrypshun bar"],
+                "photo": ["http://example.com/baz.jpg"],
+                "audio": ["http://example.com/biff.mp3"],
+                "video": ["http://example.com/boff.mov"],
+                "author": ["http://tantek.com/me"],
+                "published": ["2023-01-02T03:04Z"],
+                "updated": ["2023-01-02T05:06Z"],
+            },
+        }
+    ]
+
+
+def test_metaformats_twitter():
+    result = parse_fixture("metaformats_twitter.html", metaformats=True)
+    assert result["items"] == [
+        {
+            "type": ["h-entry"],
+            "properties": {
+                "name": ["Titull foo"],
+                "summary": ["Descrypshun bar"],
+                "photo": ["http://tantek.com/baz.jpg"],
+            },
+        }
+    ]
+
+
+def test_metaformats_html_meta():
+    result = parse_fixture("metaformats_html_meta.html", metaformats=True)
+    assert result["items"] == [
+        {
+            "type": ["h-entry"],
+            "properties": {
+                "name": ["Hello World"],
+                "summary": ["Descrypshun bar"],
+            },
+        }
+    ]
+
+
+def test_language():
+    result = parse_fixture("language.html")
+    assert result["items"][0]["lang"] == "it"
+    assert result["items"][1]["lang"] == "it"
+    assert result["items"][1]["properties"]["content"][0]["lang"] == "en"
+    assert result["items"][1]["properties"]["content"][1]["lang"] == "it"
+    assert result["items"][2]["lang"] == "sv"
+    assert result["items"][2]["properties"]["content"][0]["lang"] == "en"
+    assert result["items"][2]["properties"]["content"][1]["lang"] == "sv"
+
+
+def test_parser_object():
+    with open(os.path.join(TEST_DIR, "festivus.html")) as f:
+        p = Parser(doc=f)
+    assert len(p.to_dict(filter_by_type="h-card")) == 3
+    assert len(p.to_dict(filter_by_type="h-entry")) == 4
+    assert (
+        p.to_json(filter_by_type="h-card")
+        == '[{"type": ["h-card"], "properties": {"name": ["Jerry"]}}, {"type": '
+        '["h-card"], "properties": {"name": ["Frank"]}}, {"type": ["h-card"], '
+        '"properties": {"name": ["Cosmo"]}}]'
+    )

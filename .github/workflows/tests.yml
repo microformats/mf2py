@@ -1,11 +1,5 @@
 name: Run Python Tests
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+on: push
 
 jobs:
   build-macos:
@@ -33,7 +27,7 @@ jobs:
       - name: Install library
         run: poetry install --no-interaction
       - name: Run tests
-        run: poetry run pytest
+        run: poetry run make tests
       - uses: psf/black@stable
         with:
           options: "--check --verbose"
@@ -67,7 +61,7 @@ jobs:
       - name: Install library
         run: poetry install --no-interaction
       - name: Run tests
-        run: poetry run pytest
+        run: poetry run make tests
       - uses: psf/black@stable
         with:
           options: "--check --verbose"
@@ -100,7 +94,7 @@ jobs:
       - name: Install library
         run: poetry install --no-interaction
       - name: Run tests
-        run: poetry run pytest
+        run: poetry run make tests
       - uses: psf/black@stable
         with:
           options: "--check --verbose"

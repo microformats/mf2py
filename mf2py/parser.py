@@ -6,13 +6,27 @@ import requests
 from bs4 import BeautifulSoup, FeatureNotFound
 from bs4.element import Tag
 
-from . import backcompat, implied_properties, mf2_classes, parse_property, temp_fixes
+from . import (
+    backcompat,
+    implied_properties,
+    metaformats,
+    mf2_classes,
+    parse_property,
+    temp_fixes,
+)
 from .dom_helpers import get_attr, get_children, get_descendents, try_urljoin
 from .mf_helpers import unordered_list
 from .version import __version__
 
 
-def parse(doc=None, url=None, html_parser=None, filter_roots=False):
+def parse(
+    doc=None,
+    url=None,
+    html_parser=None,
+    expose_dom=False,
+    metaformats=False,
+    filter_roots=False,
+):
     """
     Parse a microformats2 document or url and return a json dictionary.
 
@@ -25,10 +39,20 @@ def parse(doc=None, url=None, html_parser=None, filter_roots=False):
       html_parser (string): optional, select a specific HTML parser. Valid
         options from the BeautifulSoup documentation are:
         "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
+      expose_dom (boolean): optional, expose the DOM of embedded properties.
+      metaformats (boolean): whether to include metaformats extracted from OGP
+        and Twitter card data: https://microformats.org/wiki/metaformats
 
     Return: a json dict represented the structured data in this document.
     """
-    return Parser(doc, url, html_parser, filter_roots).to_dict()
+    return Parser(
+        doc,
+        url,
+        html_parser,
+        expose_dom=expose_dom,
+        metaformats=metaformats,
+        filter_roots=filter_roots,
+    ).to_dict()
 
 
 class Parser(object):
@@ -45,6 +69,9 @@ class Parser(object):
         options from the BeautifulSoup documentation are:
         "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
         defaults to "html5lib"
+      expose_dom (boolean): optional, expose the DOM of embedded properties.
+      metaformats (boolean): whether to include metaformats extracted from OGP
+        and Twitter card data: https://microformats.org/wiki/metaformats
 
     Attributes:
       useragent (string): the User-Agent string for the Parser
@@ -54,7 +81,15 @@ class Parser(object):
     ua_url = "https://github.com/microformats/mf2py"
     useragent = "{0} - version {1} - {2}".format(ua_desc, __version__, ua_url)
 
-    def __init__(self, doc=None, url=None, html_parser=None, filter_roots=False):
+    def __init__(
+        self,
+        doc=None,
+        url=None,
+        html_parser=None,
+        expose_dom=False,
+        metaformats=False,
+        filter_roots=False,
+    ):
         self.__url__ = None
         self.__doc__ = None
         self._preserve_doc = False
@@ -68,6 +103,9 @@ class Parser(object):
                 "version": __version__,
             },
         }
+        self.lang = None
+        self.expose_dom = expose_dom
+        self.__metaformats = metaformats
         try:
             self.filtered_roots = set(filter_roots)
         except TypeError:
@@ -135,10 +173,12 @@ class Parser(object):
                         self.__url__ = try_urljoin(self.__url__, poss_base_url)
 
         if self.__doc__ is not None:
+            if document := self.__doc__.find("html"):
+                self.lang = document.attrs.get("lang")
             # parse!
-            self.parse()
+            self._parse()
 
-    def parse(self):
+    def _parse(self):
         """Does the work of actually parsing the document. Done automatically
         on initialization.
         """
@@ -172,13 +212,15 @@ class Parser(object):
                     el.get("class", []), self.filtered_roots
                 )
 
+            root_lang = el.attrs.get("lang")
+
             # parse for properties and children
             for child in get_children(el):
                 (
                     child_props,
                     child_children,
                     child_parsed_types_aggregation,
-                ) = parse_props(child)
+                ) = parse_props(child, root_lang)
                 for key, new_value in child_props.items():
                     prop_value = properties.get(key, [])
                     prop_value.extend(new_value)
@@ -250,9 +292,13 @@ class Parser(object):
                 else:
                     microformat["value"] = simple_value
 
+            if root_lang:
+                microformat["lang"] = root_lang
+            elif self.lang:
+                microformat["lang"] = self.lang
             return microformat
 
-        def parse_props(el):
+        def parse_props(el, root_lang):
             """Parse the properties from a single element"""
             props = {}
             children = []
@@ -374,7 +420,7 @@ class Parser(object):
                         embedded_el = copy.copy(embedded_el)
                     temp_fixes.rm_templates(embedded_el)
                     e_value = parse_property.embedded(
-                        embedded_el, base_url=self.__url__
+                        embedded_el, self.__url__, root_lang, self.lang, self.expose_dom
                     )
 
                 if root_class_names:
@@ -405,7 +451,7 @@ class Parser(object):
                         child_properties,
                         child_microformats,
                         child_parsed_types_aggregation,
-                    ) = parse_props(child)
+                    ) = parse_props(child, root_lang)
                     for prop_name in child_properties:
                         v = props.get(prop_name, [])
                         v.extend(child_properties[prop_name])
@@ -486,9 +532,16 @@ class Parser(object):
                         parse_el(child, ctx)
 
         ctx = []
+
+        if self.__metaformats:
+            # extract out a metaformats item, if available
+            self.__metaformats_item = metaformats.parse(self.__doc__, url=self.__url__)
+
         # start parsing at root element of the document
         parse_el(self.__doc__, ctx)
         self.__parsed__["items"] = ctx
+        if self.__metaformats and self.__metaformats_item:
+            self.__parsed__["items"].append(self.__metaformats_item)
 
         # parse for rel values
         for el in get_descendents(self.__doc__):

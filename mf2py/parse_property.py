@@ -4,7 +4,7 @@ import re
 
 from . import value_class_pattern
 from .datetime_helpers import DATETIME_RE, TIME_RE, normalize_datetime
-from .dom_helpers import get_attr, get_img_src_alt, get_textContent, try_urljoin
+from .dom_helpers import get_attr, get_img, get_textContent, try_urljoin
 
 
 def text(el, base_url=""):
@@ -31,7 +31,7 @@ def url(el, base_url=""):
 
     prop_value = get_attr(el, "href", check_name=("a", "area", "link"))
     if prop_value is None:
-        prop_value = get_img_src_alt(el, base_url)
+        prop_value = get_img(el, base_url)
         if prop_value is not None:
             return prop_value
     if prop_value is None:
@@ -94,9 +94,23 @@ def datetime(el, default_date=None):
     )
 
 
-def embedded(el, base_url=""):
+def embedded(el, base_url, root_lang, document_lang, expose_dom):
     """Process e-* properties"""
-    return {
-        "html": el.decode_contents().strip(),  # secret bs4 method to get innerHTML
+    for tag in el.find_all():
+        for attr in ("href", "src", "cite", "data", "poster"):
+            if attr in tag.attrs:
+                tag.attrs[attr] = try_urljoin(base_url, tag.attrs[attr])
+    prop_value = {
         "value": get_textContent(el, replace_img=True, base_url=base_url),
     }
+    if lang := el.attrs.get("lang"):
+        prop_value["lang"] = lang
+    elif root_lang:
+        prop_value["lang"] = root_lang
+    elif document_lang:
+        prop_value["lang"] = document_lang
+    if expose_dom:
+        prop_value["dom"] = el
+    else:
+        prop_value["html"] = el.decode_contents().strip()
+    return prop_value

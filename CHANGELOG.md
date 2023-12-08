@@ -1,9 +1,41 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## 2.0 - unreleased
+## 2.0.0 - 2023-12-07
+The mf2py library is excited to transition into 2.0. This version increase incorporates months of work from contributors, informed by active discussions among implementers and users.
 
-## 1.1.3 - 2023-06-28
+This release officially deprecates support for versions of Python lower than 3.8.
+
+Below are the changes we have made in this release.
+
+### New Features
+- Enable `img_with_alt` by default (#184)
+- Add timezone offset normalisation (#206)
+- Add option for exposing DOM for embedded properties (#208)
+- Add srcset support (#209)
+- Add language support (#210)
+- Add option for metaformats support (#213)
+
+### Changes
+- Remove `img_with_alt` option entirely (#200)
+- Resolve implied photo relative paths (#205)
+- Make relative URLs in embedded properties absolute (#201)
+- Fix whitespace in plaintext conversion (#207)
+- Replace `dict_class` with standard `dict` (#196)
+
+### Tests, Library and Documentation Maintenance
+- Update tests to include alt texts by default (#190)
+- Add Windows and macOS tests (#198)
+- Use poetry for dependency management (#189)
+- Deprecate Python 2 support (#179)
+- Lint code with `black` and `isort`
+- Add linting CI actions (#193)
+- Move from `nosetests` to `pytest` (#186)
+- Add 3.11, 3.12 and drop pypy from test matrix; upgrade poetry action (#204)
+- Prepare tests to test options (#214)
+- Bring README doctests up-to-date (#215)
+
+## 1.1.3 - 2022-06-28
 - reduce instances where photo is implied (#135)
 - always do relative URL resolution (#138)
 - VCP now handles tz offsets without leading zeros (#142)
@@ -19,7 +51,6 @@ All notable changes to this project will be documented in this file.
 - misc performance improvements
 
 ## 1.1.1 - 2018-06-15
-
 - streamline backcompat to use JSON only.
 - fix multiple mf1 root rel-tag parsing
 - correct url and photo for hreview.
@@ -31,7 +62,7 @@ All notable changes to this project will be documented in this file.
 - fix `parse` method to use default html parser.
 - always use the first value for attributes for rels.
 - correct AM/PM conversion in datetime value class pattern.
- - add ordinal date parsing to datetimes value class pattern. ordinal date is normalised to YYYY-MM-DD
+- add ordinal date parsing to datetimes value class pattern. ordinal date is normalised to YYYY-MM-DD
 - remove hack for html tag classes since that is fixed in new BS
 - better whitespace algorithm for `name` and `html.value` parsing
 - experimental flag for including `alt` in `u-photo` parsing
@@ -39,7 +70,6 @@ All notable changes to this project will be documented in this file.
 - bump version to 1.1.1
 
 ## 1.1.0 - 2018-03-16
-
 - bump version to 1.1.0 since it is a "major" change
 - added tests for new implied name rules
 - modified earlier tests to accommodate new rules
@@ -53,10 +83,9 @@ All notable changes to this project will be documented in this file.
 - reorganise tests
 - remove Heroku frontend, point to mf2py-web and python.microformats.io instead in README.
 - remove Flask and gunicorn requirements
-- add debug info with description, version, url and the html parser used 
+- add debug info with description, version, url and the html parser used
 
 ## 1.0.6 - 2018-03-04
-
 - strip leading/trailing white space for `e-*[html]`. update the corresponding tests
 - blank values explicitly authored are allowed as property values
 - include `alt` or `src` from `<img>` in parsing for `p-*` and `e-*[value]`
@@ -68,7 +97,6 @@ All notable changes to this project will be documented in this file.
 - drop support for Python 2.6 as html5lib dropped support
 
 ## 1.0.5 - 2016-05-09
-
 - Implied property checks now ignore alt="", treating it the same as
   if no alt value is defined.
 - Support for using a custom dict implementation by setting
@@ -76,17 +104,14 @@ All notable changes to this project will be documented in this file.
   output for hosted parsers.
 
 ## 1.0.4 - 2016-03-21
-### Changed
 - Performance improvement changing simple calls to soup.find_all to
   a manual iteration over .contents.
 
 ## 1.0.3 - 2016-02-05
-### Changed
 - Performance improvement by limiting number of calls to soup.find_all
   in backcompat module. Should not be any functional changes.
 
 ## 1.0.2 - 2016-01-26
-### Added
 - Backward compatibility parsing for rel=tag properties. These are now converted
   to p-category based on the last path segment of the tag URI as spec'd in
   http://microformats.org/wiki/h-entry#Parser_Compatibility
@@ -94,59 +119,47 @@ All notable changes to this project will be documented in this file.
   should use (e.g., "lxml" or "html5lib")
 
 ## 1.0.1 - 2015-12-11
-### Changed
 - `u-*` properties are now parsed from `<link>` elements per the updated spec
   http://microformats.org/wiki/microformats2-parsing-issues#link_elements_and_u-_parsing
 
 ## 1.0.0 - 2015-10-05
-### Changed
 - Version number bumped to 1.0.0 following community discussion.
 
 ## 0.2.8 - 2015-09-21
-### Changed
 - Stricter checks that Parser.__init__ params are actually None before
   ignoring them.
 
 ## 0.2.7 - 2015-08-03
-### Changed
 - Now produces unicode strings for every key and value, no more byte
   strings anywhere.
 - Do not add 'T' between date and time when normalizing dates
-### Added
 - Unit tests for running the microformats test suite
 
 ## 0.2.6 - 2015-05-06
-### Added
 - New top-level "rel-urls" entry, contains rich data parsed from rel
   links, organized by URL.
 
 ## 0.2.5 - 2015-03-01
-### Added
 - convenience method `mf2py.parse` that takes the same arguments as Parser
   and returns a dict.
-### Changed
 - nested h-* classes now parse their "value" based on the property
   they represent (p-*, u-*, dt-*), so for example "p-in-reply-to
   h-cite" would have a name as its value and "u-in-reply-to h-cite"
   will have a URL.
 
 ## 0.2.4 - 2015-02-13
-### Added
 - Add rel=bookmark to backward compat parsing rules based (translated
   to u-url in mf2)
-### Changed
 - Parser constructor now takes explicit named arguments instead of
   **kwargs, for saner behavior when called with unnamed arguments.
 - Bugfix: Empty href="" attributes are now properly interpreted as
   the current document's URL.
 
 ## 0.2.3 - 2015-02-07
-### Changed
 - Minor Py3 compatibility fix
 - Correct typo `test_requires` -> `tests_require` in setup.py
 
 ## 0.2.2 - 2015-02-05
-### Changed
 - Started keeping a changelog!
 - Use a better method for extracting HTML for an e-* property
 - Correct BeautifulSoup4 dependency in setup.py to fix error with

@@ -1,4 +1,4 @@
-![mf2py banner](http://microformats.github.io/mf2py/banner.png)
+![mf2py banner](https://microformats.github.io/mf2py/banner.png)
 
 [![version](https://badge.fury.io/py/mf2py.svg?)](https://badge.fury.io/py/mf2py)
 [![downloads](https://img.shields.io/pypi/dm/mf2py)](https://pypistats.org/packages/mf2py)
@@ -7,94 +7,136 @@
 
 ## Welcome 👋
 
-`mf2py` is a full-featured microformats2 (mf2) parser implemented in Python.
-
-mf2py implements the full mf2 specification, including backward compatibility with microformats1.
+`mf2py` is a Python [microformats](https://microformats.org/wiki/microformats) parser with full support for `microformats2`, backwards-compatible support for `microformats1` and experimental support for `metaformats`.
 
 ## Installation 💻
 
-To install `mf2py`, run the following command:
+To install `mf2py` run the following command:
 
 ```bash
-pip install mf2py
+$ pip install mf2py
+
 ```
 
 ## Quickstart 🚀
 
-Import the parser using:
+Import the library:
 
-```python
-import mf2py
+```pycon
+>>> import mf2py
+
 ```
 
-### Parse a File
+### Parse an HTML Document from a file or string
 
-Parse a file containing HTML:
+```pycon
+>>> with open("test/examples/eras.html") as fp:
+...     mf2json = mf2py.parse(doc=fp)
+>>> mf2json
+{'items': [{'type': ['h-entry'],
+            'properties': {'name': ['Excited for the Taylor Swift Eras Tour'],
+                           'author': [{'type': ['h-card'],
+                                       'properties': {'name': ['James'],
+                                                      'url': ['https://example.com/']},
+                                       'value': 'James',
+                                       'lang': 'en-us'}],
+                           'published': ['2023-11-30T19:08:09'],
+                           'featured': [{'value': 'https://example.com/eras.jpg',
+                                         'alt': 'Eras tour poster'}],
+                           'content': [{'value': "I can't decide which era is my favorite.",
+                                        'lang': 'en-us',
+                                        'html': "<p>I can't decide which era is my favorite.</p>"}],
+                           'category': ['music', 'Taylor Swift']},
+            'lang': 'en-us'}],
+ 'rels': {'webmention': ['https://example.com/mentions']},
+ 'rel-urls': {'https://example.com/mentions': {'text': '',
+                                               'rels': ['webmention']}},
+ 'debug': {'description': 'mf2py - microformats2 parser for python',
+           'source': 'https://github.com/microformats/mf2py',
+           'version': '2.0.0',
+           'markup parser': 'html5lib'}}
 
-```python
-with open('file/content.html','r') as file:
-    obj = mf2py.parse(doc=file)
 ```
 
-### Parse a String
+```pycon
+>>> mf2json = mf2py.parse(doc="<a class=h-card href=https://example.com>James</a>")
+>>> mf2json["items"]
+[{'type': ['h-card'],
+  'properties': {'name': ['James'],
+                 'url': ['https://example.com']}}]
 
-Parse string containing HTML content:
-
-```python
-content = '<article class="h-entry"><h1 class="p-name">Hello</h1></article>'
-obj = mf2py.parse(doc=content)
 ```
 
-### Parse a HTML Document Retrieved from a URL
+### Parse an HTML Document from a URL
 
-Parse content from a URL:
+```pycon
+>>> mf2json = mf2py.parse(url="https://events.indieweb.org")
+>>> mf2json["items"][0]["type"]
+['h-feed']
+>>> mf2json["items"][0]["children"][0]["type"]
+['h-event']
 
-```python
-obj = mf2py.parse(url="http://tommorris.org/")
 ```
 
-`parse` is a convenience method that actually delegates to
-`mf2py.Parser` to do the real work. More sophisticated behaviors are
-available by invoking the object directly.
+## Experimental Options
 
-### Format Options
+The following options can be invoked via keyword arguments to `parse()` and `Parser()`.
 
-Retrieve parsed microformats as a Python dictionary or JSON string:
+### `expose_dom`
 
-```python
-p = mf2py.Parser(...)
-p.to_dict()  # returns a python dictionary
-p.to_json()  # returns a JSON string
+Use `expose_dom=True` to expose the DOM of embedded properties.
+
+### `metaformats`
+
+Use `metaformats=True` to include any [metaformats](https://microformats.org/wiki/metaformats)
+found.
+
+## Advanced Usage
+
+`parse` is a convenience function for `Parser`. More sophisticated behaviors are
+available by invoking the parser object directly.
+
+```pycon
+>>> with open("test/examples/festivus.html") as fp:
+...     mf2parser = mf2py.Parser(doc=fp)
+
 ```
 
-### Filter by Microformat Type
+#### Filter by Microformat Type
 
-Filter by microformat type:
+```pycon
+>>> mf2json = mf2parser.to_dict()
+>>> len(mf2json["items"])
+7
+>>> len(mf2parser.to_dict(filter_by_type="h-card"))
+3
+>>> len(mf2parser.to_dict(filter_by_type="h-entry"))
+4
 
-```python
-p.to_dict(filter_by_type="h-entry")
-p.to_json(filter_by_type="h-entry")
 ```
 
-## Breaking Changes in v2
+#### JSON Output
 
-- img alt support is now on by default
+```pycon
+>>> json = mf2parser.to_json()
+>>> json_cards = mf2parser.to_json(filter_by_type="h-card")
 
-## FAQs ❓
+```
 
-* I passed `mf2py.parse()` a BeautifulSoup document, and it got modified!
+## Breaking Changes in `mf2py` 2.0
 
-Yes, mf2py currently does that. We're working on preventing it! Hopefully soon.
+- Image `alt` support is now on by default.
 
-## Testing Environments 🌐
+## Notes 📝
 
-A hosted live version of mf2py can be found at [python.microformats.io](https://python.microformats.io).
+- If you pass a BeautifulSoup document it may be modified.
+- A hosted version of `mf2py` is available at [python.microformats.io](https://python.microformats.io).
 
 ## Contributing 🛠️
 
-We welcome contributions and bug reports via Github, and on the microformats wiki.
+We welcome contributions and bug reports via GitHub.
 
-We to follow the [IndieWebCamp code of conduct](http://indiewebcamp.com/code-of-conduct). Please be respectful of other contributors, and forge a spirit of positive co-operation without discrimination or disrespect.
+This project follows the [IndieWeb code of conduct](https://indieweb.org/code-of-conduct). Please be respectful of other contributors and forge a spirit of positive co-operation without discrimination or disrespect.
 
 ## License 🧑‍⚖️
 
