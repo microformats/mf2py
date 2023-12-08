@@ -20,23 +20,27 @@
       
         <link rel="next" href="../changelog/">
       
+      
       <link rel="icon" href="https://microformats.org/microformats-logo.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.13">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.0">
     
     
       
-        <title>Parse a Document - mf2py</title>
+        <title>Parser Object - mf2py</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.85bb2934.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.45e1311d.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.a6bdf11c.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
+
     
+    
+      
     
     
       
@@ -72,16 +76,13 @@
     <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo">
   
     
-    
-      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
-    
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
         
-        <a href="#parse-a-document" class="md-skip">
+        <a href="#parser-object" class="md-skip">
           Skip to content
         </a>
       
@@ -103,6 +104,7 @@
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
+      
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
@@ -115,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Parse a Document
+              Parser Object
             
           </span>
         </div>
@@ -124,23 +126,27 @@
     
       
         <form class="md-header__option" data-md-component="palette">
-          
-            
-            
-            
-            <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
-            
-              <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
-              </label>
-            
-          
-        </form>
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+</form>
       
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
     
       <label class="md-header__button md-icon" for="__search">
+        
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
       </label>
       <div class="md-search" data-md-component="search" role="dialog">
@@ -149,12 +155,15 @@
     <form class="md-search__form" name="search">
       <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
+        
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
       </label>
       <nav class="md-search__options" aria-label="Search">
         
         <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
@@ -178,7 +187,7 @@
         <a href="https://github.com/microformats/mf2py" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     microformats/mf2py
@@ -208,6 +217,7 @@
                     
 
 
+
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="mf2py" class="md-nav__button md-logo" aria-label="mf2py" data-md-component="logo">
@@ -222,7 +232,7 @@
       <a href="https://github.com/microformats/mf2py" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     microformats/mf2py
@@ -234,14 +244,19 @@
     
       
       
-      
-
+  
   
   
   
     <li class="md-nav__item">
       <a href=".." class="md-nav__link">
-        Home
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
       </a>
     </li>
   
@@ -249,11 +264,10 @@
     
       
       
-      
-
   
   
     
+  
   
   
     <li class="md-nav__item md-nav__item--active">
@@ -265,12 +279,24 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Parse a Document
+          
+  
+  <span class="md-ellipsis">
+    Parser Object
+  </span>
+  
+
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Parse a Document
+        
+  
+  <span class="md-ellipsis">
+    Parser Object
+  </span>
+  
+
       </a>
       
         
@@ -289,36 +315,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#parser" class="md-nav__link">
-    Parser
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#mf2py.Parser" class="md-nav__link">
-    mf2py.Parser
+    <span class="md-ellipsis">
+      Parser
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#mf2py.parser.Parser.parse" class="md-nav__link">
-    parse()
+  <a href="#mf2py.Parser.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      to_dict()
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#mf2py.parser.Parser.to_dict" class="md-nav__link">
-    to_dict()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mf2py.parser.Parser.to_json" class="md-nav__link">
-    to_json()
+  <a href="#mf2py.Parser.to_json" class="md-nav__link">
+    <span class="md-ellipsis">
+      to_json()
+    </span>
   </a>
   
 </li>
@@ -333,14 +351,19 @@
     
       
       
-      
-
+  
   
   
   
     <li class="md-nav__item">
       <a href="../changelog/" class="md-nav__link">
-        Changelog
+        
+  
+  <span class="md-ellipsis">
+    Change Log
+  </span>
+  
+
       </a>
     </li>
   
@@ -373,36 +396,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#parser" class="md-nav__link">
-    Parser
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#mf2py.Parser" class="md-nav__link">
-    mf2py.Parser
+    <span class="md-ellipsis">
+      Parser
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#mf2py.parser.Parser.parse" class="md-nav__link">
-    parse()
+  <a href="#mf2py.Parser.to_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      to_dict()
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#mf2py.parser.Parser.to_dict" class="md-nav__link">
-    to_dict()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mf2py.parser.Parser.to_json" class="md-nav__link">
-    to_json()
+  <a href="#mf2py.Parser.to_json" class="md-nav__link">
+    <span class="md-ellipsis">
+      to_json()
+    </span>
   </a>
   
 </li>
@@ -425,21 +440,23 @@
   
 
 
-<h1 id="parse-a-document">Parse a Document<a class="headerlink" href="#parse-a-document" title="Permanent link">&para;</a></h1>
-<h2 id="parser">Parser<a class="headerlink" href="#parser" title="Permanent link">&para;</a></h2>
+<h1 id="parser-object">Parser Object<a class="headerlink" href="#parser-object" title="Permanent link">&para;</a></h1>
 
 
 <div class="doc doc-object doc-class">
 
 
+
 <a id="mf2py.Parser"></a>
   <div class="doc doc-contents first">
-      <p class="doc doc-class-bases">
-        Bases: <code>object</code></p>
+          <p class="doc doc-class-bases">
+            Bases: <code>object</code></p>
 
   
       <p>Object to parse a document for microformats and return them in
 appropriate formats.</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -457,9 +474,13 @@ appropriate formats.</p>
           <td>
                 <code>file or string or BeautifulSoup doc</code>
           </td>
-          <td><p>file handle, text of content
+          <td>
+            <div class="doc-md-description">
+              <p>file handle, text of content
 to parse, or BeautifulSoup document. If None, it will be fetched from
-given url</p></td>
+given url</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
@@ -469,8 +490,12 @@ given url</p></td>
           <td>
                 <code>string</code>
           </td>
-          <td><p>url of the file to be processed. Optionally extracted from
-base-element of given doc</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>url of the file to be processed. Optionally extracted from
+base-element of given doc</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
@@ -480,16 +505,51 @@ base-element of given doc</p></td>
           <td>
                 <code>string</code>
           </td>
-          <td><p>optional, select a specific HTML parser. Valid
+          <td>
+            <div class="doc-md-description">
+              <p>optional, select a specific HTML parser. Valid
 options from the BeautifulSoup documentation are:
 "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
-defaults to "html5lib"</p></td>
+defaults to "html5lib"</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
         </tr>
+        <tr>
+          <td><code>expose_dom</code></td>
+          <td>
+                <code>boolean</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>optional, expose the DOM of embedded properties.</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>metaformats</code></td>
+          <td>
+                <code>boolean</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>whether to include metaformats extracted from OGP
+and Twitter card data: https://microformats.org/wiki/metaformats</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Attributes:</strong></p>
   <table>
@@ -506,18 +566,18 @@ defaults to "html5lib"</p></td>
           <td>
                 <code>string</code>
           </td>
-          <td><p>the User-Agent string for the Parser</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>the User-Agent string for the Parser</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-
-        <details class="quote">
-          <summary>Source code in <code>mf2py/parser.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 47</span>
-<span class="normal"> 48</span>
-<span class="normal"> 49</span>
-<span class="normal"> 50</span>
+            <details class="quote">
+              <summary>Source code in <code>mf2py/parser.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 50</span>
 <span class="normal"> 51</span>
 <span class="normal"> 52</span>
 <span class="normal"> 53</span>
@@ -970,7 +1030,81 @@ defaults to "html5lib"</p></td>
 <span class="normal">500</span>
 <span class="normal">501</span>
 <span class="normal">502</span>
-<span class="normal">503</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Parser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="normal">503</span>
+<span class="normal">504</span>
+<span class="normal">505</span>
+<span class="normal">506</span>
+<span class="normal">507</span>
+<span class="normal">508</span>
+<span class="normal">509</span>
+<span class="normal">510</span>
+<span class="normal">511</span>
+<span class="normal">512</span>
+<span class="normal">513</span>
+<span class="normal">514</span>
+<span class="normal">515</span>
+<span class="normal">516</span>
+<span class="normal">517</span>
+<span class="normal">518</span>
+<span class="normal">519</span>
+<span class="normal">520</span>
+<span class="normal">521</span>
+<span class="normal">522</span>
+<span class="normal">523</span>
+<span class="normal">524</span>
+<span class="normal">525</span>
+<span class="normal">526</span>
+<span class="normal">527</span>
+<span class="normal">528</span>
+<span class="normal">529</span>
+<span class="normal">530</span>
+<span class="normal">531</span>
+<span class="normal">532</span>
+<span class="normal">533</span>
+<span class="normal">534</span>
+<span class="normal">535</span>
+<span class="normal">536</span>
+<span class="normal">537</span>
+<span class="normal">538</span>
+<span class="normal">539</span>
+<span class="normal">540</span>
+<span class="normal">541</span>
+<span class="normal">542</span>
+<span class="normal">543</span>
+<span class="normal">544</span>
+<span class="normal">545</span>
+<span class="normal">546</span>
+<span class="normal">547</span>
+<span class="normal">548</span>
+<span class="normal">549</span>
+<span class="normal">550</span>
+<span class="normal">551</span>
+<span class="normal">552</span>
+<span class="normal">553</span>
+<span class="normal">554</span>
+<span class="normal">555</span>
+<span class="normal">556</span>
+<span class="normal">557</span>
+<span class="normal">558</span>
+<span class="normal">559</span>
+<span class="normal">560</span>
+<span class="normal">561</span>
+<span class="normal">562</span>
+<span class="normal">563</span>
+<span class="normal">564</span>
+<span class="normal">565</span>
+<span class="normal">566</span>
+<span class="normal">567</span>
+<span class="normal">568</span>
+<span class="normal">569</span>
+<span class="normal">570</span>
+<span class="normal">571</span>
+<span class="normal">572</span>
+<span class="normal">573</span>
+<span class="normal">574</span>
+<span class="normal">575</span>
+<span class="normal">576</span>
+<span class="normal">577</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Parser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Object to parse a document for microformats and return them in</span>
 <span class="sd">    appropriate formats.</span>
 
@@ -984,55 +1118,67 @@ defaults to "html5lib"</p></td>
 <span class="sd">        options from the BeautifulSoup documentation are:</span>
 <span class="sd">        &quot;html&quot;, &quot;xml&quot;, &quot;html5&quot;, &quot;lxml&quot;, &quot;html5lib&quot;, and &quot;html.parser&quot;</span>
 <span class="sd">        defaults to &quot;html5lib&quot;</span>
+<span class="sd">      expose_dom (boolean): optional, expose the DOM of embedded properties.</span>
+<span class="sd">      metaformats (boolean): whether to include metaformats extracted from OGP</span>
+<span class="sd">        and Twitter card data: https://microformats.org/wiki/metaformats</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">      useragent (string): the User-Agent string for the Parser</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">ua_desc</span> <span class="o">=</span> <span class="s1">&#39;mf2py - microformats2 parser for python&#39;</span>
+    <span class="n">ua_desc</span> <span class="o">=</span> <span class="s2">&quot;mf2py - microformats2 parser for python&quot;</span>
     <span class="n">ua_url</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/microformats/mf2py&quot;</span>
-    <span class="n">useragent</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - version </span><span class="si">{1}</span><span class="s1"> - </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ua_desc</span><span class="p">,</span> <span class="n">__version__</span><span class="p">,</span> <span class="n">ua_url</span><span class="p">)</span>
+    <span class="n">useragent</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> - version </span><span class="si">{1}</span><span class="s2"> - </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ua_desc</span><span class="p">,</span> <span class="n">__version__</span><span class="p">,</span> <span class="n">ua_url</span><span class="p">)</span>
 
-    <span class="n">dict_class</span> <span class="o">=</span> <span class="nb">dict</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">html_parser</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">img_with_alt</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">html_parser</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">expose_dom</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">metaformats</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__url__</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_preserve_doc</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">([</span>
-            <span class="p">(</span><span class="s1">&#39;items&#39;</span><span class="p">,</span> <span class="p">[]),</span>
-            <span class="p">(</span><span class="s1">&#39;rels&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">()),</span>
-            <span class="p">(</span><span class="s1">&#39;rel-urls&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">()),</span>
-            <span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">([</span>
-                <span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ua_desc</span><span class="p">),</span>
-                <span class="p">(</span><span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ua_url</span><span class="p">),</span>
-                <span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="n">text_type</span><span class="p">(</span><span class="n">__version__</span><span class="p">))</span>
-            <span class="p">]))</span>
-        <span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__img_with_alt__</span> <span class="o">=</span> <span class="n">img_with_alt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;rels&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;rel-urls&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;debug&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ua_desc</span><span class="p">,</span>
+                <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ua_url</span><span class="p">,</span>
+                <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">__version__</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__metaformats</span> <span class="o">=</span> <span class="n">metaformats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expose_dom</span> <span class="o">=</span> <span class="n">expose_dom</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># use default parser if none specified</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__html_parser__</span> <span class="o">=</span> <span class="n">html_parser</span> <span class="ow">or</span> <span class="s1">&#39;html5lib&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__html_parser__</span> <span class="o">=</span> <span class="n">html_parser</span> <span class="ow">or</span> <span class="s2">&quot;html5lib&quot;</span>
 
         <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__url__</span> <span class="o">=</span> <span class="n">url</span>
 
             <span class="k">if</span> <span class="n">doc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
-                    <span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">useragent</span><span class="p">,</span>
-                <span class="p">})</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">,</span>
+                    <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
+                        <span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">useragent</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">)</span>
 
                 <span class="c1"># update to final URL after redirects</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__url__</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">url</span>
 
                 <span class="c1"># HACK: check for character encodings and use &#39;correct&#39; data</span>
-                <span class="k">if</span> <span class="s1">&#39;charset&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s2">&quot;charset&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content-type&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
                     <span class="n">doc</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">text</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">doc</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">content</span>
 
         <span class="k">if</span> <span class="n">doc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">BeautifulSoup</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">Tag</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">doc</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_preserve_doc</span> <span class="o">=</span> <span class="kc">True</span>
@@ -1054,11 +1200,11 @@ defaults to "html5lib"</p></td>
 
         <span class="c1"># check for &lt;base&gt; tag</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">:</span>
-
-            <span class="n">poss_base</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">el</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">get_descendents</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
-                              <span class="k">if</span> <span class="n">el</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;base&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">poss_base</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">el</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">get_descendents</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span> <span class="k">if</span> <span class="n">el</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;base&quot;</span><span class="p">),</span> <span class="kc">None</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="n">poss_base</span><span class="p">:</span>
-                <span class="n">poss_base_url</span> <span class="o">=</span> <span class="n">poss_base</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">)</span>  <span class="c1"># try to get href</span>
+                <span class="n">poss_base_url</span> <span class="o">=</span> <span class="n">poss_base</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;href&quot;</span><span class="p">)</span>  <span class="c1"># try to get href</span>
                 <span class="k">if</span> <span class="n">poss_base_url</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">poss_base_url</span><span class="p">)</span><span class="o">.</span><span class="n">netloc</span><span class="p">:</span>
                         <span class="c1"># base specifies an absolute path</span>
@@ -1068,10 +1214,12 @@ defaults to "html5lib"</p></td>
                         <span class="bp">self</span><span class="o">.</span><span class="n">__url__</span> <span class="o">=</span> <span class="n">try_urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">,</span> <span class="n">poss_base_url</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">document</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;html&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lang&quot;</span><span class="p">)</span>
             <span class="c1"># parse!</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parse</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Does the work of actually parsing the document. Done automatically</span>
 <span class="sd">        on initialization.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1083,11 +1231,15 @@ defaults to "html5lib"</p></td>
         <span class="c1"># see value-class-pattern#microformats2_parsers on wiki.</span>
         <span class="c1"># see also the implied_relative_datetimes testcase.</span>
 
-        <span class="k">def</span> <span class="nf">handle_microformat</span><span class="p">(</span><span class="n">root_class_names</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">value_property</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                               <span class="n">simple_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backcompat_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Handles a (possibly nested) microformat, i.e. h-*</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">properties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">()</span>
+        <span class="k">def</span> <span class="nf">handle_microformat</span><span class="p">(</span>
+            <span class="n">root_class_names</span><span class="p">,</span>
+            <span class="n">el</span><span class="p">,</span>
+            <span class="n">value_property</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">simple_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">backcompat_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Handles a (possibly nested) microformat, i.e. h-*&quot;&quot;&quot;</span>
+            <span class="n">properties</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_default_date</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="c1"># for processing implied properties: collects if property types (p, e, u, d(t)) or children (h) have been processed</span>
@@ -1095,11 +1247,17 @@ defaults to "html5lib"</p></td>
 
             <span class="k">if</span> <span class="n">backcompat_mode</span><span class="p">:</span>
                 <span class="n">el</span> <span class="o">=</span> <span class="n">backcompat</span><span class="o">.</span><span class="n">apply_rules</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__html_parser__</span><span class="p">)</span>
-                <span class="n">root_class_names</span> <span class="o">=</span> <span class="n">mf2_classes</span><span class="o">.</span><span class="n">root</span><span class="p">(</span><span class="n">el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="p">[]))</span>
+                <span class="n">root_class_names</span> <span class="o">=</span> <span class="n">mf2_classes</span><span class="o">.</span><span class="n">root</span><span class="p">(</span><span class="n">el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="p">[]))</span>
+
+            <span class="n">root_lang</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lang&quot;</span><span class="p">)</span>
 
             <span class="c1"># parse for properties and children</span>
             <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">get_children</span><span class="p">(</span><span class="n">el</span><span class="p">):</span>
-                <span class="n">child_props</span><span class="p">,</span> <span class="n">child_children</span><span class="p">,</span> <span class="n">child_parsed_types_aggregation</span> <span class="o">=</span> <span class="n">parse_props</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+                <span class="p">(</span>
+                    <span class="n">child_props</span><span class="p">,</span>
+                    <span class="n">child_children</span><span class="p">,</span>
+                    <span class="n">child_parsed_types_aggregation</span><span class="p">,</span>
+                <span class="p">)</span> <span class="o">=</span> <span class="n">parse_props</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">root_lang</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">new_value</span> <span class="ow">in</span> <span class="n">child_props</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="n">prop_value</span> <span class="o">=</span> <span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">[])</span>
                     <span class="n">prop_value</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_value</span><span class="p">)</span>
@@ -1115,42 +1273,49 @@ defaults to "html5lib"</p></td>
             <span class="c1"># if some properties not already found find in implied ways unless in backcompat mode</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">backcompat_mode</span><span class="p">:</span>
                 <span class="c1"># stop implied name if any p-*, e-*, h-* is already found</span>
-                <span class="k">if</span> <span class="s2">&quot;name&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">properties</span> <span class="ow">and</span> <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="s2">&quot;peh&quot;</span><span class="p">):</span>
-                    <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">implied_properties</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="s2">&quot;name&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">properties</span> <span class="ow">and</span> <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span>
+                    <span class="s2">&quot;peh&quot;</span>
+                <span class="p">):</span>
+                    <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">implied_properties</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)</span>
+                    <span class="p">]</span>
 
-                <span class="k">if</span> <span class="s2">&quot;photo&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">properties</span> <span class="ow">and</span> <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="s2">&quot;uh&quot;</span><span class="p">):</span>
-                    <span class="n">x</span> <span class="o">=</span> <span class="n">implied_properties</span><span class="o">.</span><span class="n">photo</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__img_with_alt__</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s2">&quot;photo&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">properties</span> <span class="ow">and</span> <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span>
+                    <span class="s2">&quot;uh&quot;</span>
+                <span class="p">):</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">implied_properties</span><span class="o">.</span><span class="n">photo</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;photo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
 
                 <span class="c1"># stop implied url if any u-* or h-* is already found</span>
-                <span class="k">if</span> <span class="s2">&quot;url&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">properties</span> <span class="ow">and</span> <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="s2">&quot;uh&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s2">&quot;url&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">properties</span> <span class="ow">and</span> <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span>
+                    <span class="s2">&quot;uh&quot;</span>
+                <span class="p">):</span>
                     <span class="n">x</span> <span class="o">=</span> <span class="n">implied_properties</span><span class="o">.</span><span class="n">url</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
 
             <span class="c1"># build microformat with type and properties</span>
-            <span class="n">microformat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">([</span>
-                <span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">text_type</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span>
-                          <span class="k">for</span> <span class="n">class_name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">root_class_names</span><span class="p">)]),</span>
-                <span class="p">(</span><span class="s2">&quot;properties&quot;</span><span class="p">,</span> <span class="n">properties</span><span class="p">),</span>
-            <span class="p">])</span>
-            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">el</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;area&quot;</span><span class="p">:</span>
-                <span class="n">shape</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">)</span>
+            <span class="n">microformat</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">class_name</span> <span class="k">for</span> <span class="n">class_name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">root_class_names</span><span class="p">)],</span>
+                <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="n">properties</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="n">el</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;area&quot;</span><span class="p">:</span>
+                <span class="n">shape</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="s2">&quot;shape&quot;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">microformat</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+                    <span class="n">microformat</span><span class="p">[</span><span class="s2">&quot;shape&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shape</span>
 
-                <span class="n">coords</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="s1">&#39;coords&#39;</span><span class="p">)</span>
+                <span class="n">coords</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="s2">&quot;coords&quot;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">coords</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">microformat</span><span class="p">[</span><span class="s1">&#39;coords&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+                    <span class="n">microformat</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span>
 
             <span class="c1"># insert children if any</span>
             <span class="k">if</span> <span class="n">children</span><span class="p">:</span>
                 <span class="n">microformat</span><span class="p">[</span><span class="s2">&quot;children&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">children</span>
 
-            <span class="n">Id</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">)</span>
+            <span class="n">Id</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">Id</span><span class="p">:</span>
-                <span class="n">microformat</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Id</span>
+                <span class="n">microformat</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Id</span>
 
             <span class="c1"># simple value is the parsed property value if it were not</span>
             <span class="c1"># an h-* class</span>
@@ -1162,14 +1327,17 @@ defaults to "html5lib"</p></td>
                     <span class="c1"># details: https://github.com/microformats/mf2py/issues/35</span>
                     <span class="n">microformat</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">simple_value</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">microformat</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="n">simple_value</span><span class="p">)</span>
+                    <span class="n">microformat</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">simple_value</span>
 
+            <span class="k">if</span> <span class="n">root_lang</span><span class="p">:</span>
+                <span class="n">microformat</span><span class="p">[</span><span class="s2">&quot;lang&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">root_lang</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">lang</span><span class="p">:</span>
+                <span class="n">microformat</span><span class="p">[</span><span class="s2">&quot;lang&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lang</span>
             <span class="k">return</span> <span class="n">microformat</span>
 
-        <span class="k">def</span> <span class="nf">parse_props</span><span class="p">(</span><span class="n">el</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Parse the properties from a single element</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">props</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">()</span>
+        <span class="k">def</span> <span class="nf">parse_props</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">root_lang</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Parse the properties from a single element&quot;&quot;&quot;</span>
+            <span class="n">props</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="c1"># for processing implied properties: collects if property types (p, e, u, d(t)) or children (h) have been processed</span>
             <span class="n">parsed_types_aggregation</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -1177,7 +1345,7 @@ defaults to "html5lib"</p></td>
             <span class="n">classes</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="p">[])</span>
             <span class="n">filtered_classes</span> <span class="o">=</span> <span class="n">mf2_classes</span><span class="o">.</span><span class="n">filter_classes</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
             <span class="c1"># Is this element a microformat2 root?</span>
-            <span class="n">root_class_names</span> <span class="o">=</span> <span class="n">filtered_classes</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span>
+            <span class="n">root_class_names</span> <span class="o">=</span> <span class="n">filtered_classes</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">]</span>
             <span class="n">backcompat_mode</span> <span class="o">=</span> <span class="kc">False</span>
 
             <span class="c1"># Is this element a microformat1 root?</span>
@@ -1186,7 +1354,7 @@ defaults to "html5lib"</p></td>
                 <span class="n">backcompat_mode</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="k">if</span> <span class="n">root_class_names</span><span class="p">:</span>
-                <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">)</span>
+                <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;h&quot;</span><span class="p">)</span>
 
             <span class="c1"># Is this a property element (p-*, u-*, etc.) flag</span>
             <span class="c1"># False is default</span>
@@ -1194,72 +1362,88 @@ defaults to "html5lib"</p></td>
 
             <span class="c1"># Parse plaintext p-* properties.</span>
             <span class="n">p_value</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">for</span> <span class="n">prop_name</span> <span class="ow">in</span> <span class="n">filtered_classes</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">prop_name</span> <span class="ow">in</span> <span class="n">filtered_classes</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">]:</span>
                 <span class="n">is_property_el</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+                <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">)</span>
                 <span class="n">prop_value</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="p">[])</span>
 
                 <span class="c1"># if value has not been parsed then parse it</span>
                 <span class="k">if</span> <span class="n">p_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">p_value</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="n">parse_property</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">))</span>
+                    <span class="n">p_value</span> <span class="o">=</span> <span class="n">parse_property</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="n">root_class_names</span><span class="p">:</span>
-                    <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle_microformat</span><span class="p">(</span>
-                        <span class="n">root_class_names</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">value_property</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="p">,</span>
-                        <span class="n">simple_value</span><span class="o">=</span><span class="n">p_value</span><span class="p">,</span> <span class="n">backcompat_mode</span><span class="o">=</span><span class="n">backcompat_mode</span><span class="p">))</span>
+                    <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">handle_microformat</span><span class="p">(</span>
+                            <span class="n">root_class_names</span><span class="p">,</span>
+                            <span class="n">el</span><span class="p">,</span>
+                            <span class="n">value_property</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="p">,</span>
+                            <span class="n">simple_value</span><span class="o">=</span><span class="n">p_value</span><span class="p">,</span>
+                            <span class="n">backcompat_mode</span><span class="o">=</span><span class="n">backcompat_mode</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_value</span><span class="p">)</span>
 
             <span class="c1"># Parse URL u-* properties.</span>
             <span class="n">u_value</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">for</span> <span class="n">prop_name</span> <span class="ow">in</span> <span class="n">filtered_classes</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">prop_name</span> <span class="ow">in</span> <span class="n">filtered_classes</span><span class="p">[</span><span class="s2">&quot;u&quot;</span><span class="p">]:</span>
                 <span class="n">is_property_el</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">)</span>
+                <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;u&quot;</span><span class="p">)</span>
                 <span class="n">prop_value</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="p">[])</span>
 
                 <span class="c1"># if value has not been parsed then parse it</span>
                 <span class="k">if</span> <span class="n">u_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">u_value</span> <span class="o">=</span> <span class="n">parse_property</span><span class="o">.</span><span class="n">url</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__img_with_alt__</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)</span>
+                    <span class="n">u_value</span> <span class="o">=</span> <span class="n">parse_property</span><span class="o">.</span><span class="n">url</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="n">root_class_names</span><span class="p">:</span>
-                    <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle_microformat</span><span class="p">(</span>
-                        <span class="n">root_class_names</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">value_property</span><span class="o">=</span><span class="s2">&quot;url&quot;</span><span class="p">,</span>
-                        <span class="n">simple_value</span><span class="o">=</span><span class="n">u_value</span><span class="p">,</span> <span class="n">backcompat_mode</span><span class="o">=</span><span class="n">backcompat_mode</span><span class="p">))</span>
+                    <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">handle_microformat</span><span class="p">(</span>
+                            <span class="n">root_class_names</span><span class="p">,</span>
+                            <span class="n">el</span><span class="p">,</span>
+                            <span class="n">value_property</span><span class="o">=</span><span class="s2">&quot;url&quot;</span><span class="p">,</span>
+                            <span class="n">simple_value</span><span class="o">=</span><span class="n">u_value</span><span class="p">,</span>
+                            <span class="n">backcompat_mode</span><span class="o">=</span><span class="n">backcompat_mode</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u_value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u_value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                         <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u_value</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text_type</span><span class="p">(</span><span class="n">u_value</span><span class="p">))</span>
+                        <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u_value</span><span class="p">)</span>
 
             <span class="c1"># Parse datetime dt-* properties.</span>
             <span class="n">dt_value</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">for</span> <span class="n">prop_name</span> <span class="ow">in</span> <span class="n">filtered_classes</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">prop_name</span> <span class="ow">in</span> <span class="n">filtered_classes</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]:</span>
                 <span class="n">is_property_el</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
+                <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">)</span>
                 <span class="n">prop_value</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="p">[])</span>
 
                 <span class="c1"># if value has not been parsed then parse it</span>
                 <span class="k">if</span> <span class="n">dt_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">dt_value</span><span class="p">,</span> <span class="n">new_date</span> <span class="o">=</span> <span class="n">parse_property</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span>
-                        <span class="n">el</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_date</span><span class="p">)</span>
+                    <span class="n">dt_value</span><span class="p">,</span> <span class="n">new_date</span> <span class="o">=</span> <span class="n">parse_property</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_date</span><span class="p">)</span>
                     <span class="c1"># update the default date</span>
                     <span class="k">if</span> <span class="n">new_date</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_default_date</span> <span class="o">=</span> <span class="n">new_date</span>
 
                 <span class="k">if</span> <span class="n">root_class_names</span><span class="p">:</span>
                     <span class="n">stops_implied_name</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle_microformat</span><span class="p">(</span>
-                        <span class="n">root_class_names</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span>
-                        <span class="n">simple_value</span><span class="o">=</span><span class="n">text_type</span><span class="p">(</span><span class="n">dt_value</span><span class="p">),</span> <span class="n">backcompat_mode</span><span class="o">=</span><span class="n">backcompat_mode</span><span class="p">))</span>
+                    <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">handle_microformat</span><span class="p">(</span>
+                            <span class="n">root_class_names</span><span class="p">,</span>
+                            <span class="n">el</span><span class="p">,</span>
+                            <span class="n">simple_value</span><span class="o">=</span><span class="n">dt_value</span><span class="p">,</span>
+                            <span class="n">backcompat_mode</span><span class="o">=</span><span class="n">backcompat_mode</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">dt_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text_type</span><span class="p">(</span><span class="n">dt_value</span><span class="p">))</span>
+                        <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dt_value</span><span class="p">)</span>
 
             <span class="c1"># Parse embedded markup e-* properties.</span>
             <span class="n">e_value</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">for</span> <span class="n">prop_name</span> <span class="ow">in</span> <span class="n">filtered_classes</span><span class="p">[</span><span class="s1">&#39;e&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">prop_name</span> <span class="ow">in</span> <span class="n">filtered_classes</span><span class="p">[</span><span class="s2">&quot;e&quot;</span><span class="p">]:</span>
                 <span class="n">is_property_el</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">)</span>
+                <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">)</span>
                 <span class="n">prop_value</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="p">[])</span>
 
                 <span class="c1"># if value has not been parsed then parse it</span>
@@ -1272,23 +1456,39 @@ defaults to "html5lib"</p></td>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preserve_doc</span><span class="p">:</span>
                         <span class="n">embedded_el</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">embedded_el</span><span class="p">)</span>
                     <span class="n">temp_fixes</span><span class="o">.</span><span class="n">rm_templates</span><span class="p">(</span><span class="n">embedded_el</span><span class="p">)</span>
-                    <span class="n">e_value</span> <span class="o">=</span> <span class="n">parse_property</span><span class="o">.</span><span class="n">embedded</span><span class="p">(</span><span class="n">embedded_el</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)</span>
+                    <span class="n">e_value</span> <span class="o">=</span> <span class="n">parse_property</span><span class="o">.</span><span class="n">embedded</span><span class="p">(</span>
+                        <span class="n">embedded_el</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">,</span> <span class="n">root_lang</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lang</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expose_dom</span>
+                    <span class="p">)</span>
 
                 <span class="k">if</span> <span class="n">root_class_names</span><span class="p">:</span>
                     <span class="n">stops_implied_name</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle_microformat</span><span class="p">(</span>
-                        <span class="n">root_class_names</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">simple_value</span><span class="o">=</span><span class="n">e_value</span><span class="p">,</span> <span class="n">backcompat_mode</span><span class="o">=</span><span class="n">backcompat_mode</span><span class="p">))</span>
+                    <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">handle_microformat</span><span class="p">(</span>
+                            <span class="n">root_class_names</span><span class="p">,</span>
+                            <span class="n">el</span><span class="p">,</span>
+                            <span class="n">simple_value</span><span class="o">=</span><span class="n">e_value</span><span class="p">,</span>
+                            <span class="n">backcompat_mode</span><span class="o">=</span><span class="n">backcompat_mode</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_value</span><span class="p">)</span>
 
             <span class="c1"># if this is not a property element, but it is a h-* microformat,</span>
             <span class="c1"># add it to our list of children</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">is_property_el</span> <span class="ow">and</span> <span class="n">root_class_names</span><span class="p">:</span>
-                <span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle_microformat</span><span class="p">(</span><span class="n">root_class_names</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">backcompat_mode</span><span class="o">=</span><span class="n">backcompat_mode</span><span class="p">))</span>
+                <span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">handle_microformat</span><span class="p">(</span>
+                        <span class="n">root_class_names</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">backcompat_mode</span><span class="o">=</span><span class="n">backcompat_mode</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
             <span class="c1"># parse child tags, provided this isn&#39;t a microformat root-class</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">root_class_names</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">get_children</span><span class="p">(</span><span class="n">el</span><span class="p">):</span>
-                    <span class="n">child_properties</span><span class="p">,</span> <span class="n">child_microformats</span><span class="p">,</span> <span class="n">child_parsed_types_aggregation</span> <span class="o">=</span> <span class="n">parse_props</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+                    <span class="p">(</span>
+                        <span class="n">child_properties</span><span class="p">,</span>
+                        <span class="n">child_microformats</span><span class="p">,</span>
+                        <span class="n">child_parsed_types_aggregation</span><span class="p">,</span>
+                    <span class="p">)</span> <span class="o">=</span> <span class="n">parse_props</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">root_lang</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">prop_name</span> <span class="ow">in</span> <span class="n">child_properties</span><span class="p">:</span>
                         <span class="n">v</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="p">[])</span>
                         <span class="n">v</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">child_properties</span><span class="p">[</span><span class="n">prop_name</span><span class="p">])</span>
@@ -1298,15 +1498,13 @@ defaults to "html5lib"</p></td>
             <span class="k">return</span> <span class="n">props</span><span class="p">,</span> <span class="n">children</span><span class="p">,</span> <span class="n">parsed_types_aggregation</span>
 
         <span class="k">def</span> <span class="nf">parse_rels</span><span class="p">(</span><span class="n">el</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Parse an element for rel microformats</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">rel_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="n">text_type</span><span class="p">(</span><span class="n">rel</span><span class="p">)</span> <span class="k">for</span> <span class="n">rel</span> <span class="ow">in</span> <span class="n">get_attr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="s1">&#39;rel&#39;</span><span class="p">)]</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Parse an element for rel microformats&quot;&quot;&quot;</span>
+            <span class="n">rel_attrs</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="s2">&quot;rel&quot;</span><span class="p">)</span>
             <span class="c1"># if rel attributes exist</span>
             <span class="k">if</span> <span class="n">rel_attrs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># find the url and normalise it</span>
-                <span class="n">url</span> <span class="o">=</span> <span class="n">try_urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">,</span> <span class="n">el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
-                <span class="n">value_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rel-urls&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span>
-                                                             <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">())</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="n">try_urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">,</span> <span class="n">el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;href&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+                <span class="n">value_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rel-urls&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="p">{})</span>
 
                 <span class="c1"># 1st one wins</span>
                 <span class="k">if</span> <span class="s2">&quot;text&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">value_dict</span><span class="p">:</span>
@@ -1319,7 +1517,7 @@ defaults to "html5lib"</p></td>
                     <span class="n">x</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">knownattr</span><span class="p">)</span>
                     <span class="c1"># 1st one wins</span>
                     <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">knownattr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">value_dict</span><span class="p">:</span>
-                        <span class="n">value_dict</span><span class="p">[</span><span class="n">knownattr</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                        <span class="n">value_dict</span><span class="p">[</span><span class="n">knownattr</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rel-urls&quot;</span><span class="p">][</span><span class="n">url</span><span class="p">]</span> <span class="o">=</span> <span class="n">value_dict</span>
 
@@ -1333,23 +1531,21 @@ defaults to "html5lib"</p></td>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rels&quot;</span><span class="p">][</span><span class="n">rel_value</span><span class="p">]</span> <span class="o">=</span> <span class="n">value_list</span>
                 <span class="k">if</span> <span class="s2">&quot;alternate&quot;</span> <span class="ow">in</span> <span class="n">rel_attrs</span><span class="p">:</span>
                     <span class="n">alternate_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;alternates&quot;</span><span class="p">,</span> <span class="p">[])</span>
-                    <span class="n">alternate_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">()</span>
+                    <span class="n">alternate_dict</span> <span class="o">=</span> <span class="p">{}</span>
                     <span class="n">alternate_dict</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">url</span>
-                    <span class="n">x</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                        <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rel_attrs</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span> <span class="o">==</span> <span class="s2">&quot;alternate&quot;</span><span class="p">])</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rel_attrs</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span> <span class="o">==</span> <span class="s2">&quot;alternate&quot;</span><span class="p">])</span>
                     <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
                         <span class="n">alternate_dict</span><span class="p">[</span><span class="s2">&quot;rel&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
-                    <span class="n">alternate_dict</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="n">el</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                    <span class="n">alternate_dict</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                     <span class="k">for</span> <span class="n">knownattr</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;media&quot;</span><span class="p">,</span> <span class="s2">&quot;hreflang&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">):</span>
                         <span class="n">x</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">knownattr</span><span class="p">)</span>
                         <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                            <span class="n">alternate_dict</span><span class="p">[</span><span class="n">knownattr</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                            <span class="n">alternate_dict</span><span class="p">[</span><span class="n">knownattr</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
                     <span class="n">alternate_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">alternate_dict</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;alternates&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">alternate_list</span>
 
         <span class="k">def</span> <span class="nf">parse_el</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Parse an element for microformats</span>
-<span class="sd">            &quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Parse an element for microformats&quot;&quot;&quot;</span>
             <span class="n">classes</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="p">[])</span>
 
             <span class="c1"># find potential microformats in root classnames h-*</span>
@@ -1363,7 +1559,9 @@ defaults to "html5lib"</p></td>
                 <span class="c1"># find backcompat root classnames</span>
                 <span class="n">potential_microformats</span> <span class="o">=</span> <span class="n">backcompat</span><span class="o">.</span><span class="n">root</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">potential_microformats</span><span class="p">:</span>
-                    <span class="n">result</span> <span class="o">=</span> <span class="n">handle_microformat</span><span class="p">(</span><span class="n">potential_microformats</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">backcompat_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">handle_microformat</span><span class="p">(</span>
+                        <span class="n">potential_microformats</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">backcompat_mode</span><span class="o">=</span><span class="kc">True</span>
+                    <span class="p">)</span>
                     <span class="n">ctx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># parse child tags</span>
@@ -1371,27 +1569,34 @@ defaults to "html5lib"</p></td>
                         <span class="n">parse_el</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
 
         <span class="n">ctx</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__metaformats</span><span class="p">:</span>
+            <span class="c1"># extract out a metaformats item, if available</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__metaformats_item</span> <span class="o">=</span> <span class="n">metaformats</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)</span>
+
         <span class="c1"># start parsing at root element of the document</span>
         <span class="n">parse_el</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;items&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ctx</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__metaformats</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__metaformats_item</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;items&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__metaformats_item</span><span class="p">)</span>
 
         <span class="c1"># parse for rel values</span>
         <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">get_descendents</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">el</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;area&#39;</span><span class="p">,</span> <span class="s1">&#39;link&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">el</span><span class="o">.</span><span class="n">has_attr</span><span class="p">(</span><span class="s1">&#39;rel&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">el</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;area&quot;</span><span class="p">,</span> <span class="s2">&quot;link&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">el</span><span class="o">.</span><span class="n">has_attr</span><span class="p">(</span><span class="s2">&quot;rel&quot;</span><span class="p">):</span>
                 <span class="n">parse_rels</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
 
         <span class="c1"># sort the rels array in rel-urls since this should be unordered set</span>
         <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rel-urls&quot;</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="s1">&#39;rels&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rel-urls&quot;</span><span class="p">][</span><span class="n">url</span><span class="p">]:</span>
-                <span class="n">rels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rel-urls&quot;</span><span class="p">][</span><span class="n">url</span><span class="p">][</span><span class="s1">&#39;rels&#39;</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rel-urls&quot;</span><span class="p">][</span><span class="n">url</span><span class="p">][</span><span class="s1">&#39;rels&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">unordered_list</span><span class="p">(</span><span class="n">rels</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;rels&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rel-urls&quot;</span><span class="p">][</span><span class="n">url</span><span class="p">]:</span>
+                <span class="n">rels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rel-urls&quot;</span><span class="p">][</span><span class="n">url</span><span class="p">][</span><span class="s2">&quot;rels&quot;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rel-urls&quot;</span><span class="p">][</span><span class="n">url</span><span class="p">][</span><span class="s2">&quot;rels&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unordered_list</span><span class="p">(</span><span class="n">rels</span><span class="p">)</span>
 
         <span class="c1"># add actual parser used to debug</span>
         <span class="c1"># uses builder.NAME from BeautifulSoup</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__html_parser__</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;debug&quot;</span><span class="p">][</span><span class="s2">&quot;markup parser&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__html_parser__</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;debug&quot;</span><span class="p">][</span><span class="s2">&quot;markup parser&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__html_parser__</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;debug&quot;</span><span class="p">][</span><span class="s2">&quot;markup parser&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="s1">&#39;unknown&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;debug&quot;</span><span class="p">][</span><span class="s2">&quot;markup parser&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span>
 
     <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_by_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a dictionary version of the parsed microformat document.</span>
@@ -1406,8 +1611,7 @@ defaults to "html5lib"</p></td>
         <span class="k">if</span> <span class="n">filter_by_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s1">&#39;items&#39;</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="n">filter_by_type</span> <span class="ow">in</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]]</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;items&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">filter_by_type</span> <span class="ow">in</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]]</span>
 
     <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filter_by_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a json-encoding string version of the parsed microformats document</span>
@@ -1423,12 +1627,13 @@ defaults to "html5lib"</p></td>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">pretty_print</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">filter_by_type</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-                              <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">filter_by_type</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">,</span> <span class="s2">&quot;: &quot;</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">filter_by_type</span><span class="p">))</span>
 </code></pre></div></td></tr></table></div>
-        </details>
+            </details>
 
   
 
@@ -1442,683 +1647,23 @@ defaults to "html5lib"</p></td>
 
 
 
-<div class="doc doc-object doc-function">
-
-
-
-<h2 id="mf2py.parser.Parser.parse" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">parse</span><span class="p">()</span></code>
-
-<a href="#mf2py.parser.Parser.parse" class="headerlink" title="Permanent link">&para;</a></h2>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Does the work of actually parsing the document. Done automatically
-on initialization.</p>
-
-      <details class="quote">
-        <summary>Source code in <code>mf2py/parser.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">148</span>
-<span class="normal">149</span>
-<span class="normal">150</span>
-<span class="normal">151</span>
-<span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span>
-<span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span>
-<span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span>
-<span class="normal">184</span>
-<span class="normal">185</span>
-<span class="normal">186</span>
-<span class="normal">187</span>
-<span class="normal">188</span>
-<span class="normal">189</span>
-<span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span>
-<span class="normal">201</span>
-<span class="normal">202</span>
-<span class="normal">203</span>
-<span class="normal">204</span>
-<span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span>
-<span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span>
-<span class="normal">218</span>
-<span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
-<span class="normal">234</span>
-<span class="normal">235</span>
-<span class="normal">236</span>
-<span class="normal">237</span>
-<span class="normal">238</span>
-<span class="normal">239</span>
-<span class="normal">240</span>
-<span class="normal">241</span>
-<span class="normal">242</span>
-<span class="normal">243</span>
-<span class="normal">244</span>
-<span class="normal">245</span>
-<span class="normal">246</span>
-<span class="normal">247</span>
-<span class="normal">248</span>
-<span class="normal">249</span>
-<span class="normal">250</span>
-<span class="normal">251</span>
-<span class="normal">252</span>
-<span class="normal">253</span>
-<span class="normal">254</span>
-<span class="normal">255</span>
-<span class="normal">256</span>
-<span class="normal">257</span>
-<span class="normal">258</span>
-<span class="normal">259</span>
-<span class="normal">260</span>
-<span class="normal">261</span>
-<span class="normal">262</span>
-<span class="normal">263</span>
-<span class="normal">264</span>
-<span class="normal">265</span>
-<span class="normal">266</span>
-<span class="normal">267</span>
-<span class="normal">268</span>
-<span class="normal">269</span>
-<span class="normal">270</span>
-<span class="normal">271</span>
-<span class="normal">272</span>
-<span class="normal">273</span>
-<span class="normal">274</span>
-<span class="normal">275</span>
-<span class="normal">276</span>
-<span class="normal">277</span>
-<span class="normal">278</span>
-<span class="normal">279</span>
-<span class="normal">280</span>
-<span class="normal">281</span>
-<span class="normal">282</span>
-<span class="normal">283</span>
-<span class="normal">284</span>
-<span class="normal">285</span>
-<span class="normal">286</span>
-<span class="normal">287</span>
-<span class="normal">288</span>
-<span class="normal">289</span>
-<span class="normal">290</span>
-<span class="normal">291</span>
-<span class="normal">292</span>
-<span class="normal">293</span>
-<span class="normal">294</span>
-<span class="normal">295</span>
-<span class="normal">296</span>
-<span class="normal">297</span>
-<span class="normal">298</span>
-<span class="normal">299</span>
-<span class="normal">300</span>
-<span class="normal">301</span>
-<span class="normal">302</span>
-<span class="normal">303</span>
-<span class="normal">304</span>
-<span class="normal">305</span>
-<span class="normal">306</span>
-<span class="normal">307</span>
-<span class="normal">308</span>
-<span class="normal">309</span>
-<span class="normal">310</span>
-<span class="normal">311</span>
-<span class="normal">312</span>
-<span class="normal">313</span>
-<span class="normal">314</span>
-<span class="normal">315</span>
-<span class="normal">316</span>
-<span class="normal">317</span>
-<span class="normal">318</span>
-<span class="normal">319</span>
-<span class="normal">320</span>
-<span class="normal">321</span>
-<span class="normal">322</span>
-<span class="normal">323</span>
-<span class="normal">324</span>
-<span class="normal">325</span>
-<span class="normal">326</span>
-<span class="normal">327</span>
-<span class="normal">328</span>
-<span class="normal">329</span>
-<span class="normal">330</span>
-<span class="normal">331</span>
-<span class="normal">332</span>
-<span class="normal">333</span>
-<span class="normal">334</span>
-<span class="normal">335</span>
-<span class="normal">336</span>
-<span class="normal">337</span>
-<span class="normal">338</span>
-<span class="normal">339</span>
-<span class="normal">340</span>
-<span class="normal">341</span>
-<span class="normal">342</span>
-<span class="normal">343</span>
-<span class="normal">344</span>
-<span class="normal">345</span>
-<span class="normal">346</span>
-<span class="normal">347</span>
-<span class="normal">348</span>
-<span class="normal">349</span>
-<span class="normal">350</span>
-<span class="normal">351</span>
-<span class="normal">352</span>
-<span class="normal">353</span>
-<span class="normal">354</span>
-<span class="normal">355</span>
-<span class="normal">356</span>
-<span class="normal">357</span>
-<span class="normal">358</span>
-<span class="normal">359</span>
-<span class="normal">360</span>
-<span class="normal">361</span>
-<span class="normal">362</span>
-<span class="normal">363</span>
-<span class="normal">364</span>
-<span class="normal">365</span>
-<span class="normal">366</span>
-<span class="normal">367</span>
-<span class="normal">368</span>
-<span class="normal">369</span>
-<span class="normal">370</span>
-<span class="normal">371</span>
-<span class="normal">372</span>
-<span class="normal">373</span>
-<span class="normal">374</span>
-<span class="normal">375</span>
-<span class="normal">376</span>
-<span class="normal">377</span>
-<span class="normal">378</span>
-<span class="normal">379</span>
-<span class="normal">380</span>
-<span class="normal">381</span>
-<span class="normal">382</span>
-<span class="normal">383</span>
-<span class="normal">384</span>
-<span class="normal">385</span>
-<span class="normal">386</span>
-<span class="normal">387</span>
-<span class="normal">388</span>
-<span class="normal">389</span>
-<span class="normal">390</span>
-<span class="normal">391</span>
-<span class="normal">392</span>
-<span class="normal">393</span>
-<span class="normal">394</span>
-<span class="normal">395</span>
-<span class="normal">396</span>
-<span class="normal">397</span>
-<span class="normal">398</span>
-<span class="normal">399</span>
-<span class="normal">400</span>
-<span class="normal">401</span>
-<span class="normal">402</span>
-<span class="normal">403</span>
-<span class="normal">404</span>
-<span class="normal">405</span>
-<span class="normal">406</span>
-<span class="normal">407</span>
-<span class="normal">408</span>
-<span class="normal">409</span>
-<span class="normal">410</span>
-<span class="normal">411</span>
-<span class="normal">412</span>
-<span class="normal">413</span>
-<span class="normal">414</span>
-<span class="normal">415</span>
-<span class="normal">416</span>
-<span class="normal">417</span>
-<span class="normal">418</span>
-<span class="normal">419</span>
-<span class="normal">420</span>
-<span class="normal">421</span>
-<span class="normal">422</span>
-<span class="normal">423</span>
-<span class="normal">424</span>
-<span class="normal">425</span>
-<span class="normal">426</span>
-<span class="normal">427</span>
-<span class="normal">428</span>
-<span class="normal">429</span>
-<span class="normal">430</span>
-<span class="normal">431</span>
-<span class="normal">432</span>
-<span class="normal">433</span>
-<span class="normal">434</span>
-<span class="normal">435</span>
-<span class="normal">436</span>
-<span class="normal">437</span>
-<span class="normal">438</span>
-<span class="normal">439</span>
-<span class="normal">440</span>
-<span class="normal">441</span>
-<span class="normal">442</span>
-<span class="normal">443</span>
-<span class="normal">444</span>
-<span class="normal">445</span>
-<span class="normal">446</span>
-<span class="normal">447</span>
-<span class="normal">448</span>
-<span class="normal">449</span>
-<span class="normal">450</span>
-<span class="normal">451</span>
-<span class="normal">452</span>
-<span class="normal">453</span>
-<span class="normal">454</span>
-<span class="normal">455</span>
-<span class="normal">456</span>
-<span class="normal">457</span>
-<span class="normal">458</span>
-<span class="normal">459</span>
-<span class="normal">460</span>
-<span class="normal">461</span>
-<span class="normal">462</span>
-<span class="normal">463</span>
-<span class="normal">464</span>
-<span class="normal">465</span>
-<span class="normal">466</span>
-<span class="normal">467</span>
-<span class="normal">468</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Does the work of actually parsing the document. Done automatically</span>
-<span class="sd">    on initialization.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_default_date</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="c1"># _default_date exists to provide implementation for rules described</span>
-    <span class="c1"># in legacy value-class-pattern. basically, if you have two dt-</span>
-    <span class="c1"># properties and one does not have the full date, it can use the</span>
-    <span class="c1"># existing date as a template.</span>
-    <span class="c1"># see value-class-pattern#microformats2_parsers on wiki.</span>
-    <span class="c1"># see also the implied_relative_datetimes testcase.</span>
-
-    <span class="k">def</span> <span class="nf">handle_microformat</span><span class="p">(</span><span class="n">root_class_names</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">value_property</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                           <span class="n">simple_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backcompat_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles a (possibly nested) microformat, i.e. h-*</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">properties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">()</span>
-        <span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_default_date</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="c1"># for processing implied properties: collects if property types (p, e, u, d(t)) or children (h) have been processed</span>
-        <span class="n">parsed_types_aggregation</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="n">backcompat_mode</span><span class="p">:</span>
-            <span class="n">el</span> <span class="o">=</span> <span class="n">backcompat</span><span class="o">.</span><span class="n">apply_rules</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__html_parser__</span><span class="p">)</span>
-            <span class="n">root_class_names</span> <span class="o">=</span> <span class="n">mf2_classes</span><span class="o">.</span><span class="n">root</span><span class="p">(</span><span class="n">el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">,</span> <span class="p">[]))</span>
-
-        <span class="c1"># parse for properties and children</span>
-        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">get_children</span><span class="p">(</span><span class="n">el</span><span class="p">):</span>
-            <span class="n">child_props</span><span class="p">,</span> <span class="n">child_children</span><span class="p">,</span> <span class="n">child_parsed_types_aggregation</span> <span class="o">=</span> <span class="n">parse_props</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">new_value</span> <span class="ow">in</span> <span class="n">child_props</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">prop_value</span> <span class="o">=</span> <span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">[])</span>
-                <span class="n">prop_value</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_value</span><span class="p">)</span>
-                <span class="n">properties</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">prop_value</span>
-            <span class="n">children</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">child_children</span><span class="p">)</span>
-            <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">child_parsed_types_aggregation</span><span class="p">)</span>
-
-        <span class="c1"># complex h-* objects can take their &quot;value&quot; from the</span>
-        <span class="c1"># first explicit property (&quot;name&quot; for p-* or &quot;url&quot; for u-*)</span>
-        <span class="k">if</span> <span class="n">value_property</span> <span class="ow">and</span> <span class="n">value_property</span> <span class="ow">in</span> <span class="n">properties</span><span class="p">:</span>
-            <span class="n">simple_value</span> <span class="o">=</span> <span class="n">properties</span><span class="p">[</span><span class="n">value_property</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="c1"># if some properties not already found find in implied ways unless in backcompat mode</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">backcompat_mode</span><span class="p">:</span>
-            <span class="c1"># stop implied name if any p-*, e-*, h-* is already found</span>
-            <span class="k">if</span> <span class="s2">&quot;name&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">properties</span> <span class="ow">and</span> <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="s2">&quot;peh&quot;</span><span class="p">):</span>
-                <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">implied_properties</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)]</span>
-
-            <span class="k">if</span> <span class="s2">&quot;photo&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">properties</span> <span class="ow">and</span> <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="s2">&quot;uh&quot;</span><span class="p">):</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="n">implied_properties</span><span class="o">.</span><span class="n">photo</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__img_with_alt__</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;photo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
-
-            <span class="c1"># stop implied url if any u-* or h-* is already found</span>
-            <span class="k">if</span> <span class="s2">&quot;url&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">properties</span> <span class="ow">and</span> <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="s2">&quot;uh&quot;</span><span class="p">):</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="n">implied_properties</span><span class="o">.</span><span class="n">url</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
-
-        <span class="c1"># build microformat with type and properties</span>
-        <span class="n">microformat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">([</span>
-            <span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">text_type</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span>
-                      <span class="k">for</span> <span class="n">class_name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">root_class_names</span><span class="p">)]),</span>
-            <span class="p">(</span><span class="s2">&quot;properties&quot;</span><span class="p">,</span> <span class="n">properties</span><span class="p">),</span>
-        <span class="p">])</span>
-        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">el</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;area&quot;</span><span class="p">:</span>
-            <span class="n">shape</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">microformat</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-
-            <span class="n">coords</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="s1">&#39;coords&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">coords</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">microformat</span><span class="p">[</span><span class="s1">&#39;coords&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
-
-        <span class="c1"># insert children if any</span>
-        <span class="k">if</span> <span class="n">children</span><span class="p">:</span>
-            <span class="n">microformat</span><span class="p">[</span><span class="s2">&quot;children&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">children</span>
-
-        <span class="n">Id</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">Id</span><span class="p">:</span>
-            <span class="n">microformat</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Id</span>
-
-        <span class="c1"># simple value is the parsed property value if it were not</span>
-        <span class="c1"># an h-* class</span>
-        <span class="k">if</span> <span class="n">simple_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simple_value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="c1"># for e-* properties, the simple value will be</span>
-                <span class="c1"># {&quot;html&quot;:..., &quot;value&quot;:...}  which we should fold</span>
-                <span class="c1"># into the microformat object</span>
-                <span class="c1"># details: https://github.com/microformats/mf2py/issues/35</span>
-                <span class="n">microformat</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">simple_value</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">microformat</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="n">simple_value</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">microformat</span>
-
-    <span class="k">def</span> <span class="nf">parse_props</span><span class="p">(</span><span class="n">el</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the properties from a single element</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">props</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">()</span>
-        <span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="c1"># for processing implied properties: collects if property types (p, e, u, d(t)) or children (h) have been processed</span>
-        <span class="n">parsed_types_aggregation</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-
-        <span class="n">classes</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="p">[])</span>
-        <span class="n">filtered_classes</span> <span class="o">=</span> <span class="n">mf2_classes</span><span class="o">.</span><span class="n">filter_classes</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
-        <span class="c1"># Is this element a microformat2 root?</span>
-        <span class="n">root_class_names</span> <span class="o">=</span> <span class="n">filtered_classes</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span>
-        <span class="n">backcompat_mode</span> <span class="o">=</span> <span class="kc">False</span>
-
-        <span class="c1"># Is this element a microformat1 root?</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">root_class_names</span><span class="p">:</span>
-            <span class="n">root_class_names</span> <span class="o">=</span> <span class="n">backcompat</span><span class="o">.</span><span class="n">root</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
-            <span class="n">backcompat_mode</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="k">if</span> <span class="n">root_class_names</span><span class="p">:</span>
-            <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">)</span>
-
-        <span class="c1"># Is this a property element (p-*, u-*, etc.) flag</span>
-        <span class="c1"># False is default</span>
-        <span class="n">is_property_el</span> <span class="o">=</span> <span class="kc">False</span>
-
-        <span class="c1"># Parse plaintext p-* properties.</span>
-        <span class="n">p_value</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">for</span> <span class="n">prop_name</span> <span class="ow">in</span> <span class="n">filtered_classes</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">]:</span>
-            <span class="n">is_property_el</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
-            <span class="n">prop_value</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="p">[])</span>
-
-            <span class="c1"># if value has not been parsed then parse it</span>
-            <span class="k">if</span> <span class="n">p_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">p_value</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="n">parse_property</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">))</span>
-
-            <span class="k">if</span> <span class="n">root_class_names</span><span class="p">:</span>
-                <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle_microformat</span><span class="p">(</span>
-                    <span class="n">root_class_names</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">value_property</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="p">,</span>
-                    <span class="n">simple_value</span><span class="o">=</span><span class="n">p_value</span><span class="p">,</span> <span class="n">backcompat_mode</span><span class="o">=</span><span class="n">backcompat_mode</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_value</span><span class="p">)</span>
-
-        <span class="c1"># Parse URL u-* properties.</span>
-        <span class="n">u_value</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">for</span> <span class="n">prop_name</span> <span class="ow">in</span> <span class="n">filtered_classes</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]:</span>
-            <span class="n">is_property_el</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">)</span>
-            <span class="n">prop_value</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="p">[])</span>
-
-            <span class="c1"># if value has not been parsed then parse it</span>
-            <span class="k">if</span> <span class="n">u_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">u_value</span> <span class="o">=</span> <span class="n">parse_property</span><span class="o">.</span><span class="n">url</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__img_with_alt__</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">root_class_names</span><span class="p">:</span>
-                <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle_microformat</span><span class="p">(</span>
-                    <span class="n">root_class_names</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">value_property</span><span class="o">=</span><span class="s2">&quot;url&quot;</span><span class="p">,</span>
-                    <span class="n">simple_value</span><span class="o">=</span><span class="n">u_value</span><span class="p">,</span> <span class="n">backcompat_mode</span><span class="o">=</span><span class="n">backcompat_mode</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u_value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">):</span>
-                    <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u_value</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text_type</span><span class="p">(</span><span class="n">u_value</span><span class="p">))</span>
-
-        <span class="c1"># Parse datetime dt-* properties.</span>
-        <span class="n">dt_value</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">for</span> <span class="n">prop_name</span> <span class="ow">in</span> <span class="n">filtered_classes</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]:</span>
-            <span class="n">is_property_el</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
-            <span class="n">prop_value</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="p">[])</span>
-
-            <span class="c1"># if value has not been parsed then parse it</span>
-            <span class="k">if</span> <span class="n">dt_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">dt_value</span><span class="p">,</span> <span class="n">new_date</span> <span class="o">=</span> <span class="n">parse_property</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span>
-                    <span class="n">el</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_date</span><span class="p">)</span>
-                <span class="c1"># update the default date</span>
-                <span class="k">if</span> <span class="n">new_date</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_default_date</span> <span class="o">=</span> <span class="n">new_date</span>
-
-            <span class="k">if</span> <span class="n">root_class_names</span><span class="p">:</span>
-                <span class="n">stops_implied_name</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle_microformat</span><span class="p">(</span>
-                    <span class="n">root_class_names</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span>
-                    <span class="n">simple_value</span><span class="o">=</span><span class="n">text_type</span><span class="p">(</span><span class="n">dt_value</span><span class="p">),</span> <span class="n">backcompat_mode</span><span class="o">=</span><span class="n">backcompat_mode</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">dt_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text_type</span><span class="p">(</span><span class="n">dt_value</span><span class="p">))</span>
-
-        <span class="c1"># Parse embedded markup e-* properties.</span>
-        <span class="n">e_value</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">for</span> <span class="n">prop_name</span> <span class="ow">in</span> <span class="n">filtered_classes</span><span class="p">[</span><span class="s1">&#39;e&#39;</span><span class="p">]:</span>
-            <span class="n">is_property_el</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">)</span>
-            <span class="n">prop_value</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="p">[])</span>
-
-            <span class="c1"># if value has not been parsed then parse it</span>
-            <span class="k">if</span> <span class="n">e_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># send original element for parsing backcompat</span>
-                <span class="k">if</span> <span class="n">el</span><span class="o">.</span><span class="n">original</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">embedded_el</span> <span class="o">=</span> <span class="n">el</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">embedded_el</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">original</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preserve_doc</span><span class="p">:</span>
-                    <span class="n">embedded_el</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">embedded_el</span><span class="p">)</span>
-                <span class="n">temp_fixes</span><span class="o">.</span><span class="n">rm_templates</span><span class="p">(</span><span class="n">embedded_el</span><span class="p">)</span>
-                <span class="n">e_value</span> <span class="o">=</span> <span class="n">parse_property</span><span class="o">.</span><span class="n">embedded</span><span class="p">(</span><span class="n">embedded_el</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">root_class_names</span><span class="p">:</span>
-                <span class="n">stops_implied_name</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle_microformat</span><span class="p">(</span>
-                    <span class="n">root_class_names</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">simple_value</span><span class="o">=</span><span class="n">e_value</span><span class="p">,</span> <span class="n">backcompat_mode</span><span class="o">=</span><span class="n">backcompat_mode</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">prop_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e_value</span><span class="p">)</span>
-
-        <span class="c1"># if this is not a property element, but it is a h-* microformat,</span>
-        <span class="c1"># add it to our list of children</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_property_el</span> <span class="ow">and</span> <span class="n">root_class_names</span><span class="p">:</span>
-            <span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">handle_microformat</span><span class="p">(</span><span class="n">root_class_names</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">backcompat_mode</span><span class="o">=</span><span class="n">backcompat_mode</span><span class="p">))</span>
-        <span class="c1"># parse child tags, provided this isn&#39;t a microformat root-class</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">root_class_names</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">get_children</span><span class="p">(</span><span class="n">el</span><span class="p">):</span>
-                <span class="n">child_properties</span><span class="p">,</span> <span class="n">child_microformats</span><span class="p">,</span> <span class="n">child_parsed_types_aggregation</span> <span class="o">=</span> <span class="n">parse_props</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">prop_name</span> <span class="ow">in</span> <span class="n">child_properties</span><span class="p">:</span>
-                    <span class="n">v</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="p">[])</span>
-                    <span class="n">v</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">child_properties</span><span class="p">[</span><span class="n">prop_name</span><span class="p">])</span>
-                    <span class="n">props</span><span class="p">[</span><span class="n">prop_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-                <span class="n">children</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">child_microformats</span><span class="p">)</span>
-                <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">child_parsed_types_aggregation</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">props</span><span class="p">,</span> <span class="n">children</span><span class="p">,</span> <span class="n">parsed_types_aggregation</span>
-
-    <span class="k">def</span> <span class="nf">parse_rels</span><span class="p">(</span><span class="n">el</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse an element for rel microformats</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">rel_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="n">text_type</span><span class="p">(</span><span class="n">rel</span><span class="p">)</span> <span class="k">for</span> <span class="n">rel</span> <span class="ow">in</span> <span class="n">get_attr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="s1">&#39;rel&#39;</span><span class="p">)]</span>
-        <span class="c1"># if rel attributes exist</span>
-        <span class="k">if</span> <span class="n">rel_attrs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># find the url and normalise it</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">try_urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">,</span> <span class="n">el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
-            <span class="n">value_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rel-urls&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span>
-                                                         <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">())</span>
-
-            <span class="c1"># 1st one wins</span>
-            <span class="k">if</span> <span class="s2">&quot;text&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">value_dict</span><span class="p">:</span>
-                <span class="n">value_dict</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-            <span class="n">url_rels</span> <span class="o">=</span> <span class="n">value_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;rels&quot;</span><span class="p">,</span> <span class="p">[])</span>
-            <span class="n">value_dict</span><span class="p">[</span><span class="s2">&quot;rels&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">url_rels</span>
-
-            <span class="k">for</span> <span class="n">knownattr</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;media&quot;</span><span class="p">,</span> <span class="s2">&quot;hreflang&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">):</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">knownattr</span><span class="p">)</span>
-                <span class="c1"># 1st one wins</span>
-                <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">knownattr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">value_dict</span><span class="p">:</span>
-                    <span class="n">value_dict</span><span class="p">[</span><span class="n">knownattr</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rel-urls&quot;</span><span class="p">][</span><span class="n">url</span><span class="p">]</span> <span class="o">=</span> <span class="n">value_dict</span>
-
-            <span class="k">for</span> <span class="n">rel_value</span> <span class="ow">in</span> <span class="n">rel_attrs</span><span class="p">:</span>
-                <span class="n">value_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rels&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rel_value</span><span class="p">,</span> <span class="p">[])</span>
-                <span class="k">if</span> <span class="n">url</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">value_list</span><span class="p">:</span>
-                    <span class="n">value_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">rel_value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">url_rels</span><span class="p">:</span>
-                    <span class="n">url_rels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rel_value</span><span class="p">)</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rels&quot;</span><span class="p">][</span><span class="n">rel_value</span><span class="p">]</span> <span class="o">=</span> <span class="n">value_list</span>
-            <span class="k">if</span> <span class="s2">&quot;alternate&quot;</span> <span class="ow">in</span> <span class="n">rel_attrs</span><span class="p">:</span>
-                <span class="n">alternate_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;alternates&quot;</span><span class="p">,</span> <span class="p">[])</span>
-                <span class="n">alternate_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict_class</span><span class="p">()</span>
-                <span class="n">alternate_dict</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">url</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rel_attrs</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span> <span class="o">==</span> <span class="s2">&quot;alternate&quot;</span><span class="p">])</span>
-                <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                    <span class="n">alternate_dict</span><span class="p">[</span><span class="s2">&quot;rel&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
-                <span class="n">alternate_dict</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="n">el</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-                <span class="k">for</span> <span class="n">knownattr</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;media&quot;</span><span class="p">,</span> <span class="s2">&quot;hreflang&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">):</span>
-                    <span class="n">x</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">knownattr</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">alternate_dict</span><span class="p">[</span><span class="n">knownattr</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-                <span class="n">alternate_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">alternate_dict</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;alternates&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">alternate_list</span>
-
-    <span class="k">def</span> <span class="nf">parse_el</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">ctx</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse an element for microformats</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">classes</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="p">[])</span>
-
-        <span class="c1"># find potential microformats in root classnames h-*</span>
-        <span class="n">potential_microformats</span> <span class="o">=</span> <span class="n">mf2_classes</span><span class="o">.</span><span class="n">root</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
-
-        <span class="c1"># if potential microformats found parse them</span>
-        <span class="k">if</span> <span class="n">potential_microformats</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">handle_microformat</span><span class="p">(</span><span class="n">potential_microformats</span><span class="p">,</span> <span class="n">el</span><span class="p">)</span>
-            <span class="n">ctx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># find backcompat root classnames</span>
-            <span class="n">potential_microformats</span> <span class="o">=</span> <span class="n">backcompat</span><span class="o">.</span><span class="n">root</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">potential_microformats</span><span class="p">:</span>
-                <span class="n">result</span> <span class="o">=</span> <span class="n">handle_microformat</span><span class="p">(</span><span class="n">potential_microformats</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">backcompat_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="n">ctx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># parse child tags</span>
-                <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">get_children</span><span class="p">(</span><span class="n">el</span><span class="p">):</span>
-                    <span class="n">parse_el</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
-
-    <span class="n">ctx</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="c1"># start parsing at root element of the document</span>
-    <span class="n">parse_el</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;items&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ctx</span>
-
-    <span class="c1"># parse for rel values</span>
-    <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">get_descendents</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">el</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;area&#39;</span><span class="p">,</span> <span class="s1">&#39;link&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">el</span><span class="o">.</span><span class="n">has_attr</span><span class="p">(</span><span class="s1">&#39;rel&#39;</span><span class="p">):</span>
-            <span class="n">parse_rels</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
-
-    <span class="c1"># sort the rels array in rel-urls since this should be unordered set</span>
-    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rel-urls&quot;</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="s1">&#39;rels&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rel-urls&quot;</span><span class="p">][</span><span class="n">url</span><span class="p">]:</span>
-            <span class="n">rels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rel-urls&quot;</span><span class="p">][</span><span class="n">url</span><span class="p">][</span><span class="s1">&#39;rels&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;rel-urls&quot;</span><span class="p">][</span><span class="n">url</span><span class="p">][</span><span class="s1">&#39;rels&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">unordered_list</span><span class="p">(</span><span class="n">rels</span><span class="p">)</span>
-
-    <span class="c1"># add actual parser used to debug</span>
-    <span class="c1"># uses builder.NAME from BeautifulSoup</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__html_parser__</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;debug&quot;</span><span class="p">][</span><span class="s2">&quot;markup parser&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__html_parser__</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;debug&quot;</span><span class="p">][</span><span class="s2">&quot;markup parser&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_type</span><span class="p">(</span><span class="s1">&#39;unknown&#39;</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-      </details>
-  </div>
-
-</div>
 
 <div class="doc doc-object doc-function">
 
 
 
-<h2 id="mf2py.parser.Parser.to_dict" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">to_dict</span><span class="p">(</span><span class="n">filter_by_type</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
-<a href="#mf2py.parser.Parser.to_dict" class="headerlink" title="Permanent link">&para;</a></h2>
+<h2 id="mf2py.Parser.to_dict" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">to_dict</span><span class="p">(</span><span class="n">filter_by_type</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+<a href="#mf2py.Parser.to_dict" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
   
       <p>Get a dictionary version of the parsed microformat document.</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -2136,14 +1681,20 @@ on initialization.</p>
           <td>
                 <code>string</code>
           </td>
-          <td><p>only include top-level items of
-the given h-* type. Defaults to None.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>only include top-level items of
+the given h-* type. Defaults to None.</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -2157,28 +1708,31 @@ the given h-* type. Defaults to None.</p></td>
         <tr>
 <td><code>dict</code></td>          <td>
           </td>
-          <td><p>representation of the parsed microformats document</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>representation of the parsed microformats document</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>mf2py/parser.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">470</span>
-<span class="normal">471</span>
-<span class="normal">472</span>
-<span class="normal">473</span>
-<span class="normal">474</span>
-<span class="normal">475</span>
-<span class="normal">476</span>
-<span class="normal">477</span>
-<span class="normal">478</span>
-<span class="normal">479</span>
-<span class="normal">480</span>
-<span class="normal">481</span>
-<span class="normal">482</span>
-<span class="normal">483</span>
-<span class="normal">484</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_by_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+          <details class="quote">
+            <summary>Source code in <code>mf2py/parser.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">544</span>
+<span class="normal">545</span>
+<span class="normal">546</span>
+<span class="normal">547</span>
+<span class="normal">548</span>
+<span class="normal">549</span>
+<span class="normal">550</span>
+<span class="normal">551</span>
+<span class="normal">552</span>
+<span class="normal">553</span>
+<span class="normal">554</span>
+<span class="normal">555</span>
+<span class="normal">556</span>
+<span class="normal">557</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_by_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a dictionary version of the parsed microformat document.</span>
 
 <span class="sd">    Args:</span>
@@ -2191,27 +1745,30 @@ the given h-* type. Defaults to None.</p></td>
     <span class="k">if</span> <span class="n">filter_by_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s1">&#39;items&#39;</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">filter_by_type</span> <span class="ow">in</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parsed__</span><span class="p">[</span><span class="s2">&quot;items&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">filter_by_type</span> <span class="ow">in</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]]</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
-<h2 id="mf2py.parser.Parser.to_json" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">to_json</span><span class="p">(</span><span class="n">pretty_print</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filter_by_type</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
-<a href="#mf2py.parser.Parser.to_json" class="headerlink" title="Permanent link">&para;</a></h2>
+<h2 id="mf2py.Parser.to_json" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">to_json</span><span class="p">(</span><span class="n">pretty_print</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filter_by_type</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+<a href="#mf2py.Parser.to_json" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
   
       <p>Get a json-encoding string version of the parsed microformats document</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -2229,8 +1786,12 @@ the given h-* type. Defaults to None.</p></td>
           <td>
                 <code>bool</code>
           </td>
-          <td><p>Encode the json document with
-linebreaks and indents to improve readability. Defaults to False.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Encode the json document with
+linebreaks and indents to improve readability. Defaults to False.</p>
+            </div>
+          </td>
           <td>
                 <code>False</code>
           </td>
@@ -2240,14 +1801,20 @@ linebreaks and indents to improve readability. Defaults to False.</p></td>
           <td>
                 <code>bool</code>
           </td>
-          <td><p>only include top-level items of
-the given h-* type</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>only include top-level items of
+the given h-* type</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -2261,31 +1828,36 @@ the given h-* type</p></td>
         <tr>
 <td><code>string</code></td>          <td>
           </td>
-          <td><p>a json-encoded string</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>a json-encoded string</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>mf2py/parser.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">486</span>
-<span class="normal">487</span>
-<span class="normal">488</span>
-<span class="normal">489</span>
-<span class="normal">490</span>
-<span class="normal">491</span>
-<span class="normal">492</span>
-<span class="normal">493</span>
-<span class="normal">494</span>
-<span class="normal">495</span>
-<span class="normal">496</span>
-<span class="normal">497</span>
-<span class="normal">498</span>
-<span class="normal">499</span>
-<span class="normal">500</span>
-<span class="normal">501</span>
-<span class="normal">502</span>
-<span class="normal">503</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filter_by_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+          <details class="quote">
+            <summary>Source code in <code>mf2py/parser.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">559</span>
+<span class="normal">560</span>
+<span class="normal">561</span>
+<span class="normal">562</span>
+<span class="normal">563</span>
+<span class="normal">564</span>
+<span class="normal">565</span>
+<span class="normal">566</span>
+<span class="normal">567</span>
+<span class="normal">568</span>
+<span class="normal">569</span>
+<span class="normal">570</span>
+<span class="normal">571</span>
+<span class="normal">572</span>
+<span class="normal">573</span>
+<span class="normal">574</span>
+<span class="normal">575</span>
+<span class="normal">576</span>
+<span class="normal">577</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filter_by_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a json-encoding string version of the parsed microformats document</span>
 
 <span class="sd">    Args:</span>
@@ -2299,12 +1871,13 @@ the given h-* type</p></td>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">pretty_print</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">filter_by_type</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-                          <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">filter_by_type</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">,</span> <span class="s2">&quot;: &quot;</span><span class="p">)</span>
+        <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">filter_by_type</span><span class="p">))</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
@@ -2316,6 +1889,13 @@ the given h-* type</p></td>
   </div>
 
 </div>
+
+
+
+
+
+
+
 
 
 
@@ -2326,6 +1906,7 @@ the given h-* type</p></td>
             </div>
           
           
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
       </main>
@@ -2357,10 +1938,11 @@ the given h-* type</p></td>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.b4d07000.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7c377c4.min.js"></script>
       
     
   </body>
