@@ -1126,6 +1126,19 @@ def test_all_u_cases():
         )
 
 
+def test_filtered_roots():
+    result = parse_fixture("filter_roots.html")
+    assert len(result["items"]) == 8
+
+    result = parse_fixture("filter_roots.html", filter_roots=True)
+    assert len(result["items"]) == 1
+
+    result = parse_fixture(
+        "filter_roots_custom.html", filter_roots={"foo", "bar", "bat", "baz"}
+    )
+    assert len(result["items"]) == 1
+
+
 def test_metaformats_flag_false():
     result = parse_fixture("metaformats_ogp.html")
     assert result["items"] == []

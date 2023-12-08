@@ -2,7 +2,7 @@ from . import mf2_classes
 from .dom_helpers import get_attr, get_children, get_img, get_textContent, try_urljoin
 
 
-def name(el, base_url=""):
+def name(el, base_url, filtered_roots):
     """Find an implied name property
 
     Args:
@@ -34,7 +34,7 @@ def name(el, base_url=""):
         poss_child = children[0]
 
         # ignore if mf2 root
-        if mf2_classes.root(poss_child.get("class", [])):
+        if mf2_classes.root(poss_child.get("class", []), filtered_roots):
             poss_child = None
 
         # if it is not img, area, abbr then find grandchild
@@ -45,7 +45,7 @@ def name(el, base_url=""):
                 poss_child = grandchildren[0]
                 # if it is not img, area, abbr or is mf2 root then no possible child
                 if poss_child.name not in ("img", "area", "abbr") or mf2_classes.root(
-                    poss_child.get("class", [])
+                    poss_child.get("class", []), filtered_roots
                 ):
                     poss_child = None
 
@@ -67,7 +67,7 @@ def name(el, base_url=""):
     return get_textContent(el, replace_img=True, img_to_src=False, base_url=base_url)
 
 
-def photo(el, base_url=""):
+def photo(el, base_url, filtered_roots):
     """Find an implied photo property
 
     Args:
@@ -86,7 +86,7 @@ def photo(el, base_url=""):
         poss_imgs = [c for c in children if c.name == "img"]
         if len(poss_imgs) == 1:
             poss_img = poss_imgs[0]
-            if not mf2_classes.root(poss_img.get("class", [])):
+            if not mf2_classes.root(poss_img.get("class", []), filtered_roots):
                 return poss_img
 
         # if element has one object child use data if exists and object is
@@ -94,7 +94,7 @@ def photo(el, base_url=""):
         poss_objs = [c for c in children if c.name == "object"]
         if len(poss_objs) == 1:
             poss_obj = poss_objs[0]
-            if not mf2_classes.root(poss_obj.get("class", [])):
+            if not mf2_classes.root(poss_obj.get("class", []), filtered_roots):
                 return poss_obj
 
     def resolve_relative_url(prop_value):
@@ -122,7 +122,7 @@ def photo(el, base_url=""):
     if (
         poss_child is None
         and len(children) == 1
-        and not mf2_classes.root(children[0].get("class", []))
+        and not mf2_classes.root(children[0].get("class", []), filtered_roots)
     ):
         grandchildren = list(get_children(children[0]))
         poss_child = get_photo_child(grandchildren)
@@ -138,7 +138,7 @@ def photo(el, base_url=""):
             return resolve_relative_url(prop_value)
 
 
-def url(el, base_url=""):
+def url(el, base_url, filtered_roots):
     """Find an implied url property
 
     Args:
@@ -156,14 +156,14 @@ def url(el, base_url=""):
         poss_as = [c for c in children if c.name == "a"]
         if len(poss_as) == 1:
             poss_a = poss_as[0]
-            if not mf2_classes.root(poss_a.get("class", [])):
+            if not mf2_classes.root(poss_a.get("class", []), filtered_roots):
                 return poss_a
 
         # if element has one area child use if not root class
         poss_areas = [c for c in children if c.name == "area"]
         if len(poss_areas) == 1:
             poss_area = poss_areas[0]
-            if not mf2_classes.root(poss_area.get("class", [])):
+            if not mf2_classes.root(poss_area.get("class", []), filtered_roots):
                 return poss_area
 
     # if element is a <a> or area use its href if exists
@@ -181,7 +181,7 @@ def url(el, base_url=""):
     if (
         poss_child is None
         and len(children) == 1
-        and not mf2_classes.root(children[0].get("class", []))
+        and not mf2_classes.root(children[0].get("class", []), filtered_roots)
     ):
         grandchildren = list(get_children(children[0]))
         poss_child = get_url_child(grandchildren)
