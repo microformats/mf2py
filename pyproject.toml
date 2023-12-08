@@ -1,7 +1,8 @@
 [tool.poetry]
 name = "mf2py"
-version = "2.0.0"
+version = "2.0.1"
 description = "Microformats parser"
+readme = "README.md"
 authors = ["Tom Morris <tom@tommorris.org>"]
 license = "MIT"
 classifiers = [
