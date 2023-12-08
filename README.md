@@ -53,7 +53,7 @@ Import the library:
                                                'rels': ['webmention']}},
  'debug': {'description': 'mf2py - microformats2 parser for python',
            'source': 'https://github.com/microformats/mf2py',
-           'version': '2.0.0',
+           'version': '2.0.1',
            'markup parser': 'html5lib'}}
 
 ```

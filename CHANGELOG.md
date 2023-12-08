@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## 2.0.0 - 2023-12-07
+## 2.0.1 - 2023-12-07
 The mf2py library is excited to transition into 2.0. This version increase incorporates months of work from contributors, informed by active discussions among implementers and users.
 
 This release officially deprecates support for versions of Python lower than 3.8.
