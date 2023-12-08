@@ -453,8 +453,7 @@
             Bases: <code>object</code></p>
 
   
-      <p>Object to parse a document for microformats and return them in
-appropriate formats.</p>
+      <p>Parser to parse a document or URL for microformats and output in various formats.</p>
 
 
 
@@ -472,13 +471,13 @@ appropriate formats.</p>
         <tr>
           <td><code>doc</code></td>
           <td>
-                <code>file or string or BeautifulSoup doc</code>
+                <code>file, string or BeautifulSoup doc</code>
           </td>
           <td>
             <div class="doc-md-description">
               <p>file handle, text of content
-to parse, or BeautifulSoup document. If None, it will be fetched from
-given url</p>
+to parse, or BeautifulSoup document. If None it will be fetched from
+given URL.</p>
             </div>
           </td>
           <td>
@@ -492,8 +491,8 @@ given url</p>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>url of the file to be processed. Optionally extracted from
-base-element of given doc</p>
+              <p>URL of the file to be processed. If None it will be
+extracted from the <code>&lt;base&gt;</code> element of given doc.</p>
             </div>
           </td>
           <td>
@@ -507,10 +506,9 @@ base-element of given doc</p>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>optional, select a specific HTML parser. Valid
-options from the BeautifulSoup documentation are:
-"html", "xml", "html5", "lxml", "html5lib", and "html.parser"
-defaults to "html5lib"</p>
+              <p>optional, select a specific HTML parser. Valid options
+from the BeautifulSoup documentation are: "html", "xml","html5", "lxml",
+"html5lib", and "html.parser".</p>
             </div>
           </td>
           <td>
@@ -538,8 +536,23 @@ defaults to "html5lib"</p>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>whether to include metaformats extracted from OGP
+              <p>optional, include metaformats extracted from OGP
 and Twitter card data: https://microformats.org/wiki/metaformats</p>
+            </div>
+          </td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>filter_roots</code></td>
+          <td>
+                <code>boolean or list</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>optional, filter root class names. Use
+True to filter known conflicting classes, otherwise filter given list.</p>
             </div>
           </td>
           <td>
@@ -577,18 +590,7 @@ and Twitter card data: https://microformats.org/wiki/metaformats</p>
 
             <details class="quote">
               <summary>Source code in <code>mf2py/parser.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 50</span>
-<span class="normal"> 51</span>
-<span class="normal"> 52</span>
-<span class="normal"> 53</span>
-<span class="normal"> 54</span>
-<span class="normal"> 55</span>
-<span class="normal"> 56</span>
-<span class="normal"> 57</span>
-<span class="normal"> 58</span>
-<span class="normal"> 59</span>
-<span class="normal"> 60</span>
-<span class="normal"> 61</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 61</span>
 <span class="normal"> 62</span>
 <span class="normal"> 63</span>
 <span class="normal"> 64</span>
@@ -1104,26 +1106,53 @@ and Twitter card data: https://microformats.org/wiki/metaformats</p>
 <span class="normal">574</span>
 <span class="normal">575</span>
 <span class="normal">576</span>
-<span class="normal">577</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Parser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Object to parse a document for microformats and return them in</span>
-<span class="sd">    appropriate formats.</span>
+<span class="normal">577</span>
+<span class="normal">578</span>
+<span class="normal">579</span>
+<span class="normal">580</span>
+<span class="normal">581</span>
+<span class="normal">582</span>
+<span class="normal">583</span>
+<span class="normal">584</span>
+<span class="normal">585</span>
+<span class="normal">586</span>
+<span class="normal">587</span>
+<span class="normal">588</span>
+<span class="normal">589</span>
+<span class="normal">590</span>
+<span class="normal">591</span>
+<span class="normal">592</span>
+<span class="normal">593</span>
+<span class="normal">594</span>
+<span class="normal">595</span>
+<span class="normal">596</span>
+<span class="normal">597</span>
+<span class="normal">598</span>
+<span class="normal">599</span>
+<span class="normal">600</span>
+<span class="normal">601</span>
+<span class="normal">602</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Parser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parser to parse a document or URL for microformats and output in various formats.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">      doc (file or string or BeautifulSoup doc): file handle, text of content</span>
-<span class="sd">        to parse, or BeautifulSoup document. If None, it will be fetched from</span>
-<span class="sd">        given url</span>
-<span class="sd">      url (string): url of the file to be processed. Optionally extracted from</span>
-<span class="sd">        base-element of given doc</span>
-<span class="sd">      html_parser (string): optional, select a specific HTML parser. Valid</span>
-<span class="sd">        options from the BeautifulSoup documentation are:</span>
-<span class="sd">        &quot;html&quot;, &quot;xml&quot;, &quot;html5&quot;, &quot;lxml&quot;, &quot;html5lib&quot;, and &quot;html.parser&quot;</span>
-<span class="sd">        defaults to &quot;html5lib&quot;</span>
+<span class="sd">      doc (file, string or BeautifulSoup doc): file handle, text of content</span>
+<span class="sd">        to parse, or BeautifulSoup document. If None it will be fetched from</span>
+<span class="sd">        given URL.</span>
+<span class="sd">      url (string): URL of the file to be processed. If None it will be</span>
+<span class="sd">        extracted from the `&lt;base&gt;` element of given doc.</span>
+<span class="sd">      html_parser (string): optional, select a specific HTML parser. Valid options</span>
+<span class="sd">        from the BeautifulSoup documentation are: &quot;html&quot;, &quot;xml&quot;,&quot;html5&quot;, &quot;lxml&quot;,</span>
+<span class="sd">        &quot;html5lib&quot;, and &quot;html.parser&quot;.</span>
 <span class="sd">      expose_dom (boolean): optional, expose the DOM of embedded properties.</span>
-<span class="sd">      metaformats (boolean): whether to include metaformats extracted from OGP</span>
+<span class="sd">      metaformats (boolean): optional, include metaformats extracted from OGP</span>
 <span class="sd">        and Twitter card data: https://microformats.org/wiki/metaformats</span>
+<span class="sd">      filter_roots (boolean or list): optional, filter root class names. Use</span>
+<span class="sd">        True to filter known conflicting classes, otherwise filter given list.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">      useragent (string): the User-Agent string for the Parser</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ua_desc</span> <span class="o">=</span> <span class="s2">&quot;mf2py - microformats2 parser for python&quot;</span>
@@ -1137,6 +1166,7 @@ and Twitter card data: https://microformats.org/wiki/metaformats</p>
         <span class="n">html_parser</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">expose_dom</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">metaformats</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">filter_roots</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__url__</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1151,9 +1181,16 @@ and Twitter card data: https://microformats.org/wiki/metaformats</p>
                 <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">__version__</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__metaformats</span> <span class="o">=</span> <span class="n">metaformats</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">expose_dom</span> <span class="o">=</span> <span class="n">expose_dom</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expose_dom</span> <span class="o">=</span> <span class="n">expose_dom</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__metaformats</span> <span class="o">=</span> <span class="n">metaformats</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filtered_roots</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">filter_roots</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">filter_roots</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">filtered_roots</span> <span class="o">=</span> <span class="n">mf2_classes</span><span class="o">.</span><span class="n">CONFLICTING_ROOTS_TAILWIND</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">filtered_roots</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># use default parser if none specified</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__html_parser__</span> <span class="o">=</span> <span class="n">html_parser</span> <span class="ow">or</span> <span class="s2">&quot;html5lib&quot;</span>
@@ -1246,8 +1283,12 @@ and Twitter card data: https://microformats.org/wiki/metaformats</p>
             <span class="n">parsed_types_aggregation</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">backcompat_mode</span><span class="p">:</span>
-                <span class="n">el</span> <span class="o">=</span> <span class="n">backcompat</span><span class="o">.</span><span class="n">apply_rules</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__html_parser__</span><span class="p">)</span>
-                <span class="n">root_class_names</span> <span class="o">=</span> <span class="n">mf2_classes</span><span class="o">.</span><span class="n">root</span><span class="p">(</span><span class="n">el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="p">[]))</span>
+                <span class="n">el</span> <span class="o">=</span> <span class="n">backcompat</span><span class="o">.</span><span class="n">apply_rules</span><span class="p">(</span>
+                    <span class="n">el</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__html_parser__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_roots</span>
+                <span class="p">)</span>
+                <span class="n">root_class_names</span> <span class="o">=</span> <span class="n">mf2_classes</span><span class="o">.</span><span class="n">root</span><span class="p">(</span>
+                    <span class="n">el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="p">[]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_roots</span>
+                <span class="p">)</span>
 
             <span class="n">root_lang</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lang&quot;</span><span class="p">)</span>
 
@@ -1277,13 +1318,13 @@ and Twitter card data: https://microformats.org/wiki/metaformats</p>
                     <span class="s2">&quot;peh&quot;</span>
                 <span class="p">):</span>
                     <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                        <span class="n">implied_properties</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)</span>
+                        <span class="n">implied_properties</span><span class="o">.</span><span class="n">name</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_roots</span><span class="p">)</span>
                     <span class="p">]</span>
 
                 <span class="k">if</span> <span class="s2">&quot;photo&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">properties</span> <span class="ow">and</span> <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span>
                     <span class="s2">&quot;uh&quot;</span>
                 <span class="p">):</span>
-                    <span class="n">x</span> <span class="o">=</span> <span class="n">implied_properties</span><span class="o">.</span><span class="n">photo</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">implied_properties</span><span class="o">.</span><span class="n">photo</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_roots</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;photo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
 
@@ -1291,7 +1332,7 @@ and Twitter card data: https://microformats.org/wiki/metaformats</p>
                 <span class="k">if</span> <span class="s2">&quot;url&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">properties</span> <span class="ow">and</span> <span class="n">parsed_types_aggregation</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span>
                     <span class="s2">&quot;uh&quot;</span>
                 <span class="p">):</span>
-                    <span class="n">x</span> <span class="o">=</span> <span class="n">implied_properties</span><span class="o">.</span><span class="n">url</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">)</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">implied_properties</span><span class="o">.</span><span class="n">url</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__url__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_roots</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">properties</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
 
@@ -1549,7 +1590,7 @@ and Twitter card data: https://microformats.org/wiki/metaformats</p>
             <span class="n">classes</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="p">[])</span>
 
             <span class="c1"># find potential microformats in root classnames h-*</span>
-            <span class="n">potential_microformats</span> <span class="o">=</span> <span class="n">mf2_classes</span><span class="o">.</span><span class="n">root</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
+            <span class="n">potential_microformats</span> <span class="o">=</span> <span class="n">mf2_classes</span><span class="o">.</span><span class="n">root</span><span class="p">(</span><span class="n">classes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filtered_roots</span><span class="p">)</span>
 
             <span class="c1"># if potential microformats found parse them</span>
             <span class="k">if</span> <span class="n">potential_microformats</span><span class="p">:</span>
@@ -1719,20 +1760,20 @@ the given h-* type. Defaults to None.</p>
 
           <details class="quote">
             <summary>Source code in <code>mf2py/parser.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">544</span>
-<span class="normal">545</span>
-<span class="normal">546</span>
-<span class="normal">547</span>
-<span class="normal">548</span>
-<span class="normal">549</span>
-<span class="normal">550</span>
-<span class="normal">551</span>
-<span class="normal">552</span>
-<span class="normal">553</span>
-<span class="normal">554</span>
-<span class="normal">555</span>
-<span class="normal">556</span>
-<span class="normal">557</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_by_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">569</span>
+<span class="normal">570</span>
+<span class="normal">571</span>
+<span class="normal">572</span>
+<span class="normal">573</span>
+<span class="normal">574</span>
+<span class="normal">575</span>
+<span class="normal">576</span>
+<span class="normal">577</span>
+<span class="normal">578</span>
+<span class="normal">579</span>
+<span class="normal">580</span>
+<span class="normal">581</span>
+<span class="normal">582</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_by_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a dictionary version of the parsed microformat document.</span>
 
 <span class="sd">    Args:</span>
@@ -1839,25 +1880,25 @@ the given h-* type</p>
 
           <details class="quote">
             <summary>Source code in <code>mf2py/parser.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">559</span>
-<span class="normal">560</span>
-<span class="normal">561</span>
-<span class="normal">562</span>
-<span class="normal">563</span>
-<span class="normal">564</span>
-<span class="normal">565</span>
-<span class="normal">566</span>
-<span class="normal">567</span>
-<span class="normal">568</span>
-<span class="normal">569</span>
-<span class="normal">570</span>
-<span class="normal">571</span>
-<span class="normal">572</span>
-<span class="normal">573</span>
-<span class="normal">574</span>
-<span class="normal">575</span>
-<span class="normal">576</span>
-<span class="normal">577</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filter_by_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">584</span>
+<span class="normal">585</span>
+<span class="normal">586</span>
+<span class="normal">587</span>
+<span class="normal">588</span>
+<span class="normal">589</span>
+<span class="normal">590</span>
+<span class="normal">591</span>
+<span class="normal">592</span>
+<span class="normal">593</span>
+<span class="normal">594</span>
+<span class="normal">595</span>
+<span class="normal">596</span>
+<span class="normal">597</span>
+<span class="normal">598</span>
+<span class="normal">599</span>
+<span class="normal">600</span>
+<span class="normal">601</span>
+<span class="normal">602</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filter_by_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a json-encoding string version of the parsed microformats document</span>
 
 <span class="sd">    Args:</span>
