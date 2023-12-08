@@ -42,6 +42,8 @@ def parse(
       expose_dom (boolean): optional, expose the DOM of embedded properties.
       metaformats (boolean): whether to include metaformats extracted from OGP
         and Twitter card data: https://microformats.org/wiki/metaformats
+      filter_roots (boolean or list): optional, filter root class names. Use
+        True to filter known conflicting classes, otherwise filter given list.
 
     Return: a json dict represented the structured data in this document.
     """
@@ -72,6 +74,8 @@ class Parser(object):
       expose_dom (boolean): optional, expose the DOM of embedded properties.
       metaformats (boolean): whether to include metaformats extracted from OGP
         and Twitter card data: https://microformats.org/wiki/metaformats
+      filter_roots (boolean or list): optional, filter root class names. Use
+        True to filter known conflicting classes, otherwise filter given list.
 
     Attributes:
       useragent (string): the User-Agent string for the Parser

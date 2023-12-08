@@ -14,6 +14,7 @@ Below are the changes we have made in this release.
 - Add option for exposing DOM for embedded properties (#208)
 - Add srcset support (#209)
 - Add language support (#210)
+- Add option for filtering root class names (#211)
 - Add option for metaformats support (#213)
 
 ### Changes

@@ -91,6 +91,11 @@ Use `expose_dom=True` to expose the DOM of embedded properties.
 Use `metaformats=True` to include any [metaformats](https://microformats.org/wiki/metaformats)
 found.
 
+### `filter_roots`
+
+Use `filter_roots=True` to filter known conflicting user names (e.g. Tailwind).
+Otherwise provide a custom list to filter instead.
+
 ## Advanced Usage
 
 `parse` is a convenience function for `Parser`. More sophisticated behaviors are
