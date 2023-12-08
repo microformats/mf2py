@@ -1152,6 +1152,7 @@ def test_metaformats_title_only():
             "properties": {
                 "name": ["Hello World"],
             },
+            "source": "metaformats",
         }
     ]
 
@@ -1171,6 +1172,7 @@ def test_metaformats_ogp():
                 "published": ["2023-01-02T03:04Z"],
                 "updated": ["2023-01-02T05:06Z"],
             },
+            "source": "metaformats",
         }
     ]
 
@@ -1185,6 +1187,7 @@ def test_metaformats_twitter():
                 "summary": ["Descrypshun bar"],
                 "photo": ["http://tantek.com/baz.jpg"],
             },
+            "source": "metaformats",
         }
     ]
 
@@ -1198,6 +1201,7 @@ def test_metaformats_html_meta():
                 "name": ["Hello World"],
                 "summary": ["Descrypshun bar"],
             },
+            "source": "metaformats",
         }
     ]
 

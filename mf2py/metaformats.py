@@ -60,7 +60,7 @@ def parse(soup, url=None):
     if filter_classes(soup.get("class", []))["h"]:
         return None
 
-    parsed = {"properties": {}}
+    parsed = {"properties": {}, "source": "metaformats"}
     props = parsed["properties"]
 
     # Properties
