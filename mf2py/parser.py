@@ -28,24 +28,25 @@ def parse(
     filter_roots=False,
 ):
     """
-    Parse a microformats2 document or url and return a json dictionary.
+    Parse a document or URL for microformats and return a dictionary in mf2json format.
 
     Args:
-      doc (file or string or BeautifulSoup doc): file handle, text of content
-        to parse, or BeautifulSoup document. If None, it will be fetched from
-        given url
-      url (string): url of the file to be processed. Optionally extracted from
-        base-element of given doc
-      html_parser (string): optional, select a specific HTML parser. Valid
-        options from the BeautifulSoup documentation are:
-        "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
+      doc (file, string or BeautifulSoup doc): file handle, text of content
+        to parse, or BeautifulSoup document. If None it will be fetched from
+        given URL.
+      url (string): URL of the file to be processed. If None it will be
+        extracted from the `<base>` element of given doc.
+      html_parser (string): optional, select a specific HTML parser. Valid options
+        from the BeautifulSoup documentation are: "html", "xml","html5", "lxml",
+        "html5lib", and "html.parser".
       expose_dom (boolean): optional, expose the DOM of embedded properties.
-      metaformats (boolean): whether to include metaformats extracted from OGP
+      metaformats (boolean): optional, include metaformats extracted from OGP
         and Twitter card data: https://microformats.org/wiki/metaformats
       filter_roots (boolean or list): optional, filter root class names. Use
         True to filter known conflicting classes, otherwise filter given list.
 
-    Return: a json dict represented the structured data in this document.
+    Return: a mf2json dict representing the structured data in the document
+
     """
     return Parser(
         doc,
@@ -58,27 +59,27 @@ def parse(
 
 
 class Parser(object):
-    """Object to parse a document for microformats and return them in
-    appropriate formats.
+    """
+    Parser to parse a document or URL for microformats and output in various formats.
 
     Args:
-      doc (file or string or BeautifulSoup doc): file handle, text of content
-        to parse, or BeautifulSoup document. If None, it will be fetched from
-        given url
-      url (string): url of the file to be processed. Optionally extracted from
-        base-element of given doc
-      html_parser (string): optional, select a specific HTML parser. Valid
-        options from the BeautifulSoup documentation are:
-        "html", "xml", "html5", "lxml", "html5lib", and "html.parser"
-        defaults to "html5lib"
+      doc (file, string or BeautifulSoup doc): file handle, text of content
+        to parse, or BeautifulSoup document. If None it will be fetched from
+        given URL.
+      url (string): URL of the file to be processed. If None it will be
+        extracted from the `<base>` element of given doc.
+      html_parser (string): optional, select a specific HTML parser. Valid options
+        from the BeautifulSoup documentation are: "html", "xml","html5", "lxml",
+        "html5lib", and "html.parser".
       expose_dom (boolean): optional, expose the DOM of embedded properties.
-      metaformats (boolean): whether to include metaformats extracted from OGP
+      metaformats (boolean): optional, include metaformats extracted from OGP
         and Twitter card data: https://microformats.org/wiki/metaformats
       filter_roots (boolean or list): optional, filter root class names. Use
         True to filter known conflicting classes, otherwise filter given list.
 
     Attributes:
       useragent (string): the User-Agent string for the Parser
+
     """
 
     ua_desc = "mf2py - microformats2 parser for python"
