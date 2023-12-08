@@ -160,9 +160,9 @@ class Parser(object):
             if document := self.__doc__.find("html"):
                 self.lang = document.attrs.get("lang")
             # parse!
-            self.parse()
+            self._parse()
 
-    def parse(self):
+    def _parse(self):
         """Does the work of actually parsing the document. Done automatically
         on initialization.
         """

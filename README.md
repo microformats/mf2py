@@ -7,19 +7,20 @@
 
 ## Welcome 👋
 
-`mf2py` is a Python [microformats](https://microformats.org/wiki/microformats) parser with full support for `microformats2` and `microformats1`.
+`mf2py` is a Python [microformats](https://microformats.org/wiki/microformats) parser with full support for `microformats2`, backwards-compatible support for `microformats1` and experimental support for `metaformats`.
 
 ## Installation 💻
 
-To install `mf2py`, run the following command:
+To install `mf2py` run the following command:
 
 ```bash
-pip install mf2py
+$ pip install mf2py
+
 ```
 
 ## Quickstart 🚀
 
-Import the parser using:
+Import the library:
 
 ```pycon
 >>> import mf2py
@@ -77,9 +78,9 @@ Import the parser using:
 
 ```
 
-## Extensions
+## Experimental Options
 
-The following extensions can be invoked via keyword arguments to `parse()` and `Parser()`.
+The following options can be invoked via keyword arguments to `parse()` and `Parser()`.
 
 ### `expose_dom`
 

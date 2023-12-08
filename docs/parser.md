@@ -1,5 +1,3 @@
-# Parse a Document
-
-## Parser
+# Parser Object
 
 :::mf2py.Parser

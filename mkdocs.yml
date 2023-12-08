@@ -12,8 +12,8 @@ extra_css:
 
 nav:
   - Home: index.md
-  - Parse a Document: parser.md
-  - Changelog: changelog.md
+  - Parser Object: parser.md
+  - Change Log: changelog.md
 
 theme:
   name: 'material'

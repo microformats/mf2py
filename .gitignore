@@ -11,3 +11,4 @@ nbproject/
 venv/
 *~
 poetry.lock
+site/
