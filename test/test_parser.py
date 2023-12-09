@@ -403,7 +403,7 @@ def test_relative_url_in_e():
 
     assert (
         '<p><a href="http://example.com/cat.html">Cat '
-        '<img src="http://example.com/cat.jpg"/></a></p>'
+        '<img src="http://example.com/cat.jpg"></a></p>'
     ) == result["items"][0]["properties"]["content"][0]["html"]
 
 
