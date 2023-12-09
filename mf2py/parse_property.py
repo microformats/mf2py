@@ -112,5 +112,5 @@ def embedded(el, base_url, root_lang, document_lang, expose_dom):
     if expose_dom:
         prop_value["dom"] = el
     else:
-        prop_value["html"] = el.decode_contents().strip()
+        prop_value["html"] = el.decode_contents(formatter="html5").strip()
     return prop_value
