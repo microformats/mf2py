@@ -241,8 +241,10 @@ class Parser(object):
             # if some properties not already found find in implied ways unless in backcompat mode
             if not backcompat_mode:
                 # stop implied name if any p-*, e-*, h-* is already found
-                if "name" not in properties and parsed_types_aggregation.isdisjoint(
-                    "peh"
+                if (
+                    "name" not in properties
+                    and parsed_types_aggregation.isdisjoint("peh")
+                    and "h-geo" not in el.attrs["class"]  # skip nested backcompat geo
                 ):
                     properties["name"] = [
                         implied_properties.name(el, self.__url__, self.filtered_roots)
