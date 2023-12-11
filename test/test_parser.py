@@ -540,6 +540,25 @@ def test_implied_nested_photo_alt_name():
     assert result["items"][3]["properties"]["name"][0] == "Tom Morris"
 
 
+def test_implied_nested_backcompat():
+    result = parse_fixture("implied_properties/implied_nested_backcompat.html")
+    hcard = result["items"][0]
+
+    assert {
+        "type": ["h-card"],
+        "properties": {
+            "name": ["John Doe"],
+            "geo": [
+                {
+                    "type": ["h-geo"],
+                    "properties": {"url": ["https://brighton.co.uk"]},
+                    "value": "30.267991;-97.739568",
+                }
+            ],
+        },
+    } == hcard
+
+
 def test_implied_image():
     result = parse_fixture("implied_properties/implied_properties.html")
     assert result["items"][4]["properties"]["photo"][0] == {
