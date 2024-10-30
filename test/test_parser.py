@@ -1,8 +1,7 @@
 import os
 import re
 import sys
-from unittest import TestCase
-from unittest import mock
+from unittest import TestCase, mock
 
 import bs4
 from bs4 import BeautifulSoup
