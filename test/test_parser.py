@@ -2,9 +2,9 @@ import os
 import re
 import sys
 from unittest import TestCase
+from unittest import mock
 
 import bs4
-import mock
 from bs4 import BeautifulSoup
 
 from mf2py import Parser
