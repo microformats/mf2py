@@ -46,7 +46,7 @@ _RULES_LOC = os.path.join(
 for filename in os.listdir(_RULES_LOC):
     file_path = os.path.join(_RULES_LOC, filename)
     root = os.path.splitext(filename)[0]
-    with open(file_path, "r", "utf-8") as f:
+    with open(file_path, mode="r", encoding="utf-8") as f:
         rules = json.load(f)
 
     _CLASSIC_MAP[root] = rules
