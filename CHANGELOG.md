@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2.0.2 - 2026-09-17
+This release adds support for Python 3.13 and 3.14.
+
 ## 2.0.1 - 2023-12-07
 The mf2py library is excited to transition into 2.0. This version increase incorporates months of work from contributors, informed by active discussions among implementers and users.
 
