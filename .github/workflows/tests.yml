@@ -16,17 +16,12 @@ jobs:
         uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: 1.5.1
-          virtualenvs-in-project: true
-      - name: Install dependencies
-        run: poetry install --no-interaction --no-root
-      - name: Install library
-        run: poetry install --no-interaction
+      - name: Install package and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --editable . "pytest>=7.2.1,<8" "lxml>=4.9.2,<5"
       - name: Run tests
-        run: poetry run make tests
+        run: python -m pytest -s -vv --doctest-modules --doctest-glob "README*"
   build-linux:
     strategy:
       matrix:
@@ -43,17 +38,12 @@ jobs:
         uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: 1.5.1
-          virtualenvs-in-project: true
-      - name: Install dependencies
-        run: poetry install --no-interaction --no-root
-      - name: Install library
-        run: poetry install --no-interaction
+      - name: Install package and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --editable . "pytest>=7.2.1,<8" "lxml>=4.9.2,<5"
       - name: Run tests
-        run: poetry run make tests
+        run: python -m pytest -s -vv --doctest-modules --doctest-glob "README*"
   build-windows:
     strategy:
       matrix:
@@ -69,17 +59,12 @@ jobs:
         uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: 1.5.1
-          virtualenvs-in-project: true
-      - name: Install dependencies
-        run: poetry install --no-interaction --no-root
-      - name: Install library
-        run: poetry install --no-interaction
+      - name: Install package and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --editable . "pytest>=7.2.1,<8" "lxml>=4.9.2,<5"
       - name: Run tests
-        run: poetry run make tests
+        run: python -m pytest -s -vv --doctest-modules --doctest-glob "README*"
   formatting:
     name: Check formatting
     runs-on: ubuntu-latest
