@@ -78,6 +78,21 @@ Import the library:
 
 ```
 
+### Using a Custom HTTP Client
+
+Any synchronous HTTP client with a compatible `get()` method can be used.
+
+```python
+import httpx
+import mf2py
+
+with httpx.Client(follow_redirects=True) as client:
+    result = mf2py.parse(
+        url="https://example.com",
+        http_client=client,
+    )
+```
+
 ## Experimental Options
 
 The following options can be invoked via keyword arguments to `parse()` and `Parser()`.

@@ -6,7 +6,7 @@ from unittest import TestCase, mock
 import bs4
 from bs4 import BeautifulSoup
 
-from mf2py import Parser
+from mf2py import Parser, parse
 
 TestCase.maxDiff = None
 
@@ -67,6 +67,27 @@ def test_user_agent(getter):
     assert Parser.useragent == "something else"
     # set back to default. damn stateful classes
     Parser.useragent = "mf2py - microformats2 parser for python"
+
+
+def test_http_client():
+    client = mock.Mock()
+    response = mock.Mock()
+    response.url = "https://example.com/"
+    response.headers = {}
+    response.content = b'<div class="h-card">Angelo</div>'
+    response.text = '<div class="h-card">Angelo</div>'
+    client.get.return_value = response
+
+    result = parse(
+        url="http://example.com/",
+        http_client=client,
+    )
+
+    client.get.assert_called_once_with(
+        "http://example.com/",
+        headers={"User-Agent": Parser.useragent},
+    )
+    assert result["items"][0]["properties"]["name"] == ["Angelo"]
 
 
 def test_base():
