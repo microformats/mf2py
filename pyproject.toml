@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mf2py"
-version = "2.0.1"
+version = "2.0.2"
 description = "Microformats parser"
 readme = "README.md"
 authors = ["Tom Morris <tom@tommorris.org>"]
