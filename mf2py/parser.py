@@ -23,9 +23,10 @@ def parse(
     doc=None,
     url=None,
     html_parser=None,
+    http_client=None,
     expose_dom=False,
-    metaformats=False,
     filter_roots=False,
+    metaformats=False,
 ):
     """
     Parse a document or URL for microformats and return a dictionary in mf2json format.
@@ -39,6 +40,8 @@ def parse(
       html_parser (string): optional, select a specific HTML parser. Valid options
         from the BeautifulSoup documentation are: "html", "xml","html5", "lxml",
         "html5lib", and "html.parser".
+      http_client (module or object): optional, supply an external HTTP client
+        providing a `.get()` function or method. Defaults to `requests`.
       expose_dom (boolean): optional, expose the DOM of embedded properties.
       metaformats (boolean): optional, include metaformats extracted from OGP
         and Twitter card data: https://microformats.org/wiki/metaformats
@@ -52,6 +55,7 @@ def parse(
         doc,
         url,
         html_parser,
+        http_client=http_client,
         expose_dom=expose_dom,
         metaformats=metaformats,
         filter_roots=filter_roots,
@@ -71,6 +75,8 @@ class Parser(object):
       html_parser (string): optional, select a specific HTML parser. Valid options
         from the BeautifulSoup documentation are: "html", "xml","html5", "lxml",
         "html5lib", and "html.parser".
+      http_client (module or object): optional, supply an external HTTP client
+        providing a `.get()` function or method. Defaults to `requests`.
       expose_dom (boolean): optional, expose the DOM of embedded properties.
       metaformats (boolean): optional, include metaformats extracted from OGP
         and Twitter card data: https://microformats.org/wiki/metaformats
@@ -91,6 +97,7 @@ class Parser(object):
         doc=None,
         url=None,
         html_parser=None,
+        http_client=None,
         expose_dom=False,
         metaformats=False,
         filter_roots=False,
@@ -126,7 +133,9 @@ class Parser(object):
             self.__url__ = url
 
             if doc is None:
-                data = requests.get(
+                if http_client is None:
+                    http_client = requests
+                data = http_client.get(
                     self.__url__,
                     headers={
                         "User-Agent": self.useragent,
@@ -134,7 +143,7 @@ class Parser(object):
                 )
 
                 # update to final URL after redirects
-                self.__url__ = data.url
+                self.__url__ = str(data.url)
 
                 # HACK: check for character encodings and use 'correct' data
                 if "charset" in data.headers.get("content-type", ""):
