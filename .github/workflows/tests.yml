@@ -5,16 +5,15 @@ jobs:
   build-macos:
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
     runs-on: "macos-latest"
     steps:
       - name: Install md5sha1sum
         run: brew install md5sha1sum
-      - uses: actions/checkout@v3
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install Python
-        uses: actions/setup-python@v4
+      - name: Check out repository
+        uses: actions/checkout@v7
+      - name: Install Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Poetry
@@ -28,27 +27,20 @@ jobs:
         run: poetry install --no-interaction
       - name: Run tests
         run: poetry run make tests
-      - uses: psf/black@stable
-        with:
-          options: "--check --verbose"
-          src: "./"
-          version: "23.3"
-      - uses: isort/isort-action@v1
   build-linux:
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
     runs-on: "ubuntu-latest"
     steps:
       - name: Install libxml2
         run: |
           sudo apt-get update
           sudo apt-get install libxml2 libxml2-dev libxslt1-dev
-      - uses: actions/checkout@v3
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install Python
-        uses: actions/setup-python@v4
+      - name: Check out repository
+        uses: actions/checkout@v7
+      - name: Install Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Poetry
@@ -62,26 +54,19 @@ jobs:
         run: poetry install --no-interaction
       - name: Run tests
         run: poetry run make tests
-      - uses: psf/black@stable
-        with:
-          options: "--check --verbose"
-          src: "./"
-          version: "23.3"
-      - uses: isort/isort-action@v1
   build-windows:
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
     runs-on: "windows-latest"
     defaults:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v3
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install Python
-        uses: actions/setup-python@v4
+      - name: Check out repository
+        uses: actions/checkout@v7
+      - name: Install Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Poetry
@@ -95,9 +80,20 @@ jobs:
         run: poetry install --no-interaction
       - name: Run tests
         run: poetry run make tests
-      - uses: psf/black@stable
+  formatting:
+    name: Check formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install Python 3.14
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+      - name: Run Black
+        uses: psf/black@stable
         with:
           options: "--check --verbose"
           src: "./"
           version: "23.3"
-      # - uses: isort/isort-action@v1
+      - name: Run isort
+        uses: isort/isort-action@v1
