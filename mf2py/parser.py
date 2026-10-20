@@ -134,6 +134,7 @@ class Parser(object):
             if doc is None:
                 if http_client is None:
                     import requests
+
                     http_client = requests
                 data = http_client.get(
                     self.__url__,
