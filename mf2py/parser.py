@@ -2,7 +2,6 @@ import copy
 import json
 from urllib.parse import urlparse
 
-import requests
 from bs4 import BeautifulSoup, FeatureNotFound
 from bs4.element import Tag
 
@@ -134,6 +133,7 @@ class Parser(object):
 
             if doc is None:
                 if http_client is None:
+                    import requests
                     http_client = requests
                 data = http_client.get(
                     self.__url__,
